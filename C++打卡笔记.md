@@ -158,7 +158,7 @@ typename 和 class 在模板参数列表中没有区别，在 typename 这个关
 我们无需显式的指定 decltype 的参数表达式；
 
 ```C++
-/* C++11中的封装实现*/
+/* C++11中的封装实现 */
 std::string look_up_a_string_1() {
     return lookup1();
 }
