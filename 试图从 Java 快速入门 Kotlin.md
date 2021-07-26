@@ -11,7 +11,7 @@
 ## 阅读以下内容之前您需要注意
 
 1. 该教程使用 [Android Studio](https://developer.android.google.cn/studio/preview) 作为开发的 IDE 
-2. 就算您的 Java 是强子哥教的，也要假定自己是一个自信的 Java 高手
+2. 就算您的 Java 是强子哥教的，也要假定自己是一个自信的 Java 高手，加油！
 
 
 
@@ -19,13 +19,13 @@
 
 Kotlin 文件后缀名是 `.kt` ，就像 Java 文件是以 `.java` 结尾；
 
-Kotlin 不用每行结束写分号 `;` 
+Kotlin **不用每行结束写分号** `;` 
 
 
 
 ## （重点）Kotlin 的空安全设计
 
-IDE 会帮你智能的检测，避免 **在使用时调用 null 对象引发异常**，但侑子小姐曾说：“实现任何愿望都要支付对应的代价。”
+IDE 会帮你智能的检测，避免 **在使用时调用 null 对象引发异常**，但侑子小姐曾说：“实现任何愿望都要支付<u>对应的代价</u>。”
 
 Kotlin 这儿防止 NullPointerException 的代价就是：
 
@@ -54,7 +54,7 @@ view!!.setBackgroundColor(Color.RED)
 
 ### 延迟初始化
 
-用于处理这种情景：我很确定等到我真用的时候，它绝对不为空，但我现在确实没法给它赋值；
+用于处理这种情景：我很确定等到我真用的时候，它绝对不为空，但我**现在确实没法给它赋值**；
 
 在 Kotlin 中需要使用 `lateinit` 关键字，显式的提示 IDE “我待会儿再初始化”这件事：
 
@@ -550,17 +550,284 @@ const val CONST_SECOND_NUMBER = 2
 
 
 
+## 可见性
+
+Kotlin 中有四种可见性修饰符：
+
+1. `public`：（是 Kotlin 默认的可见性，没必要写）公开，可见性最大，哪里都可以引用；
+2. `private`：私有，可见性最小，根据声明位置不同可分为类中可见和文件中可见；
+3. `protected`：保护，相当于 `private` + 子类可见；
+4. `internal`：内部，仅对 module 内可见；
+
+这里不多介绍了，和其他语言区别没那么大。
+
+
+
 ## 数组和集合
 
+### 数组（Array）
+
+Kotlin 为数组准备了一个 Array 类，对基本类型元素还有 intArray, byteArray ... 等特别的数组类型；
+
+Array 是一个泛型的类，创建函数也是泛型函数，和集合数据类型一样；
+
 ```kotlin
+// 声明 String 数组和 Int 数组
 val strs: Array<String> = arrayOf("a", "b", "c")
+val intArray = intArrayOf(1, 2, 3)
+
+// 声明一个集合
+val strList = listOf("a", "b", "c")
 ```
 
-Kotlin 的数组是一个泛型的类，创建函数也是泛型函数，和集合数据类型一样
+
+
+### 集合（List, Set, Map）
+
+Kotlin 有三种集合类型：List、Set 和 Map：（性质跟其他语言基本一样）
+
+`List` 以固定顺序存储一组元素，元素可以重复；
+
+`Set` 存储一组互不相等的元素，通常没有固定顺序；
+
+`Map` 存储 key-value 对的数据集合，key 互不相等，不同的key可以对应相同的 value；
+
+```kotlin
+// 创建一个 List：
+val strList = listOf("a", "b", "c")
+
+// 集合都允许把子类的 List 赋值给父类的 List（协变性质）：
+val strs: List<String> = listOf("a", "b", "c")
+val anys: List<Any> = strs // success
+
+// 创建一个 Set：          
+val strSet = setOf("a", "b", "c")
+
+// 创建一个 Map，Kotlin 用中缀表达式：
+val map = mapOf("key1" to 1, "key2" to 2, "key3" to 3, "key4" to 3)
+
+// 从 map 中以 key 取 value：
+val value1 = map.get("key1")	
+// 也可以用方括号运算符：
+val value2 = map["key2"]
+
+// 在 map 中给 key 赋值新的 value
+val map = mutableMapOf("key1" to 1, "key2" to 2)
+map.put("key1", 2)
+// 也可以用方括号运算符：
+map["key1"] = 2
+```
+
+
+
+### 可变和只读
+
+Kotlin 的集合按能否修改又可分为**不可变集合（只读集合）**和**可变集合**两种，不可变集合（只读集合）的含义是：
+
+1. 集合 `size()` 不可变；
+2. 集合的元素值不可变；
+3. `listOf()` 是创建不可变的 List，`mutableListOf()` 才是创建可变的 List（Map 和 Set 同理）
+4. 不可变的 List 可以通过 `toMutableList()` 系函数，返回新建的一个可变的集合（Map 和 Set 同理）
+5. 可变集合可以直接用 `.add()` 增加元素；
+6. 不可变集合可以用 `.plus()` 方法增加元素（实际上，这个方法的实现不是增加了元素，是背后复制了一个长度+1，带上新元素的**新集合**）；
+
+
+
+### 数组与集合的操作
+
+这里写在一起，是因为很多操作**同时对数组、集合可用**；
+
+集合功能更多，但数组不用装箱性能更好；
+
+数组依然能用下标操作：
+
+```kotlin
+println(strs[0])
+strs[1] = "B"
+```
+
+Java 也有的那些工具函数：
+
+`get()`
+
+`set()`
+
+`contains()`
+
+`first()`
+
+`find()`
+
+Kotlin 特有的一些方法：
+
+```kotlin
+// forEach：遍历每一个元素
+intArray.forEach { i ->
+    print(i + " ")
+}
+
+// filter：对每个元素进行过滤操作，如果 lambda 表达式中的条件成立则留下该元素，否则剔除，最终生成新的集合
+val newList: List = intArray.filter { i ->
+    i != 1		// 过滤掉数组中等于 1 的元素
+}
+
+// map：遍历每个元素并执行给定表达式，最终形成新的集合
+val newList: List = intArray.map { i ->
+    i + 1 		// 每个元素加 1
+}
+
+// flatMap：遍历每个元素，并为每个元素创建新的集合，最后合并到一个集合中
+intArray.flatMap { i ->
+    listOf("${i + 1}", "a") // 👈 生成新集合
+}
+```
+
+
+
+## Kotlin 的 `Sequence` 容器
+
+功能：`Sequence ` 和 `Iterable` 一样用来遍历一组数据，并可以对每个元素进行特定的处理；
+
+`Sequence ` 又称为“惰性集合操作”，实际运行有**懒加载机制**：
+
+1. 一旦满足遍历退出的条件，就不再进行后续不必要的遍历过程；
+2.  `Sequence` 在整个流程中只有一个 `Iterable` ，不像 `List` 这种实现 `Iterable` 接口的集合类，每次函数调用产生的临时 `Iterable` 会导致额外的内存消耗；
+
+Sequence 的三种创建方式：
+
+1. 类似 `listOf()` ，使用一组元素创建：
+
+```kotlin
+sequenceOf("a", "b", "c")
+```
+
+2. 使用 `Iterable` 创建：
+
+```kotlin
+// 这里的 List 实现了 Iterable 接口
+val list = listOf("a", "b", "c")
+list.asSequence()
+```
+
+3. 使用 lambda 表达式创建：
+
+```kotlin
+// lambda 表达式，第二个及以后的元素都是前一个元素 it 再 +1 的值
+val sequence = generateSequence(0) { it + 1 }
+```
+
+
+
+## Kotlin 的 `Range` 区间
+
+Kotlin 区间的常见写法如下：
+
+```kotlin
+// 这里的 0..1000 表示闭区间 [0, 1000]
+val range: IntRange = 0..1000 
+```
+
+除了 `IntRange` ，还有 `CharRange` 以及 `LongRange`；
+
+Kotlin 中没有纯开区间的定义，不过有半开区间的定义：
+
+```kotlin
+// 这里的 0 until 1000 表示半开区间 [0, 1000) 
+val range: IntRange = 0 until 1000 
+```
+
+区间是设计用于遍历的工具， `in` 关键字可以与 `for` 循环结合使用，表示挨个遍历 `range` 中的值（类似 Python ）：
+
+```kotlin
+val range = 0..1000
+// 默认步长 step 为 1，输出：0, 1, 2, 3, 4, 5, 6, 7....1000,
+for (i in range) {
+    print("$i, ")
+}
+```
+
+除了使用默认的步长 1，还可以通过 `step` 设置步长：
+
+```kotlin
+val range = 0..1000
+// 设置步长为 2，输出：0, 2, 4, 6, 8, 10,....1000,
+for (i in range step 2) {
+    print("$i, ")
+}
+```
+
+Kotlin 还提供了递减区间 `downTo` ，不过递减没有半开区间的用法：
+
+```kotlin
+//  4 downTo 1 就表示递减的闭区间 [4, 1]，输出4, 3, 2, 1, 
+for (i in 4 downTo 1) {
+    print("$i, ")
+}
+```
+
+Kotlin 的区间开闭，概括是不能碰到开区间不包括的那个点；
 
 
 
 ## Kotlin 更方便的函数简化
+
+### 把 C 语言的三元运算符 `?:` 换成 if-else 表达式
+
+```kotlin
+val max = if (a > b) a else b
+// 等价于其他语言的（以 C 举例） int v = (a>b) ? a : b;
+```
+
+上面的 `if/else` 的分支中是一个变量，其实分支中还可以是一个代码块，代码块的最后一行会作为结果返回：
+
+```kotlin
+val max = if (a > b) {
+    println("max:a")
+    a // 返回 a
+} else {
+    println("max:b")
+    b // 返回 b
+}
+```
+
+
+
+### Kotlin的 `?:` 是 Elvis 操作符
+
+之前学过空安全调用 `?.` 操作符，当对象非空时它执行后面的调用，对象为空时就会返回 `null`；
+
+```kotlin
+val str: String? = "Hello"
+// IDE 报错，Type mismatch. Required:Int. Found:Int?
+var length: Int = str?.length
+```
+
+报错的原因当是 `str` 为 null 时，我们没有值可以返回给 `length`，这时使用 Kotlin 中的 Elvis 操作符 `?:` 来兜底：
+
+```kotlin
+val str: String? = "Hello"
+// 如果左侧表达式 str?.length 结果为空，则返回右侧的值 -1:
+val length: Int = str?.length ?: -1
+```
+
+还有一种验证逻辑中的常见用法：
+
+```kotlin
+fun validate(user: User) {
+    // 验证 user.id 是否为空，为空时 return 
+    val id = user.id ?: return 
+}
+
+// 等效于：
+fun validate(user: User) {
+    if (user.id == null) {
+        return
+    }
+    val id = user.id
+}
+```
+
+
 
 ### 使用 `=` 连接返回值
 
@@ -585,11 +852,15 @@ fun area(width: Int, height: Int) = width * height
 fun sayHi(name: String) = println("Hi " + name)
 ```
 
+
+
 ### 设定参数默认值
 
 这里 `"world"` 就是参数 name 的默认值，若调用 sayHi 函数时没有提供参数，就会使用默认值；
 
 需要注意的是，假如提供参数比函数需求的少，是从左到右依次分配的，C 语言也有类似特性，所以此处不多介绍；
+
+
 
 ### Kotlin 命名参数和位置参数
 
@@ -690,6 +961,79 @@ fun login(user: String, password: String, illegalStr: String) {
 
 
 
+### `when` 代替 `switch` 
+
+Kotlin 的 `when`：
+
+```kotlin
+when (x) {
+    1 -> { println("1") }
+    2 -> { println("2") }
+    else -> { println("else") }
+}
+```
+
+与 Java 相比的不同点有：
+
+1. 省略了 `case` 和 `break`，Kotlin 自动为每个分支加上了 `break` 的功能，防止我们像 Java 那样写错，~~也防止脑瘫学校期末考什么 fall-down 特性~~；
+2. Java / C 中的默认分支使用的是 `default` 关键字，Kotlin 中使用的是 `else`；
+
+`when` 也可以作为表达式进行使用，分支中最后一行的结果作为返回值；但需要注意**这时必须要有 `else` 分支**，确保无论怎样都会有结果返回；
+
+```kotlin
+val value: Int = when (x) {
+    1 -> { x + 1 }
+    2, 3, 4 -> { x * 2 }
+    else -> { x + 5 }
+}
+```
+
+`when` 应用场合比较灵活，以下是扔物线的几个例子：
+
+```kotlin
+// 使用 in 检测是否在一个区间或者集合中：
+when (x) {
+    in 1..10 -> print("x 在区间 1..10 中")
+    in listOf(1,2) -> print("x 在集合中")
+    !in 10..20 -> print("x 不在区间 10..20 中")
+    else -> print("不在任何区间上")
+}
+
+// 使用 is 进行特定类型的检测：
+val isString = when(x) {
+     is String -> true
+     else -> false
+ }
+
+// 省略 when 后面的参数，分支条件用一个布尔表达式:
+when {
+    str1.contains("a") -> print("字符串 str1 包含 a")
+    str2.length == 3 -> print("字符串 str2 的长度为 3")
+}
+```
+
+
+
+### 改进的 `for` 循环
+
+~~让我们看看高级程序设计语言里最拉的是谁？~~
+
+```kotlin
+val array = intArrayOf(1, 2, 3, 4)
+for (item in array) {
+    ...
+}
+
+// 等效于 for (int i = 0; i <= 10; i++)
+for (i in 0..10) {
+    println(i)
+}
+```
+
+
+
+
+
 ## Kotlin 字符串
 
 1. 可以像 Java 一样用 `+` 拼接字符串；
@@ -764,4 +1108,14 @@ My name is kotlin.
 3. 边界前缀还可以使用其他字符，比如 `trimMargin("/")`；
 
 
+
+## Kotlin的 `==` 和 `===` 运算符
+
+`==` 可以对基本数据类型以及 `String` 等类型进行内容比较，相当于 Java 中的 `equals` 方法；
+
+而`===` 是对引用的**内存地址进行比较**，相当于 Java 中的 `==`；
+
+
+
+## 未完待续中 ... 后续又发现什么有用的会更新在前面的
 
