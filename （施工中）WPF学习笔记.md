@@ -1,8 +1,22 @@
+---
+
+layout:     post   				        # 使用的布局（不需要改）
+title:      WPF学习笔记					# 标题 
+subtitle:   随时弃坑						# 副标题
+date:       2021-08-20 				    # 时间
+author:     YXWang 					    # 作者
+header-img: img/post-bg-keybord.jpg	 	# 这篇文章的标题背景图片
+catalog: true 						    # 是否归档
+tags:								    # 标签
+    - WPF
+    - 施工中
+---
+
 # WPF不深入理解笔记
 
-课件来自 [WPF深入讲解合集-bilibili](https://www.bilibili.com/video/BV1HC4y1b76v)
+课件主要来自 [WPF入门基础教程合集-bilibili](https://www.bilibili.com/video/BV1mJ411F7zG) 和 [WPF深入讲解合集-bilibili](https://www.bilibili.com/video/BV1HC4y1b76v) 
 
-项目源代码：[https://github.com/HenJigg/Microsoft-ToDo-Video](https://github.com/HenJigg/Microsoft-ToDo-Video)
+
 
 ## 开篇入门
 
@@ -16,7 +30,9 @@
 
 <img src=".\media\image-20210715215033185.webp" style="zoom: 50%;" />
 
-创建元素可以在工具箱拖控件到设计窗口，也可以手动写
+创建元素可以在工具箱拖控件到设计窗口，也可以手动写；
+
+双击控件可以快速设置其行为；
 
 ### WPF的编译过程
 
@@ -24,7 +40,9 @@
 
 这里课件是用 [dnSpy](https://github.com/dnSpy/) 反编译读 .dll 文件得出该结论，还反编译了虎牙直播的图标资源作为示例，看起来不错（？）
 
-## 布局和控件
+
+
+## 布局
 
 小技巧：VS 用 `Ctrl+K` （先按）和 `Ctrl+C` （后按）快捷键可以快速注释掉多行代码
 
@@ -103,11 +121,13 @@
 </UniformGrid>
 ```
 
+
+
 ### 控件结构
 
 #### WPF控件图示 
 
-不需要死记硬背所有控件，但需要记住控件所在的**命名空间**
+不需要死记硬背所有控件，但需要记住控件所在的**命名空间** 
 
 <img src=".\media\image-20210717101311254.webp" style="zoom:80%;" />
 
@@ -136,10 +156,16 @@ public string Text { get; set; }
 ```
 
 1. 凡是继承于 `ContentControl` 的控件，定义内容都是用 `Content`；
+
 2. 除 `TextBlock` 使用的是 `Text` 之外，大部分控件都是 `Content` 设置其显示内容。
+
 3. 继承于 `Control` 的大部分控件都具备 `Padding` 属性，`TextBlock` 则单独实现了 `Padding` 属性。
+
 4. `Margin` 是外边距，`Padding` 是内边距
+
 5. `Content` 由于是 `object` 类型，所以对于常用的 `Button`, `CheckBox` 等类型控件，不仅可以接收字符串类型，也可以接受各种复杂的对象类型
+
+   
 
 ### 样式
 
@@ -173,6 +199,8 @@ WPF中的各类控件元素都可以自由的设置样式，诸如：字体(Font
 效果：
 
 <img src="media\image-20210717131559965.webp" alt="image-20210717131559965" style="zoom:50%;" />
+
+
 
 ### 触发器
 
@@ -251,11 +279,11 @@ WPF中的各类控件元素都可以自由的设置样式，诸如：字体(Font
 
 <img src="media\image-20210717182729208.webp" alt="image-20210717231810708" style="zoom:50%;" />
 
-### 阶段性总结1
+
+
+### 例：设计 MicrosoftToDo 主界面
 
 ~~你已经学了那么多东西了，快来做个 MicrosoftToDo 吧~~
-
-#### 例：设计 MicrosoftToDo 主界面
 
 ```xaml
 <Window
@@ -388,6 +416,7 @@ WPF中的各类控件元素都可以自由的设置样式，诸如：字体(Font
 
 - 在 WPF 中，每个控件都是无外观的，这意味着我们可以完全自定义其可视元素的外观，但是不能修改其内部的行为，因为控件的行为已经被固定在控件的具体类中。
 - 在 Winform 中，控件的外观与行为都被固定在控件的具体类中，若想修改按钮的的边框弧度、或者修改控件本身一些细节，必须需要在修改外观的同时，把原来具备的所有行为重写一遍，我们大多数称之为自定义控件。
+- ~~不过这和也没学过 Winform 的我有什么关系呢~~
 
 #### 模板绑定
 
@@ -488,15 +517,134 @@ namespace WpfApp1
 
 ```
 
-效果
+效果：
 
-<img src="png\image-20210718133532055.png" alt="image-20210718133532055" style="zoom:50%;" />
+<img src="media\image-20210718133532055.webp" alt="image-20210718133532055" style="zoom:50%;" />
 
 ### 数据模板
 
+```xaml
+<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="240" Width="400">
+
+    <Grid>
+        <ComboBox x:Name="com" Width="100" Height="20">
+            <ComboBox.ItemTemplate>
+                <!-- 很多容器都具备 ItemTemplate -->
+                <DataTemplate>
+                    <!-- 数据模板，为了使下拉菜单能正确显示 Student 类的姓名和性别 -->
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                        <!-- 绑定 Student 对象的 Name 和 Sex 成员 -->
+                        <TextBlock Text="-"></TextBlock>
+                        <TextBlock Text="{Binding Sex}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </Grid>
+
+</Window>
+```
+
+```C#
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace WpfApp1
+{
+    /// <summary>
+    /// MainWindow.xaml 的交互逻辑
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        public MainWindow()
+        {
+            InitializeComponent();
+            List<Student> array = new List<Student>();
+            array.Add(new Student { Name = "张三", Sex = "M" });
+            array.Add(new Student { Name = "李四", Sex = "F" });
+            array.Add(new Student { Name = "王五", Sex = "NB" });
+            com.ItemsSource = array;
+        }
+    }
+
+    public class Student
+    {
+        public string Name { get; set; }
+        public string Sex { get; set; }
+
+    }
+}
+```
+
+效果：
+
+<img src="media\image-20210718224223447.webp" alt="image-20210718231828640" style="zoom:50%;" />
 
 
 
+### 例：DataGrid 实现学生管理数据库的完整项目
+
+[WPF入门基础教程合集_p9_](https://www.bilibili.com/video/BV1mJ411F7zG?p=9)
+
+~~这个暂时没整理，回头自己照着抄一遍；~~
+
+仿写该项目的过程时发现要注意给 DataGrid 设置 AutoGenerateColumns 属性为 "False" ，不然你有几个 public 变量它就给你整出多余的几列；
+
+
+
+### 理解绑定
+
+把某个显示元素和界面其他元素绑定，或者与后台代码相关联；
+
+#### 数据绑定
+
+直接使用 ElementName 属性
+
+```
+<Grid>
+    <StackPanel>
+        <TextBox x:Name="textblock" Text="我也是一个广door人"></TextBox>
+        <TextBox Text="{Binding ElementName=textblock, Path=Text}"></TextBox>
+    </StackPanel>
+</Grid>    
+```
+
+#### 设置数据的上下文
+
+表示该窗口可以访问 MainViewModel 中的公开属性方法，此处该界面的文本绑定了 MainViewModel 中一个名为 MessageFromMain 的变量
+
+```
+<Windows.DataContext>
+    <local: MainViewModel>
+</Windows.DataContext>
+
+<Grid>
+    <StackPanel>
+        <TextBox x:Name="textblock" Text="我也是一个广door人"></TextBox>
+        <TextBox Text="{Binding MessageFromMain}"></TextBox>
+    </StackPanel>
+</Grid>  
+```
 
 
 
