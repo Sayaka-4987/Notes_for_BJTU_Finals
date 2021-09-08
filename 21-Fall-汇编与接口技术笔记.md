@@ -141,19 +141,19 @@ DMA 方式传送数据不需要经过CPU，因此不必中断现行程序，I/O�
 
 <img src=".\media\标志寄存器的格式及各位的含义.png" style="zoom:50%;" />
 
-###### 进位标志 CF（Carry Flag）
+##### 进位标志 CF（Carry Flag）
 
 当 **无符号整数** 加减运算的最高有效位有进位（加法）或借位（减法）时，CF＝1，否则 CF＝0；
 
 
 
-###### 奇偶标志 PF（Parity Flag）
+##### 奇偶标志 PF（Parity Flag）
 
 当运算结果的 **最低字节**（注：就是看最后 8 位，1 个字节 Byte 8 位 bit，8 位的结果看全部 8 位，16 位的结果看后 8 位）中， 1 的个数为零或偶数时，PF＝1；否则PF＝0；
 
 
 
-###### 辅助进位标志 AF（Auxiliary carry Flag）
+##### 辅助进位标志 AF（Auxiliary carry Flag）
 
 当运算结果的低位的一半向高位（如字节数 8 位，就是低 4 位向高 4 位）有进位或借位时，AF = 1；
 
@@ -161,7 +161,7 @@ DMA 方式传送数据不需要经过CPU，因此不必中断现行程序，I/O�
 
 
 
-###### 溢出标志 OF（Overflow Flag）
+##### 溢出标志 OF（Overflow Flag）
 
 当 **有符号整数** 加减结果有溢出，则 OF＝1，否则 OF＝0；
 
@@ -171,19 +171,19 @@ DMA 方式传送数据不需要经过CPU，因此不必中断现行程序，I/O�
 
 
 
-###### 零标志 ZF（Zero Flag）
+##### 零标志 ZF（Zero Flag）
 
 运算结果为0，则 ZF＝1，否则 ZF＝0；
 
 
 
-###### 符号标志 SF（Sign Flag）
+##### 符号标志 SF（Sign Flag）
 
 运算结果最高位为1，则 SF＝1，否则 SF＝0；
 
 
 
-###### 方向标志 DF(Direction Flag)
+##### 方向标志 DF（Direction Flag）
 
 仅用于串操作指令，控制地址的变化方向：
 
@@ -193,7 +193,7 @@ DMA 方式传送数据不需要经过CPU，因此不必中断现行程序，I/O�
 
 
 
-###### 中断允许标志 IF（Interrupt-enable Flag）
+##### 中断允许标志 IF（Interrupt-enable Flag）
 
 主要针对外中断中可屏蔽中断的开放或禁止：
 
@@ -203,7 +203,7 @@ DMA 方式传送数据不需要经过CPU，因此不必中断现行程序，I/O�
 
 
 
-###### 追踪标志 TF（Trace Flag）
+##### 追踪标志 TF（Trace Flag）
 
 用于单步调试程序：
 
