@@ -598,7 +598,7 @@ namespace WpfApp1
 
 效果：
 
-<img src="media\image-20210718224223447.webp" alt="image-20210718231828640" style="zoom:50%;" />
+<img src=".\media\image-20210718224223447.webp" alt="image-20210718231828640" style="zoom:50%;" />
 
 
 
@@ -620,7 +620,7 @@ namespace WpfApp1
 
 直接使用 ElementName 属性
 
-```
+```xaml
 <Grid>
     <StackPanel>
         <TextBox x:Name="textblock" Text="我也是一个广door人"></TextBox>
@@ -633,7 +633,7 @@ namespace WpfApp1
 
 表示该窗口可以访问 MainViewModel 中的公开属性方法，此处该界面的文本绑定了 MainViewModel 中一个名为 MessageFromMain 的变量
 
-```
+```xaml
 <Windows.DataContext>
     <local: MainViewModel>
 </Windows.DataContext>
