@@ -4,9 +4,9 @@
 
 地点：YF312 或九教 4 层实验室
 
-### 这份笔记画 ※ 的都要背
+### 这份笔记画 ※ 的都要背！
 
-### ！！做实验**<u>需要在上机前就编写完程序</u>** 
+### 做实验 **<u>需要在上机前就编写完程序</u>** ！！
 
 
 
@@ -64,7 +64,7 @@ DMA 方式传送数据不需要经过CPU，因此不必中断现行程序，I/O�
 2. 16根数据线、20根地址线，可寻址的地址空间达 1MB (220Byte＝1MB)；
 3. 可以和浮点运算器、I/O 处理器或其他处理器组成多处理器系统，提高系统的数据吞吐能力、处理能力
 
-<img src=".\media\微信截图_20210908104652.png" style="zoom:33%;" />
+<img src=".\media\微信截图_20210908104652.webp" style="zoom:33%;" />
 
 通用寄存器包括 8 个 16 位寄存器：AX、BX、CX、DX、SP、BP、SI和DI；
 标志寄存器为 FLAGS ，是一个 16 位的寄存器；
@@ -81,7 +81,7 @@ DMA 方式传送数据不需要经过CPU，因此不必中断现行程序，I/O�
 
 #### ※ 8086 CPU 寄存器分组表
 
-<img src=".\media\8086寄存器.png" style="zoom:67%;" />
+<img src=".\media\8086寄存器.webp" style="zoom:67%;" />
 
 以 [ BX+SI ] 为例：BX 为基址、SI 为变址；
 
@@ -137,7 +137,7 @@ DMA 方式传送数据不需要经过CPU，因此不必中断现行程序，I/O�
 
 #### 通用寄存器的专门用途
 
-<img src=".\media\通用寄存器的专门用途.png" style="zoom: 33%;" />
+<img src=".\media\通用寄存器的专门用途.webp" style="zoom: 33%;" />
 
 
 
@@ -151,7 +151,7 @@ DMA 方式传送数据不需要经过CPU，因此不必中断现行程序，I/O�
 
 #### 标志寄存器的格式及各位的含义
 
-<img src=".\media\标志寄存器的格式及各位的含义.png" style="zoom:50%;" />
+<img src=".\media\标志寄存器的格式及各位的含义.webp" style="zoom:50%;" />
 
 ##### 进位标志 CF（Carry Flag）
 
@@ -248,7 +248,7 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 
 #### 储存单元地址例题
 
-<img src=".\media\储存单元地址例题.png" alt="image-20210908121210248" style="zoom:50%;" />
+<img src=".\media\储存单元地址例题.webp" alt="image-20210908121210248" style="zoom:50%;" />
 
 
 
@@ -274,7 +274,7 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 
 
 
-<img src=".\media\储存器的逻辑地址与物理地址.png" style="zoom:38%;" />
+<img src=".\media\储存器的逻辑地址与物理地址.webp" style="zoom:38%;" />
 
 
 
@@ -282,7 +282,7 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 
 物理地址形成：**段地址左移 4 位，再加上偏移地址值**；
 
-<img src=".\media\物理地址的形成.png" style="zoom:38%;" />
+<img src=".\media\物理地址的形成.webp" style="zoom:38%;" />
 
 
 
@@ -294,7 +294,7 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 
 ##### 例：8086 逻辑地址与物理地址的转换
 
-<img src=".\media\逻辑地址与物理地址的转换.png" style="zoom:38%;" />
+<img src=".\media\逻辑地址与物理地址的转换.webp" style="zoom:38%;" />
 
 
 
@@ -310,7 +310,7 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 
 
 
-<img src=".\media\段寄存器分配.png" style="zoom:38%;" />
+<img src=".\media\段寄存器分配.webp" style="zoom:38%;" />
 
 
 
@@ -342,7 +342,7 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 
 ## 3. 寻址方式
 
-参考资料：[MASM debug 命令](https://www.cnblogs.com/tiger2soft/p/5094917.html)
+MASM 汇编指令参考资料：[MASM debug 命令](https://www.cnblogs.com/tiger2soft/p/5094917.html)
 
 操作数寻址：获取操作数
 
@@ -354,7 +354,7 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 
 指令 = 操作码 + 操作数；
 
-<img src=".\media\8086汇编指令格式.png" style="zoom:38%;" />
+<img src=".\media\8086汇编指令格式.webp" style="zoom:38%;" />
 
 寻址方式：为取得操作数或指令地址所使用的方法
 
@@ -370,7 +370,7 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 
 ##### 立即数寻址
 
-<img src=".\media\立即数寻址.png" style="zoom:38%;" />
+<img src=".\media\立即数寻址.webp" style="zoom:38%;" />
 
 - 操作数直接存在 **指令** 中，即立即数（Immediate），用常量形式直接表达；
 - 因此操作数存储在 **代码段（CS）**中；
@@ -448,13 +448,13 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 - 有效地址 EA 是 **寄存器内容与位移量之和**；
 - 适用于数组、字符串、表格的操作；
 
-<img src=".\media\寄存器相对寻址.png" style="zoom:38%;" />
+<img src=".\media\寄存器相对寻址.webp" style="zoom:38%;" />
 
 
 
 例：计算寄存器相对寻址的有效地址
 
-<img src=".\media\寄存器相对寻址例题.png" style="zoom:38%;" />
+<img src=".\media\寄存器相对寻址例题.webp" style="zoom:38%;" />
 
 
 
@@ -468,7 +468,7 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
   - MOV  AX,  \[BX][BP]    非法，这是两个基址寄存器
   - MOV  AX,  \[SI][DI]      非法，这是两个变址寄存器
 
-<img src=".\media\基址变址寻址.png" style="zoom:48%;" />
+<img src=".\media\基址变址寻址.webp" style="zoom:48%;" />
 
 
 
@@ -482,13 +482,13 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 
 - 有效地址计算如下：
 
-<img src=".\media\相对基址变址寻址.png" style="zoom:38%;" />
+<img src=".\media\相对基址变址寻址.webp" style="zoom:38%;" />
 
 
 
 例：计算相对基址变址寻址的有效地址
 
-<img src=".\media\相对基址变址寻址例题.png" style="zoom:38%;" />
+<img src=".\media\相对基址变址寻址例题.webp" style="zoom:38%;" />
 
 
 
@@ -512,9 +512,9 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 
 （这里先放一下lys大佬和老师的说法：）
 
-<img src=".\media\image-20210913193654164.png" alt="image-20210913193654164" style="zoom:33%;" />
+<img src=".\media\image-20210913193654164.webp" alt="image-20210913193654164" style="zoom:33%;" />
 
-<img src=".\media\image-20210913193830411.png" alt="image-20210913193830411" style="zoom:33%;" />
+<img src=".\media\image-20210913193830411.webp" alt="image-20210913193830411" style="zoom:33%;" />
 
 
 
@@ -534,7 +534,7 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 
 #### 段内间接寻址
 
-<img src=".\media\段内间接寻址.png" style="zoom:48%;" />
+<img src=".\media\段内间接寻址.webp" style="zoom:48%;" />
 
 - CS 不变，但 IP 变化；
 - 转向的有效地址是一个寄存器或存储单元的内容；

@@ -8,9 +8,11 @@
 
 ## 第一章 Computer Network and the Internet
 
-~~2021/9/6：目前进度是 1.2 网络边缘（network edge）讲完了；~~
+~~2021/9/6：目前进度是 1.2 Network edge 讲完了；~~
 
-2021/9/8：目前进度 1.4 Delay, Loss, and Throughput in Packet-Switched Networks；
+~~2021/9/8：目前进度 1.4 Delay, Loss, and Throughput in Packet-Switched Networks；~~
+
+2021/9/13：目前进度 1.7 History
 
 
 
@@ -67,7 +69,7 @@
 | 排队时延（queuing delay）              | 取决于路由器的拥塞程度，La/R 是曲线，每组包各不相同；<br>一般是微秒到毫秒之间； |      |
 | 传输时延（transmission delay）         | 也叫发送时延，一般是时延的主要来源；<br>数据从 **开始发送** 到 **发送端发送完成** 需要的时间；<br>是关于该分组长度和该链路传输速率的函数；<br>L = 包长度（packet length） ，单位 bits<br/>R = 链路的带宽（link bandwidth）， 单位 bps<br/>传输时延（transmission delay） = L/R |      |
 | 传播时延（propagation delay）          | 发送端 **开始发送** 到 **接收端收到数据** 所需要的全部时间；<br>是关于发送方和接收方之间的距离的函数；<br>d = 物理链路长度（length of physical link）<br/>s = 信号传播速度（propagation speed） (~2x108 m/sec)<br/>传播时延（propagation delay）= d/s |      |
-| 总节点延迟（total nodal delay）        | <img src=".\media\公式图片1.png" style="zoom:48%;" /><br>上述四项延迟之和； |      |
+| 总节点延迟（total nodal delay）        | <img src=".\media\公式图片1.webp" style="zoom:48%;" /><br>上述四项延迟之和； |      |
 | 丢包率（Packet loss）                  | 缓存满时再遇到新数据就会丢包；此时可以视（可靠性）需求重发或不重发该包； |      |
 | 吞吐量（Throughput）                   | 是速率，单位 bits/time unit（bps）；<br>区分瞬时（instantaneous）吞吐量和平均吞吐量（average）； |      |
 
@@ -162,7 +164,7 @@ TCP/IP 是先有实物后有模型；
 
 解：概率计算过程见下图（不会用内联公式是这样的）
 
-<img src=".\media\微信截图_20210908092434.png" style="zoom:38%;" />
+<img src=".\media\微信截图_20210908092434.webp" style="zoom:38%;" />
 
 
 
