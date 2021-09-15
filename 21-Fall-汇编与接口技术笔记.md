@@ -524,11 +524,13 @@ MASM 汇编指令参考资料：[MASM debug 命令](https://www.cnblogs.com/tige
 
 例： 
 
-**JMP  NEAR PTR  NEXT**    近转移    -32768 ~ +32767，汇编时，位移量为16位
+**JMP  NEAR PTR  NEXT**    <u>近转移</u>    -32768 ~ +32767，汇编时，位移量为16位
 
-**JMP  SHORT  NEXT**          短转移    -128 ~ +127，汇编时，位移量为8位
+**JMP  SHORT  NEXT**          <u>短转移</u>    -128 ~ +127，汇编时，位移量为8位
 
-- 转向的有效地址 = 当前 (IP) + 位移量 (8bit/16bit) ，其中位移量是**转向的有效地址与当前 IP 值之差**；
+- 段内寻址 CS 不变，只改变 IP；
+- 直接体现地址信息，PTR NEXT 是位移量；
+- 转向的有效地址 = 当前 (IP) + 位移量 (8bit/16bit) ，其中位移量是 **转向的有效地址与当前 IP 值之差**；
 
 
 
@@ -536,7 +538,7 @@ MASM 汇编指令参考资料：[MASM debug 命令](https://www.cnblogs.com/tige
 
 <img src=".\media\段内间接寻址.webp" style="zoom:48%;" />
 
-- CS 不变，但 IP 变化；
+- 段内寻址 CS 不变，只改变 IP；
 - 转向的有效地址是一个寄存器或存储单元的内容；
 - 可用除立即数以外的任何一种数据寻址方式得到；
 
@@ -555,6 +557,8 @@ MASM 汇编指令参考资料：[MASM debug 命令](https://www.cnblogs.com/tige
   
 
 ### 3.3 存储器寻址
+
+
 
 
 
