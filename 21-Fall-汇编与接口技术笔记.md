@@ -454,7 +454,7 @@ START:  ……
 
 - 数组可以看作是变量链，一个字符串本质是一个字节数组；
 - 对于字符串，字符串是 byte 的数组，byte 是最小单位；
-- 对于双字节整数，word是最小单位
+- 对于双字节整数，word 是最小单位
 
 #### 定义数组
 
@@ -544,7 +544,9 @@ RET ; 返回操作系统
 
 
 
-#### 模拟器支持的中断功能表（全英文，没翻译）
+#### 中断功能表（全英文）
+
+有些可能是 emu8086 模拟器或者 DOSBOX 不支持的，没全部测试，请以运行结果为准；
 
 | 指令及其功能                                                 | 输入                                                         | 输出                                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -570,11 +572,11 @@ RET ; 返回操作系统
 | **INT 19h** - system reboot.                                 |                                                              |                                                              |
 | **INT 1Ah** / **AH = 00h** - get system time.                |                                                              | **CX:DX** = number of clock ticks since midnight.<br/>**AL** = midnight counter, advanced each time midnight passes. |
 | **INT 20h** - exit to operating system.                      |                                                              |                                                              |
-| **INT 21h** / **AH=09h** - output of a string at DS:DX.      |                                                              |                                                              |
-| **INT 21h** / **AH=0Ah** - input of a string to DS:DX, fist byte is buffer size, second byte is number of chars actually read. |                                                              |                                                              |
+| **INT 21h** / **AH=09h** - output of a string at DS:DX.      | **DS:DX** = 要输出的字符串<br>例：MOV DX, OFFSET MSG<br/>MOV AH, 09H<br/>INT 21H<br/>RET<br/>MSG DB "HELLO$" |                                                              |
+| **INT 21h** / **AH=0Ah** - input of a string to DS:DX, fist byte is buffer size, second byte is number of chars actually read. | （待补充，使用时能弹出输入框，但没观测到 DS:DX 和其他寄存器有什么变化，可能是调用方式不对……） |                                                              |
 | **INT 21h** / **AH=4Ch** - exit to operating system.         |                                                              |                                                              |
-| **INT 21h** / **AH=01h** - read character from standard input, with echo, result is stored in AL. |                                                              |                                                              |
-| **INT 21h** / **AH=02h** - write character to standard output, DL = character to write, after execution AL = DL. |                                                              |                                                              |
+| **INT 21h** / **AH=01h** - read character from standard input, with echo, result is stored in AL. |                                                              | **AL** = 读入字母的 ascii 值                                 |
+| **INT 21h** / **AH=02h** - write character to standard output. | **DL** = 要输出的字符                                        | 运行后 **AL** = DL                                           |
 
 
 
@@ -603,6 +605,20 @@ C      1100      light red
 D      1101      light magenta
 E      1110      yellow
 F      1111      white
+```
+
+
+
+例：emu8086 中 1_sample.asm 的闪烁 Hello World!
+
+```assembly
+; color all characters:
+mov cx, 12  ; number of characters.
+mov di, 03h ; start from byte after 'h'
+
+c:  mov [di], 11101100b   ; light red(1100) on yellow(1110)
+    add di, 2 ; skip over next ascii code in vga memory.
+    loop c
 ```
 
 
@@ -681,10 +697,6 @@ DEFINE_PTHIS
 
 END ; 结束
 ```
-
-
-
-
 
 
 
@@ -1254,5 +1266,5 @@ MOV BX，WORD PTR F2 ；BX=5623H
 - 一般各个逻辑段的首地址在‘节’的整数边界上（每 16 个存储单元叫做一节, 1 para = 16 Bytes），即每个逻辑段的起始地址是 16 的整数倍，或地址的最低 4 位为 0
 
 
-例： **code segment para ‘code’**
+例： **code segment para 'code'**
 
