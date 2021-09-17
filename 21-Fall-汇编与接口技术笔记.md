@@ -1,12 +1,13 @@
-# 汇编与接口技术
+# 汇编与接口技术笔记
 
 期末考试开卷、50% + 平时成绩20% + 常规实验15% + 研究性实验15%
 
-地点：YF312 或九教 4 层实验室
+地点：**YF312** 或九教 4 层实验室
 
-### 这份笔记画 ※ 的都要背！
+- #### 这份笔记画 ※ 的都要背！
 
-### 做实验 **<u>需要在上机前就编写完程序</u>** ！！
+- #### 做实验 **<u>需要在上机前就编写完程序</u>** ！！
+
 
 
 
@@ -14,7 +15,7 @@
 
 [MASM debug 命令](https://www.cnblogs.com/tiger2soft/p/5094917.html) 
 
-[【8086汇编基础】05--常用函数库文件--emu8086.inc](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758059.html)
+[8086汇编语言初学者教程](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758048.html) （点击 [#补充资料8086-汇编语言初学者教程](https://github.com/Sayaka-4987/Notes_for_BJTU_Finals/blob/main/21-Fall-%E6%B1%87%E7%BC%96%E4%B8%8E%E6%8E%A5%E5%8F%A3%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0.md#%E8%A1%A5%E5%85%85%E8%B5%84%E6%96%998086-%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E5%88%9D%E5%AD%A6%E8%80%85%E6%95%99%E7%A8%8B) 可以跳转到本笔记的这一部分）
 
 
 
@@ -336,367 +337,6 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
   - 位移量：8 或 16 位有符号值（可正可负）
 
 
-
-## 补充资料：8086 汇编语言初学者教程
-
-### `MOV` 指令：拷贝
-
-- 功能：将第二个操作数（源）拷贝到第一个操作数（目的）指定位置；
-- 源操作数可以是立即数，通用寄存器或者内存单元；
-- 目的寄存器可以是通用寄存器或者内存单元；
-- 源和目的必须是同样大小，要么都是字节要么都是字；
-
-
-
-#### `MOV` 指令的操作类型
-
-- **REG**：AX, BX, CX, DX, AH, AL, BL, BH, CH, CL, DH, DL, DI, SI, BP, SP；
-- **memory**：[BX], [BX+SI+7], 变量等；
-- **immediate**：5, -24, 3Fh, 10001101b 等；
-- **SREG**：DS, ES, SS, 注意 **CS 只能作为操作源**（意思是 MOV CS, AX 会报错，MOV AX, CS 可以）；
-
-```assembly
-MOV REG, memory
-MOV memory, REG
-MOV REG, REG
-MOV memory, immediate
-MOV REG, immediate
-
-; MOV 只支持如下段寄存器：
-MOV SREG, memory
-MOV memory, SREG
-MOV REG, SREG
-MOV SREG, REG
-```
-
-
-
-### 声明变量
-
-编译器支持两种变量： **BYTE**（字节） 和 **WORD**（字）；
-
-- name 可以是任何字母与数字构成，但是必须由字母开头；
-- 可以通过不命名来声明一个没有名称的的变量（这个变量只有地址，没有名称）；
-- value 可以是任何数值，支持三种进制（十六进制、二进制、十进制），可以使用 `?` 符号表示初始值没有确定；
-
-```assembly
-name DB value ; 名称 DB 值, DB = stays for Define Byte.
-name DW value ; 名称 DW 值, DW = stays for Define Word.
-```
-
-例：（COM 文件）
-
-```assembly
-#MAKE_COM#
-ORG 100h
-
-MOV AL, var1
-MOV BX, var2
-
-RET    ; stops the program.
-
-VAR1 DB 7
-var2 DW 1234h
-```
-
-
-
-### 声明常量
-
-常量同变量很相似，但是它一直存在。定义一个变量之后，它的值不会改变；
-
-使用 `EQU` 语句定义常量；
-
-格式：**name equ <任意表达式>**
-
-```assembly
-k EQU 5
-MOV AX, k    ; 等价于 MOV AX, 5
-```
-
-
-
-### `ORG` 伪指令
-
-`ORG` 是一个编译指令，它告诉编译器如何处理源代码；
-
-`ORG 100` 通知编译器，可执行程序将被调入偏移量是 100h（256 字节）的位置，从而可以计算出所有变量的正确地址，然后用这些地址（偏移量）来代替变量名称；
-
-- 这些指令不会真正的编译为任何机器代码，本身也不占内存空间；
-
-- 可执行程序总是被装入偏移量 **100h**；
-
-- EXE文件调入在偏移量 0000 的位置，它使用特定的段保存变量
-
-#### `ORG` 的使用
-
-- `ORG 100` 用在 COM 文件的开头；
-- 还可以用于指明下一条汇编语句的偏移地址 ：
-
-
-```assembly
-SEG1    SEGMENT
-        ORG   10         ; 设置$为10，此段目标代码从偏移地址10开始
-        VAR1  DW  1234H  ; VAR1的偏移地址为10
-        ORG   20         ; 在10和20地址之间是没有指令的
-        VAR2  DW  5678H
-        ORG   $+8        ; $增加8，即在5678H之后空出8个字节
-        VAR3  DW  1357H
-SEG1    ENDS
-
-        ORG  100H
-START:  ……
-```
-
-
-
-### 数组
-
-- 数组可以看作是变量链，一个字符串本质是一个字节数组；
-- 对于字符串，字符串是 byte 的数组，byte 是最小单位；
-- 对于双字节整数，word 是最小单位
-
-#### 定义数组
-
-```assembly
-a DB 48h, 65h, 6Ch, 6Ch, 6Fh, 00h
-b DB 'Hello', 0
-```
-
-
-
-### `DUP` 指令：重复
-
-- 格式：**number DUP ( value(s) )** 
-- 其中 number 为重复的数量（任意常数），value 为将要复制的表达式
-
-```assembly
-c DB 5 DUP(9)    ; 等价于 c DB 9, 9, 9, 9, 9 
-d DB 5 DUP(1, 2) ; 等价于 d DB 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 
-```
-
-
-
-### `LEA` 指令或 `OFFSET` 指令：取得变量地址
-
-```assembly
-#MAKE_COM#
-ORG 100h
-  
-MOV AL, VAR1
-LEA BX, VAR1  			; 等效于 MOV BX, OFFSET VAR1  
-
-RET    ; stops the program.
-   
-VAR1 DB 12H
-```
-
-
-
-### `INT` 指令：软件中断
-
-中断是一系列功能调用。比如，在打印机上输出一个字符，只需要简单的调用中断，它将完成所有的事情；
-
-这些功能调用称作软件中断；
-
-需要使用 INT 指令触发一个软件中断；
-
-格式：**INT value**
-
-其中 value 的取值范围是从 0 到 255 （或者 0 到 0FFH），通常使用十六进制写法；
-
-每一个中断都有子功能，在调用一个中断的子功能之前，需要设置  AH 寄存器（通常使用 AH）；
-
-
-每一个中断最多可以拥有 256 个子功能（因此，总共可以有 256*256＝65536 个功能调用）；
-
-
-
-例：使用中断 **0Eh** 子功能输出字符串 ‘Hello!' 
-
-```assembly
-#MAKE_COM# ; 生成com文件的指令
-
-ORG 100h
-
-MOV AH, 0Eh ; 选择子功能 int 10h/0Eh，输出放在 AL 寄存器中的 ASCII 码对应的字符
-
-MOV AL, 'H' ; ASCII码: 72
-INT 10h ; 输出
-
-MOV AL, 'e' ; ASCII 码: 101
-INT 10h ; 输出
-
-MOV AL, 'l' ; ASCII 码: 108
-INT 10h ; 输出
-
-MOV AL, 'l' ; ASCII 码: 108
-INT 10h ; 输出
-
-MOV AL, 'o' ; ASCII 码: 111
-INT 10h ; 输出
-
-MOV AL, '!' ; ASCII 码: 33
-INT 10h ; 输出
-
-RET ; 返回操作系统
-```
-
-
-
-#### 中断功能表（全英文）
-
-有些可能是 emu8086 模拟器或者 DOSBOX 不支持的，没全部测试，请以运行结果为准；
-
-| 指令及其功能                                                 | 输入                                                         | 输出                                                         |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| **INT 10h** / **AH = 00h** \- set video mode.                | **AL** = desired video mode.<br>**00h** - Text mode 40x25, 16 colors, 8 pages. |                                                              |
-| **INT 10h** / **AH = 01h** - set text-mode cursor shape.     | **CH** = cursor start line (bits 0-4) and options (bits 5-7). <br>**CL** = bottom cursor line (bits 0-4).<br>When bits 6-5 of CH are set to **00**, the cursor is visible, to hide a cursor set these bits to **01** |                                                              |
-| **INT 10h** / **AH = 02h** - set cursor position.            | **DH** = row.<br/>**DL** = column.<br/>**BH** = page number (0..7). |                                                              |
-| **INT 10h** / **AH = 03h** - get cursor position and size.   | **BH** = page number.                                        | **DH** = row.<br/>**DL** = column.<br/>**CH** = cursor start line.<br/>**CL** = cursor bottom line. |
-| **INT 10h** / **AH = 05h** - select active video page.       | **AL** = new page number (0..7).                             |                                                              |
-| **INT 10h** / **AH = 06h** - scroll up window.<br/>**INT 10h** / **AH = 07h** - scroll down window. | **AL** = number of lines by which to scroll (00h = clear entire window).<br/>**BH** = [attribute](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib) used to write blank lines at bottom of window.<br/>**CH, CL** = row, column of window's upper left corner.<br/>**DH, DL** = row, column of window's lower right corner. |                                                              |
-| **INT 10h** / **AH = 08h** - read character and [attribute](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib) at cursor position. | **BH** = page number.                                        | **AH** = [attribute](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib).<br/>**AL** = character. |
-| **INT 10h** / **AH = 09h** - write character and [attribute](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib) at cursor position. | **AL** = character to display.<br/>**BH** = page number.<br/>**BL** = [attribute](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib).<br/>**CX** = number of times to write character. |                                                              |
-| **INT 10h** / **AH = 0Ah** - write character only at cursor position. | **AL** = character to display.<br/>**BH** = page number.<br/>**CX** = number of times to write character. |                                                              |
-| **INT 10h** / **AH = 0Eh** - teletype output.                | **AL** = character to write.<br>This functions displays a character on the screen, advancing the  cursor and scrolling the screen as necessary. <br>The printing is always  done to current active page. |                                                              |
-| **INT 10h** / **AH = 13h** - write string.                   | **AL** = write mode:<br/>  **bit 0**: update cursor after writing;<br/>  **bit 1**: string contains [attributes](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib).<br/>**BH** = page number.<br/>**BL** = [attribute](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib) if string contains only characters (bit 1 of AL is zero).<br/>**CX** = number of characters in string (attributes are not counted).<br/>**DL,DH** = column, row at which to start writing.<br/>**ES:BP** points to string to be printed. |                                                              |
-| **INT 10h** / **AX = 1003h** - toggle intensity/blinking.    | **BL** = write mode:<br/>  **0**: enable intensive colors.<br/>  **1**: enable blinking (not supported by emulator!).<br/>**BH** = 0 (to avoid problems on some adapters). |                                                              |
-| **INT 11h** - get BIOS equipment list.                       | **AX** = BIOS equipment list word, actually this call returns the contents of the word at 0040h:0010h. |                                                              |
-| **INT 12h** - get memory size.                               | **AX** = kilobytes of contiguous memory starting at  absolute address 00000h,	this call returns the contents of the word at  0040h:0013h. |                                                              |
-| **INT 13h** / **AH = 00h** - reset disk system               | (currently this call doesn't do anything).                   |                                                              |
-| **INT 13h** / **AH = 02h** - read disk sectors into memory.<br/>**INT 13h** / **AH = 03h** - write disk sectors. | **AL** = number of sectors to read/write (must be nonzero)<br/>**CH** = cylinder number (0..79).<br/>**CL** = sector number (1..18).<br/>**DH** = head number (0..1).<br/>**DL** = drive number (0..3 , depends on quantity of FLOPPY_? files).<br/>**ES:BX** points to data buffer. | **CF** set on error.<br/>**CF** clear if successful.<br/>**AH** = status (0 - if successful).<br/>**AL** = number of sectors transferred. |
-| **INT 15h** / **AH = 86h** - BIOS wait function.             | **CX:DX** = interval in microseconds                         | **CF** clear if successful (wait interval elapsed),<br/>**CF** set on error or when wait function is already in progress. |
-| **INT 16h** / **AH = 00h** - get keystroke from keyboard (no echo). |                                                              | **AH** = BIOS scan code.<br/>**AL** = ASCII character.<br>(if a keystroke is present, it is removed from the keyboard buffer). |
-| **INT 16h** / **AH = 01h** - check for keystroke in keyboard buffer. |                                                              | **ZF = 1** if keystroke is not available.<br/>**ZF = 0** if keystroke available.<br/>**AH** = BIOS scan code.<br/>**AL** = ASCII character.<br/>(if a keystroke is present, it is not removed from the keyboard buffer). |
-| **INT 19h** - system reboot.                                 |                                                              |                                                              |
-| **INT 1Ah** / **AH = 00h** - get system time.                |                                                              | **CX:DX** = number of clock ticks since midnight.<br/>**AL** = midnight counter, advanced each time midnight passes. |
-| **INT 20h** - exit to operating system.                      |                                                              |                                                              |
-| **INT 21h** / **AH=09h** - output of a string at DS:DX.      | **DS:DX** = 要输出的字符串<br>例：MOV DX, OFFSET MSG<br/>MOV AH, 09H<br/>INT 21H<br/>RET<br/>MSG DB "HELLO$" |                                                              |
-| **INT 21h** / **AH=0Ah** - input of a string to DS:DX, fist byte is buffer size, second byte is number of chars actually read. | （待补充，使用时能弹出输入框，但没观测到 DS:DX 和其他寄存器有什么变化，可能是调用方式不对……） |                                                              |
-| **INT 21h** / **AH=4Ch** - exit to operating system.         |                                                              |                                                              |
-| **INT 21h** / **AH=01h** - read character from standard input, with echo, result is stored in AL. |                                                              | **AL** = 读入字母的 ascii 值                                 |
-| **INT 21h** / **AH=02h** - write character to standard output. | **DL** = 要输出的字符                                        | 运行后 **AL** = DL                                           |
-
-
-
-#### 颜色表
-
-字符属性为 8 位值，低 4 位设置前景色，高 4 位设置背景色；
-
-但是，不支持背景色闪烁；
-
-```assembly
-HEX    BIN       COLOR
------------------------
-0      0000      black
-1      0001      blue
-2      0010      green
-3      0011      cyan
-4      0100      red
-5      0101      magenta
-6      0110      brown
-7      0111      light gray
-8      1000      dark gray
-9      1001      light blue
-A      1010      light green
-B      1011      light cyan
-C      1100      light red
-D      1101      light magenta
-E      1110      yellow
-F      1111      white
-```
-
-
-
-例：emu8086 中 1_sample.asm 的闪烁 Hello World!
-
-```assembly
-; color all characters:
-mov cx, 12  ; number of characters.
-mov di, 03h ; start from byte after 'h'
-
-c:  mov [di], 11101100b   ; light red(1100) on yellow(1110)
-    add di, 2 ; skip over next ascii code in vga memory.
-    loop c
-```
-
-
-
-### 常用函数库 `emu8086.inc`
-
-编译器会自动在你源程序所在的文件夹中查找你引用的文件，如果没有找到，它将搜索 `Inc` 文件夹；
-
-使用 **emu8086.inc** 头文件需要在程序开头加上：
-
-```assembly
-include 'emu8086.inc'
-```
-
-**emu8086.inc** 定义了一些方便的输入输出宏：
-
-```assembly
-PUTC char ; 将一个ascii字符输出到光标当前位值，只有一个参数的宏
-
-GOTOXY col, row ; 设置当前光标位置，有两个参数
-
-PRINT string ; 输出字符串，一个参数
-
-PRINTN string ; 输出字符串，一个参数。与 PRINT 功能相同，不同在于输出之后自动回车
-
-CURSOROFF ; 关闭文本光标
-
-CURSORON ; 打开文本光标
-
-PRINT_STRING ; 在当前光标位置输出一个字符串字符串地址；由DS:SI 寄存器给出；使用时，需要在 END 前面声明 DEFINE_PRINT_STRING
-
-PTHIS ; 在当前光标位置输出一个字符串（同 PRINT_STRING一样，不同之处在于它是从堆栈接收字符串。字符串终止符应在 call 之后定义；例如:
-CALL PTHIS;  
-db 'Hello World!', 0
-; 使用时，需要在 END 前面声明 DEFINE_PTHIS  
-
-GET_STRING ; 从用户输入得到一个字符串，输入的字符串写入 DS:DI 指出的缓冲，缓冲区的大小由 DX 设置；回车作为输入结束；使用时，需要在 END 前面声明 DEFINE_GET_STRING 
-
-CLEAR_SCREEN ; 清屏过程(滚过整个屏幕)，然后将光标设置在左上角。使用时，需要在 END 前面声明DEFINE_CLEAR_SCREEN
-　
-SCAN_NUM ; 取得用户从键盘输入的多位有符号数，并将输入存放在 CX 寄存器；使用时，需要在 END 前面声明 DEFINE_SCAN_NUM
-
-PRINT_NUM ; 输出 AX 寄存器中的有符号数；使用时，需要在 END 前面声明 DEFINE_PRINT_NUM以及 DEFINE_PRINT_NUM_UNS.
-
-PRINT_NUM_UNS ; 输出 AX 寄存器中的无符号数；使用时，需要在 END 前面声明 DEFINE_PRINT_NUM_UNS.
-```
-
-使用例：
-
-```assembly
-include 'emu8086.inc'
-
-ORG 100h
-
-LEA SI, msg1 ; 要求输入数字
-CALL print_string ;
-CALL scan_num ; 读取数字放入 cx
-
-MOV AX, CX ; CX 存放数值拷贝到 AX
-
-; 输入如下字符
-CALL pthis
-DB 13, 10, 'You have entered: ', 0
-
-CALL print_num ; 输出 AX 中的字符
-
-RET ; 返回操作系统
-
-msg1 DB 'Enter the number: ', 0
-
-DEFINE_SCAN_NUM      ; 使用这些宏需要添加的
-DEFINE_PRINT_STRING
-DEFINE_PRINT_NUM
-DEFINE_PRINT_NUM_UNS 
-DEFINE_PTHIS
-
-END ; 结束
-```
 
 
 
@@ -1089,7 +729,7 @@ DATA_WORD  DW  100,100H,-5,? 	; -5 按补码存储
 
 ##### 操作数
 
-<img src=".\media.\操作数.png" style="zoom: 50%;" />
+<img src=".\media\操作数.png" style="zoom: 50%;" />
 
 **MOV AL, OPER2**  和 **MOV AL, [OPER2]** 是等价的；  
 
@@ -1267,4 +907,424 @@ MOV BX，WORD PTR F2 ；BX=5623H
 
 
 例： **code segment para 'code'**
+
+
+
+### 3.4 8086 的指令系统
+
+- 数据传送指令
+- 算术指令
+- 逻辑指令
+- 串处理指令
+- 控制转移指令
+- 处理机控制指令
+- 杂项操作指令
+
+需要记忆：指令的基本功能、支持的寻址方式、执行前后标志位的影响、指令的特殊要求
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 附录
+
+这里放一些外部资料笔记或者暂时没法归类的内容：
+
+
+
+## 补充资料：8086 汇编语言初学者教程
+
+- 这部分内容来自 [8086汇编语言初学者教程](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758048.html)；
+- 用于 **快速入门** 编写汇编语言；
+
+（目前不太确定这部分放在哪，因为在教师课件那里 **8086的指令系统** 安排太靠后，但在课件介绍具体功能前，就已经出现了很多指令，暂时先放在这）
+
+### `MOV` 指令：拷贝
+
+- 功能：将第二个操作数（源）拷贝到第一个操作数（目的）指定位置；
+- 源操作数可以是立即数，通用寄存器或者内存单元；
+- 目的寄存器可以是通用寄存器或者内存单元；
+- 源和目的必须是同样大小，要么都是字节要么都是字；
+
+
+
+#### `MOV` 指令的操作类型
+
+- **REG**：AX, BX, CX, DX, AH, AL, BL, BH, CH, CL, DH, DL, DI, SI, BP, SP；
+- **memory**：[BX], [BX+SI+7], 变量等；
+- **immediate**：5, -24, 3Fh, 10001101b 等；
+- **SREG**：DS, ES, SS, 注意 **CS 只能作为操作源**（意思是 MOV CS, AX 会报错，MOV AX, CS 可以）；
+
+```assembly
+MOV REG, memory
+MOV memory, REG
+MOV REG, REG
+MOV memory, immediate
+MOV REG, immediate
+
+; MOV 只支持如下段寄存器：
+MOV SREG, memory
+MOV memory, SREG
+MOV REG, SREG
+MOV SREG, REG
+```
+
+
+
+### 声明变量
+
+编译器支持两种变量： **BYTE**（字节） 和 **WORD**（字）；
+
+- name 可以是任何字母与数字构成，但是必须由字母开头；
+- 可以通过不命名来声明一个没有名称的的变量（这个变量只有地址，没有名称）；
+- value 可以是任何数值，支持三种进制（十六进制、二进制、十进制），可以使用 `?` 符号表示初始值没有确定；
+
+```assembly
+name DB value ; 名称 DB 值, DB = stays for Define Byte.
+name DW value ; 名称 DW 值, DW = stays for Define Word.
+```
+
+例：（COM 文件）
+
+```assembly
+#MAKE_COM#
+ORG 100h
+
+MOV AL, var1
+MOV BX, var2
+
+RET    ; stops the program.
+
+VAR1 DB 7
+var2 DW 1234h
+```
+
+
+
+### 声明常量
+
+常量同变量很相似，但是它一直存在。定义一个变量之后，它的值不会改变；
+
+使用 `EQU` 语句定义常量；
+
+格式：**name equ <任意表达式>**
+
+```assembly
+k EQU 5
+MOV AX, k    ; 等价于 MOV AX, 5
+```
+
+
+
+### `ORG` 伪指令
+
+`ORG` 是一个编译指令，它告诉编译器如何处理源代码；
+
+`ORG 100` 通知编译器，可执行程序将被调入偏移量是 100h（256 字节）的位置，从而可以计算出所有变量的正确地址，然后用这些地址（偏移量）来代替变量名称；
+
+- 这些指令不会真正的编译为任何机器代码，本身也不占内存空间；
+
+- 可执行程序总是被装入偏移量 **100h**；
+
+- EXE文件调入在偏移量 0000 的位置，它使用特定的段保存变量
+
+#### `ORG` 的使用
+
+- `ORG 100` 用在 COM 文件的开头；
+- 还可以用于指明下一条汇编语句的偏移地址 ：
+
+
+```assembly
+SEG1    SEGMENT
+        ORG   10         ; 设置$为10，此段目标代码从偏移地址10开始
+        VAR1  DW  1234H  ; VAR1的偏移地址为10
+        ORG   20         ; 在10和20地址之间是没有指令的
+        VAR2  DW  5678H
+        ORG   $+8        ; $增加8，即在5678H之后空出8个字节
+        VAR3  DW  1357H
+SEG1    ENDS
+
+        ORG  100H
+START:  ……
+```
+
+
+
+### 数组
+
+- 数组可以看作是变量链，一个字符串本质是一个字节数组；
+- 对于字符串，字符串是 byte 的数组，byte 是最小单位；
+- 对于双字节整数，word 是最小单位
+
+#### 定义数组
+
+```assembly
+a DB 48h, 65h, 6Ch, 6Ch, 6Fh, 00h
+b DB 'Hello', 0
+```
+
+
+
+### `DUP` 指令：重复
+
+- 格式：**number DUP ( value(s) )** 
+- 其中 number 为重复的数量（任意常数），value 为将要复制的表达式
+
+```assembly
+c DB 5 DUP(9)    ; 等价于 c DB 9, 9, 9, 9, 9 
+d DB 5 DUP(1, 2) ; 等价于 d DB 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 
+```
+
+
+
+### `LEA` 指令或 `OFFSET` 指令：取得变量地址
+
+```assembly
+#MAKE_COM#
+ORG 100h
+  
+MOV AL, VAR1
+LEA BX, VAR1  			; 等效于 MOV BX, OFFSET VAR1  
+
+RET    ; stops the program.
+   
+VAR1 DB 12H
+```
+
+
+
+### `INT` 指令：软件中断
+
+中断是一系列功能调用。比如，在打印机上输出一个字符，只需要简单的调用中断，它将完成所有的事情；
+
+这些功能调用称作软件中断；
+
+需要使用 INT 指令触发一个软件中断；
+
+格式：**INT value**
+
+其中 value 的取值范围是从 0 到 255 （或者 0 到 0FFH），通常使用十六进制写法；
+
+每一个中断都有子功能，在调用一个中断的子功能之前，需要设置  AH 寄存器（通常使用 AH）；
+
+
+每一个中断最多可以拥有 256 个子功能（因此，总共可以有 256*256＝65536 个功能调用）；
+
+
+
+例：使用中断 **0Eh** 子功能输出字符串 ‘Hello!' 
+
+```assembly
+#MAKE_COM# ; 生成com文件的指令
+
+ORG 100h
+
+MOV AH, 0Eh ; 选择子功能 int 10h/0Eh，输出放在 AL 寄存器中的 ASCII 码对应的字符
+
+MOV AL, 'H' ; ASCII码: 72
+INT 10h ; 输出
+
+MOV AL, 'e' ; ASCII 码: 101
+INT 10h ; 输出
+
+MOV AL, 'l' ; ASCII 码: 108
+INT 10h ; 输出
+
+MOV AL, 'l' ; ASCII 码: 108
+INT 10h ; 输出
+
+MOV AL, 'o' ; ASCII 码: 111
+INT 10h ; 输出
+
+MOV AL, '!' ; ASCII 码: 33
+INT 10h ; 输出
+
+RET ; 返回操作系统
+```
+
+
+
+#### 中断功能表（全英文）
+
+有些可能是 emu8086 模拟器或者 DOSBOX 不支持的，没全部测试，请以运行结果为准；
+
+| 指令及其功能                                                 | 输入                                                         | 输出                                                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **INT 10h** / **AH = 00h** \- set video mode.                | **AL** = desired video mode.<br>**00h** - Text mode 40x25, 16 colors, 8 pages. |                                                              |
+| **INT 10h** / **AH = 01h** - set text-mode cursor shape.     | **CH** = cursor start line (bits 0-4) and options (bits 5-7). <br>**CL** = bottom cursor line (bits 0-4).<br>When bits 6-5 of CH are set to **00**, the cursor is visible, to hide a cursor set these bits to **01** |                                                              |
+| **INT 10h** / **AH = 02h** - set cursor position.            | **DH** = row.<br/>**DL** = column.<br/>**BH** = page number (0..7). |                                                              |
+| **INT 10h** / **AH = 03h** - get cursor position and size.   | **BH** = page number.                                        | **DH** = row.<br/>**DL** = column.<br/>**CH** = cursor start line.<br/>**CL** = cursor bottom line. |
+| **INT 10h** / **AH = 05h** - select active video page.       | **AL** = new page number (0..7).                             |                                                              |
+| **INT 10h** / **AH = 06h** - scroll up window.<br/>**INT 10h** / **AH = 07h** - scroll down window. | **AL** = number of lines by which to scroll (00h = clear entire window).<br/>**BH** = [attribute](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib) used to write blank lines at bottom of window.<br/>**CH, CL** = row, column of window's upper left corner.<br/>**DH, DL** = row, column of window's lower right corner. |                                                              |
+| **INT 10h** / **AH = 08h** - read character and [attribute](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib) at cursor position. | **BH** = page number.                                        | **AH** = [attribute](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib).<br/>**AL** = character. |
+| **INT 10h** / **AH = 09h** - write character and [attribute](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib) at cursor position. | **AL** = character to display.<br/>**BH** = page number.<br/>**BL** = [attribute](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib).<br/>**CX** = number of times to write character. |                                                              |
+| **INT 10h** / **AH = 0Ah** - write character only at cursor position. | **AL** = character to display.<br/>**BH** = page number.<br/>**CX** = number of times to write character. |                                                              |
+| **INT 10h** / **AH = 0Eh** - teletype output.                | **AL** = character to write.<br>This functions displays a character on the screen, advancing the  cursor and scrolling the screen as necessary. <br>The printing is always  done to current active page. |                                                              |
+| **INT 10h** / **AH = 13h** - write string.                   | **AL** = write mode:<br/>  **bit 0**: update cursor after writing;<br/>  **bit 1**: string contains [attributes](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib).<br/>**BH** = page number.<br/>**BL** = [attribute](https://www.cnblogs.com/QuLory/archive/2012/11/07/2758054.html#attrib) if string contains only characters (bit 1 of AL is zero).<br/>**CX** = number of characters in string (attributes are not counted).<br/>**DL,DH** = column, row at which to start writing.<br/>**ES:BP** points to string to be printed. |                                                              |
+| **INT 10h** / **AX = 1003h** - toggle intensity/blinking.    | **BL** = write mode:<br/>  **0**: enable intensive colors.<br/>  **1**: enable blinking (not supported by emulator!).<br/>**BH** = 0 (to avoid problems on some adapters). |                                                              |
+| **INT 11h** - get BIOS equipment list.                       | **AX** = BIOS equipment list word, actually this call returns the contents of the word at 0040h:0010h. |                                                              |
+| **INT 12h** - get memory size.                               | **AX** = kilobytes of contiguous memory starting at  absolute address 00000h,	this call returns the contents of the word at  0040h:0013h. |                                                              |
+| **INT 13h** / **AH = 00h** - reset disk system               | (currently this call doesn't do anything).                   |                                                              |
+| **INT 13h** / **AH = 02h** - read disk sectors into memory.<br/>**INT 13h** / **AH = 03h** - write disk sectors. | **AL** = number of sectors to read/write (must be nonzero)<br/>**CH** = cylinder number (0..79).<br/>**CL** = sector number (1..18).<br/>**DH** = head number (0..1).<br/>**DL** = drive number (0..3 , depends on quantity of FLOPPY_? files).<br/>**ES:BX** points to data buffer. | **CF** set on error.<br/>**CF** clear if successful.<br/>**AH** = status (0 - if successful).<br/>**AL** = number of sectors transferred. |
+| **INT 15h** / **AH = 86h** - BIOS wait function.             | **CX:DX** = interval in microseconds                         | **CF** clear if successful (wait interval elapsed),<br/>**CF** set on error or when wait function is already in progress. |
+| **INT 16h** / **AH = 00h** - get keystroke from keyboard (no echo). |                                                              | **AH** = BIOS scan code.<br/>**AL** = ASCII character.<br>(if a keystroke is present, it is removed from the keyboard buffer). |
+| **INT 16h** / **AH = 01h** - check for keystroke in keyboard buffer. |                                                              | **ZF = 1** if keystroke is not available.<br/>**ZF = 0** if keystroke available.<br/>**AH** = BIOS scan code.<br/>**AL** = ASCII character.<br/>(if a keystroke is present, it is not removed from the keyboard buffer). |
+| **INT 19h** - system reboot.                                 |                                                              |                                                              |
+| **INT 1Ah** / **AH = 00h** - get system time.                |                                                              | **CX:DX** = number of clock ticks since midnight.<br/>**AL** = midnight counter, advanced each time midnight passes. |
+| **INT 20h** - exit to operating system.                      |                                                              |                                                              |
+| **INT 21h** / **AH=09h** - output of a string at DS:DX.      | **DS:DX** = 要输出的字符串<br>例：MOV DX, OFFSET MSG<br/>MOV AH, 09H<br/>INT 21H<br/>RET<br/>MSG DB "HELLO$" |                                                              |
+| **INT 21h** / **AH=0Ah** - input of a string to DS:DX, fist byte is buffer size, second byte is number of chars actually read. | （待补充，使用时能弹出输入框，但没观测到 DS:DX 和其他寄存器有什么变化，可能是调用方式不对……） |                                                              |
+| **INT 21h** / **AH=4Ch** - exit to operating system.         |                                                              |                                                              |
+| **INT 21h** / **AH=01h** - read character from standard input, with echo, result is stored in AL. |                                                              | **AL** = 读入字母的 ascii 值                                 |
+| **INT 21h** / **AH=02h** - write character to standard output. | **DL** = 要输出的字符                                        | 运行后 **AL** = DL                                           |
+
+
+
+#### 颜色表
+
+字符属性为 8 位值，低 4 位设置前景色，高 4 位设置背景色；
+
+但是，不支持背景色闪烁；
+
+```assembly
+HEX    BIN       COLOR
+-----------------------
+0      0000      black
+1      0001      blue
+2      0010      green
+3      0011      cyan
+4      0100      red
+5      0101      magenta
+6      0110      brown
+7      0111      light gray
+8      1000      dark gray
+9      1001      light blue
+A      1010      light green
+B      1011      light cyan
+C      1100      light red
+D      1101      light magenta
+E      1110      yellow
+F      1111      white
+```
+
+
+
+例：emu8086 中 1_sample.asm 的闪烁 Hello World!
+
+```assembly
+; color all characters:
+mov cx, 12  ; number of characters.
+mov di, 03h ; start from byte after 'h'
+
+c:  mov [di], 11101100b   ; light red(1100) on yellow(1110)
+    add di, 2 ; skip over next ascii code in vga memory.
+    loop c
+```
+
+
+
+### 常用函数库 `emu8086.inc`
+
+编译器会自动在你源程序所在的文件夹中查找你引用的文件，如果没有找到，它将搜索 `Inc` 文件夹；
+
+使用 **emu8086.inc** 头文件需要在程序开头加上：
+
+```assembly
+include 'emu8086.inc'
+```
+
+**emu8086.inc** 定义了一些方便的输入输出宏：
+
+```assembly
+PUTC char ; 将一个ascii字符输出到光标当前位值，只有一个参数的宏
+
+GOTOXY col, row ; 设置当前光标位置，有两个参数
+
+PRINT string ; 输出字符串，一个参数
+
+PRINTN string ; 输出字符串，一个参数。与 PRINT 功能相同，不同在于输出之后自动回车
+
+CURSOROFF ; 关闭文本光标
+
+CURSORON ; 打开文本光标
+
+PRINT_STRING ; 在当前光标位置输出一个字符串字符串地址；由DS:SI 寄存器给出；使用时，需要在 END 前面声明 DEFINE_PRINT_STRING
+
+PTHIS ; 在当前光标位置输出一个字符串（同 PRINT_STRING一样，不同之处在于它是从堆栈接收字符串。字符串终止符应在 call 之后定义；例如:
+CALL PTHIS;  
+db 'Hello World!', 0
+; 使用时，需要在 END 前面声明 DEFINE_PTHIS  
+
+GET_STRING ; 从用户输入得到一个字符串，输入的字符串写入 DS:DI 指出的缓冲，缓冲区的大小由 DX 设置；回车作为输入结束；使用时，需要在 END 前面声明 DEFINE_GET_STRING 
+
+CLEAR_SCREEN ; 清屏过程(滚过整个屏幕)，然后将光标设置在左上角。使用时，需要在 END 前面声明DEFINE_CLEAR_SCREEN
+　
+SCAN_NUM ; 取得用户从键盘输入的多位有符号数，并将输入存放在 CX 寄存器；使用时，需要在 END 前面声明 DEFINE_SCAN_NUM
+
+PRINT_NUM ; 输出 AX 寄存器中的有符号数；使用时，需要在 END 前面声明 DEFINE_PRINT_NUM以及 DEFINE_PRINT_NUM_UNS.
+
+PRINT_NUM_UNS ; 输出 AX 寄存器中的无符号数；使用时，需要在 END 前面声明 DEFINE_PRINT_NUM_UNS.
+```
+
+使用例：
+
+```assembly
+include 'emu8086.inc'
+
+ORG 100h
+
+LEA SI, msg1 ; 要求输入数字
+CALL print_string ;
+CALL scan_num ; 读取数字放入 cx
+
+MOV AX, CX ; CX 存放数值拷贝到 AX
+
+; 输入如下字符
+CALL pthis
+DB 13, 10, 'You have entered: ', 0
+
+CALL print_num ; 输出 AX 中的字符
+
+RET ; 返回操作系统
+
+msg1 DB 'Enter the number: ', 0
+
+DEFINE_SCAN_NUM      ; 使用这些宏需要添加的
+DEFINE_PRINT_STRING
+DEFINE_PRINT_NUM
+DEFINE_PRINT_NUM_UNS 
+DEFINE_PTHIS
+
+END ; 结束
+```
 
