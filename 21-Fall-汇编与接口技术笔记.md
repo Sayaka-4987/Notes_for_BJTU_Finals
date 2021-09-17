@@ -353,7 +353,7 @@ X 单元中存放着 Y，而 Y 是另一个存储单元的地址，则 Y 单元�
 - **REG**：AX, BX, CX, DX, AH, AL, BL, BH, CH, CL, DH, DL, DI, SI, BP, SP；
 - **memory**：[BX], [BX+SI+7], 变量等；
 - **immediate**：5, -24, 3Fh, 10001101b 等；
-- **SREG**：DS, ES, SS, 注意 **CS 只能作为操作源；**
+- **SREG**：DS, ES, SS, 注意 **CS 只能作为操作源**（意思是 MOV CS, AX 会报错，MOV AX, CS 可以）；
 
 ```assembly
 MOV REG, memory
@@ -377,7 +377,7 @@ MOV SREG, REG
 
 - name 可以是任何字母与数字构成，但是必须由字母开头；
 - 可以通过不命名来声明一个没有名称的的变量（这个变量只有地址，没有名称）；
-- value 可以是任何数值，支持三种进制（十六进制,二进制和十进制），可以使用 `?` 符号表示初始值没有确定；
+- value 可以是任何数值，支持三种进制（十六进制、二进制、十进制），可以使用 `?` 符号表示初始值没有确定；
 
 ```assembly
 name DB value ; 名称 DB 值, DB = stays for Define Byte.
