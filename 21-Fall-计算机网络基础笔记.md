@@ -199,24 +199,37 @@ TCP/IP 是先有实物后有模型；
 
 
 
-#### 2.2 WEB 和 HTTP 
+#### 2.2 WEB 和 HTTP 和 FTP 
 
 | 中英对照                                                 | 概念（待编辑补充）                                           | 备注 |
 | -------------------------------------------------------- | ------------------------------------------------------------ | ---- |
-| 超文本传输协议（HTTP 协议，HyperText Transfer Protocol） | 因特网上应用最为广泛的应用层协议；<br>HTTP 是无状态的，意思是服务器不维护关于客户的任何信息； |      |
+| 超文本传输协议（HTTP 协议，HyperText Transfer Protocol） | 因特网上应用最为广泛的应用层协议；<br>HTTP 是无状态的，意思是服务器不维护关于客户的任何信息；<br>默认端口号 80，使用客户端/服务器模式； |      |
 | Web 页面（Web page）                                     | 由一些对象组成，对象可以是 HTML 文件，JPEG 图像，Java 小程序，音频文件等；<br>Web 页面含有一个基本的 HTML 文件（base HTML file），该文件通过 URL 实现若干个对象的引用； |      |
 | 统一资源定位器（URL，Uniform Resource Locator）          | 包括协议名、用户名、口令字、主机名、路径名、端口；           |      |
 | 往返时延（RTT，Round-Trip Time）                         | 数据从网络一端传到另一端所需的时间；                         |      |
-| 非持久 HTTP（non-persistent connections）                | 每个对象需要两个 RTT；<br>操作系统必须为每个 TCP 连接都分配资源，但浏览器通常会打开并行 TCP 连接； |      |
-| 持久 HTTP（persistent connections）                      | 服务器在发送响应后仍保持 TCP 连接；<br/>用相同的连接传送同一客户端和服务器之间的后续请求和响应报文；<br/>客户端遇引用对象可以尽快发送请求； |      |
+| 非持久 HTTP 连接（non-persistent connections）           | 每个对象需要两个 RTT；<br>操作系统必须为每个 TCP 连接都分配资源，但浏览器通常会打开并行 TCP 连接； |      |
+| 持久 HTTP 连接（persistent connections）                 | 服务器在发送响应后仍保持 TCP 连接；<br/>用相同的连接传送同一客户端和服务器之间的后续请求和响应报文；<br/>客户端遇引用对象可以尽快发送请求； |      |
 | Cookies                                                  | 由于 HTTP 不维护用户状态，所以诞生了 cookies；<br>四个组成部分：HTTP 响应报文中有一个 cookie 的首部行、HTTP 请求报文中有一个 cookie 的首部行、用户端系统中保留一个 cookie 文件、Web 后台有一个后端数据库；<br/>当最初的 HTTP 请求到达服务器时，该 Web 站点产生一个唯一的ID，以此作为索引在后端数据库中产生一项； |      |
-| Web 缓存（Web Caching）                                  | 也叫代理服务器，代表源 Web 服务器满足 HTTP 请求的网络实体；  |      |
-| 内容分发网络（CDNs，Content Distribution Networks ）     |                                                              |      |
-|                                                          |                                                              |      |
+| Web 缓存（Web Caching）                                  | 也叫代理服务器（proxy server），代表源 Web 服务器满足 HTTP 请求的网络实体；通常由 ISP 购买安装； |      |
+| 条件 GET（conditional GET）                              | 允许缓存器证实它缓存的对象是否为最新的机制；                 |      |
+| 内容分发网络（CDNs，Content Distribution Networks ）     | 减少网络中冗余数据的重复传输，使之最小化，将广域传输转为本地或就近访问； |      |
+| FTP 协议（FTP，the file transfer protocol）              | FTP 使用两个并行 TCP 连接，一个 TCP 连接用于发送控制信息进行用户认证，另一个 TCP 连接用于实际传输文件；默认端口号 21，使用客户端/服务器模式； |      |
 
 
 
-#### 2.3 FTP 
+#### 2.3 因特网中的电子邮件
+
+| 中英对照                                         | 概念（待编辑补充）                                           | 备注 |
+| ------------------------------------------------ | ------------------------------------------------------------ | ---- |
+| SMTP 协议（SMTP，simple mail transfer protocol） | 建立在 FTP 文件传输服务上的一种邮件服务，主要用于系统之间的邮件信息传递，并提供有关来信的通知；<br/>消息必须是7位的 ASCII 码；<br/>默认端口号 25，使用客户端/服务器模式，是异步通信； |      |
+| 邮件报文（Mail message format）                  |                                                              |      |
+| POP 协议（Post Office Protocol ）                |                                                              |      |
+| IMAP 协议（Internet Mail Access Protocol ）      |                                                              |      |
+|                                                  |                                                              |      |
+
+
+
+#### 2.4 DNS 
 
 
 
@@ -225,8 +238,6 @@ TCP/IP 是先有实物后有模型；
 ### 常见应用的协议使用表
 
 <img src=".\media\TCP和UDP协议应用表.png" style="zoom:38%;" />
-
-
 
 
 
@@ -250,14 +261,14 @@ TCP/IP 是先有实物后有模型；
 
 ### 练习题目
 
-#### 缓存例题
+#### Web 缓存优化访问速度例题
 
 <img src=".\media\缓存例题.png" style="zoom: 33%;" />
 
-增加带宽，使用更快的接入链路：
+方法1：增加带宽，使用更快的接入链路
 
 <img src=".\media\缓存例题2.png" style="zoom: 33%;" />
 
-安装本地缓存：
+方法2：安装本地缓存
 
 <img src=".\media\缓存例题3.png" style="zoom: 33%;" />
