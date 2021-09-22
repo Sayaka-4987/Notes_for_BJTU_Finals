@@ -241,7 +241,7 @@ DMA 方式传送数据不需要经过CPU，因此不必中断现行程序，I/O�
 
 #### 存储器的组织：8086 实模式
 
-采用分段方式，20位的物理地址 由 **16位的段地址** 和 **16位的偏移地址** 形成，每个段的最大寻址空间为 64KB；
+采用分段方式，20 位的物理地址 由 **16 位的段地址** 和 **16 位的偏移地址** 形成，每个段的最大寻址空间为 64KB；
 
 段地址必须是 16 的倍数，即（二进制写法）末尾 4 位必须为 0；
 
@@ -592,7 +592,7 @@ MOV AX, VAL 等价于 MOV AX, [VAL]，是一个直接寻址，变量的名字就
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 能够被直接翻译成机器码，并让CPU直接执行的语句；<br>每一条指令语句对应一条可执行的CPU机器指令，执行产生相应的CPU动作；<br>有操作码和操作数两个部分； | 指导汇编程序如何编译汇编语言源程序，并不翻译成机器代码，CPU也不执行；<br>通常完成储存模式定义、数据定义、存储器分配、指示程序开始结束等功能；<br>可以提高编程效率，指导编译器如何编译汇编程序； |
 
-<img src=".\media\汇编语言语句类型.png" style="zoom:75%;" />
+<img src=".\media\汇编语言语句类型.webp" style="zoom:75%;" />
 
 
 
@@ -605,7 +605,7 @@ MOV AX, VAL 等价于 MOV AX, [VAL]，是一个直接寻址，变量的名字就
 3. 最大有效长度为 31；
 4. 保留字不能作为名字使用；
 
-<img src=".\media\汇编语言语句格式.png" style="zoom: 25%;" />
+<img src=".\media\汇编语言语句格式.webp" style="zoom: 25%;" />
 
 
 
@@ -683,7 +683,7 @@ CODE   ENDS
 - 在代码段开始处进行 DS, SS, ES 的段地址装填；
 - DS, SS, ES 默认指向 PSP（默认分 256 字节），CS 默认指向 PSP 完成段后的地址；
 
-<img src=".\media\设置段地址值.png" style="zoom:38%;" />
+<img src=".\media\设置段地址值.webp" style="zoom:38%;" />
 
 * 8086 **不支持将数据直接送入段寄存器** ，DATA 是地址常量，只能通过 AX 中继一下才能进入 DS 
 * MOV 也不能在段寄存器之间直接赋值；
@@ -721,7 +721,7 @@ code   ends
 
   
 
-<img src=".\media\数据定义以及储存器分配伪操作.png" style="zoom:48%;" />
+<img src=".\media\数据定义以及储存器分配伪操作.webp" style="zoom:48%;" />
 
 例：
 
@@ -730,21 +730,21 @@ DATA_BYTE  DB  10,4,10H,?
 DATA_WORD  DW  100,100H,-5,? 	; -5 按补码存储
 ```
 
-<img src=".\media\数据定义例.png" style="zoom:38%;" />
+<img src=".\media\数据定义例.webp" style="zoom:38%;" />
 
 这里 **DB 2 DUP (0,2 DUP(1,2),3) = 2 DUP（0, 1, 2, 1, 2, 3）= （0, 1, 2, 1, 2, 3, 0, 1, 2, 1, 2, 3）**
 
-<img src=".\media\数据定义例2.png" style="zoom:38%;" />
+<img src=".\media\数据定义例2.webp" style="zoom:38%;" />
 
 
 
 ##### 操作数
 
-<img src=".\media\操作数.png" style="zoom: 50%;" />
+<img src=".\media\操作数.webp" style="zoom: 50%;" />
 
 **MOV AL, OPER2**  和 **MOV AL, [OPER2]** 是等价的；  
 
-<img src=".\media\操作数和类型匹配.png" style="zoom:38%;" />
+<img src=".\media\操作数和类型匹配.webp" style="zoom:38%;" />
 
 
 
@@ -797,7 +797,7 @@ ARRAY DW 1, 2 , $+4 , 3 , 4 , $+4
 
 结果如图：
 
-<img src=".\media\地址计数器内存图.png" style="zoom:38%;" />
+<img src=".\media\地址计数器内存图.webp" style="zoom:38%;" />
 
 
 
@@ -929,7 +929,7 @@ MOV BX，WORD PTR F2   ; BX=5623H
 
 例：求字存储单元中两个数之差，存入下一个相邻字单元
 
-<img src=".\media\用段定义伪指令.png" style="zoom:38%;" />
+<img src=".\media\用段定义伪指令.webp" style="zoom:38%;" />
 
 
 
@@ -951,7 +951,7 @@ NAME  ENDP
 
 例：
 
-<img src=".\media\程序段前缀结构FAR.png" style="zoom:38%;" />
+<img src=".\media\程序段前缀结构FAR.webp" style="zoom:38%;" />
 
 ##### 代码段中程序结束的两种方式
 
@@ -971,13 +971,15 @@ RET     ; 过程结束
 - 产生目标文件 (.obj) 和列表文件 (.lst) 
 - 展开宏指令
 
-<img src=".\media\汇编程序运行步骤以及生成的文件.png" style="zoom:38%;" />
+<img src=".\media\汇编程序运行步骤以及生成的文件.webp" style="zoom:38%;" />
 
 
 
 ### 3.4 8086 的指令系统
 
 （这部分为啥在伪指令后面？？？）
+
+主要可以分为：
 
 - 数据传送指令
 - 算术指令
@@ -1022,7 +1024,7 @@ MOV SREG, REG
 
 总结：
 
-<img src=".\media\MOV小结.png" style="zoom:48%;" />
+<img src=".\media\MOV小结.webp" style="zoom: 50%;" />
 
 
 
@@ -1059,7 +1061,7 @@ MOV SREG, REG
 
 #### 数据交换指令：`XCHG` 
 
-- 格式：XCHG  OPR1, OPR2
+- 格式：**XCHG  OPR1，OPR2**
 - 功能： (OPR1)  <-->  (OPR2) 交换值
 - 注意: 
   - 不影响标志位
@@ -1078,7 +1080,7 @@ XCHG  AL，BH          ; (AL) = 41H, BH = 05H
 
 #### I/O数据传送指令：`IN`、`OUT`
 
-- 功能：用于外部设备I/O端口与CPU之间的信息交换；
+- 功能：用于外部设备 I/O 端口与 CPU 之间的信息交换；
 - IN/OUT 指令中 AX（AL）操作数的位置是不同的，一个是目标操作数位置，另一个是源操作数位置；
 - IN/OUT 指令操作期间，端口地址处将产生一个负脉冲信号；
 - 只能使用 AX 或 AL 来存放数据，只限 **8 位立即数** 或 **DX** 来存放端口号；
@@ -1106,6 +1108,8 @@ IN   AX, DX   	  （字）
 (AX) ← ((DX+1),(DX)) （字）     
 ```
 
+
+
 输出指令：
 
 ```assembly
@@ -1125,6 +1129,8 @@ OUT   DX, AX  	（字）
 (DX) ← (AL)    （字节）
 ((DX+1),(DX)) ← (AX)（字）
 ```
+
+
 
 例：
 
@@ -1146,7 +1152,7 @@ JNZ    ERROR          ; 若第2位为1，转ERROR处理
 
 #### 换码/查表指令：`XLAT` 或 `XLAT  OPR`
 
-这两个指令默认了操作数，执行操作：**(AL）<- ( BX + AL )**
+这两个指令默认了操作数，执行操作：**(AL）←  ( BX + AL )**
 
 功能：AL 给出偏移量，然后存储该偏移地址处的内容
 
@@ -1159,12 +1165,10 @@ JNZ    ERROR          ; 若第2位为1，转ERROR处理
 ; 例：
 MOV BX, OFFSET TABLE   ; BX=0040H
 MOV  AL, 3
-XLAT  TABLE
-; 指令执行后：
-(AL)=33H
+XLAT  TABLE ; 指令执行后：(AL)=33H
 ```
 
-<img src=".\media\换码查表指令内存示意图.png" style="zoom:48%;" />
+<img src=".\media\换码查表指令内存示意图.webp" style="zoom:48%;" />
 
 
 
@@ -1174,49 +1178,51 @@ XLAT  TABLE
 
 - ##### 有效地址送寄存器指令：LEA  REG, SRC
 
-  - 执行操作： (REG) ← SRC
+  - 执行操作： **(REG) ← SRC**
   - 功能：将源操作数的有效地址 EA 传送到目标寄存器
-  - 注意：**SRC** 不能是立即寻址或寄存器寻址，**必须为存储器寻址方式**；**REG 不能是段寄存器；**
+  - 注意：
+    - **SRC** 不能是立即寻址或寄存器寻址，**必须为存储器寻址方式**；
+    - **REG 不能是段寄存器；**
 
 
 
 - ##### 指针送寄存器和 DS 指令：LDS  REG, SRC
 
-  - 执行操作：(REG) ← (SRC) ,  (DS) ← (SRC+2)
+  - 执行操作：**(REG) ← (SRC) ,  (DS) ← (SRC+2)**
   - 功能：将源操作数中存放的地址指针 ”段基址: 偏移地址” 的低 16 位送入目标寄存器，高 16 位送入 DS 段寄存器
 
 
 
 - ##### 指针送寄存器和 ES 指令：LES  REG, SRC
 
-  - 执行操作：(REG)  ←  (SRC)   (ES)  ←  (SRC+2)
+  - 执行操作：**(REG)  ←  (SRC)，(ES)  ←  (SRC+2)**
   - 功能：将源操作数中存放的地址指针”段基址: 偏移地址”的低 16 位送入目标寄存器，高 16 位送入 ES 段寄存器
 
 例：
 
-<img src=".\media\地址传送指令例.png" style="zoom:38%;" />
+<img src=".\media\地址传送指令例.webp" style="zoom:38%;" />
 
-例：判断题
+判断题：
 
-①LEA    BX,  [2728H]      ; (BX)=2728H  
+① LEA    BX,  [2728H]      ; (BX)=2728H  
 
-②MOV   BX,  [2728H]     ; (BX)=DS段内2728H处一个字的内容
+② MOV   BX,  [2728H]     ; (BX)=DS段内2728H处一个字的内容
 
-③MOV   BX,  2728H        ; (BX)=2728H
+③ MOV   BX,  2728H        ; (BX)=2728H
 
-④LDS    BX,  [2728H]      ; (BX)=DS段内2728H处一个字的内容
+④ LDS    BX,  [2728H]      ; (BX)=DS段内2728H处一个字的内容
 
-⑤LEA    BX,  2728H         ×
+⑤ LEA    BX,  2728H         ×
 
-⑥LDS    BX,  2728H        ×
+⑥ LDS    BX,  2728H        ×
 
-⑦LES    BX,  2728H         ×
+⑦ LES    BX,  2728H         ×
 
-⑧LEA    BX,  SI                 ×
+⑧ LEA    BX,  SI                 ×
 
-⑨LDS    BX,  SI                ×
+⑨ LDS    BX,  SI                 ×
 
-⑩LES    BX,  SI                 ×
+⑩ LES    BX,  SI                  ×
 
 
 
@@ -1233,7 +1239,7 @@ XLAT  TABLE
   - 功能：读取标志位低字节，把标志寄存器中的 SF、ZF、AF、PF、CF 五个标志传至 AH 的第 7、6、4、2、0 位，第 5、3、1 位未定义；
   - 执行操作：(AH) ← (FLAGS 的低字节)
 
-  <img src=".\media\LAHF指令.png" style="zoom:38%;" />
+  <img src=".\media\LAHF指令.webp" style="zoom:38%;" />
 
   
 
@@ -1242,21 +1248,21 @@ XLAT  TABLE
 - ##### AH 送标志寄存器指令：`SAHF`
 
   - 功能：写入标志位低字节
-  - 执行操作：（FLAGS 的低字节） ←  (AH)
+  - 执行操作：**（FLAGS 的低字节） ←  (AH)**
 
   
 
 - ##### 标志进栈指令：`PUSHF` （FLAGS 的高和低两字节） 
 
   - 功能：读取标志位的 2 个字节内容到堆栈中；
-  - 执行操作：(SP)  ←  (SP) – 2 ，((SP)+1，(SP))  ←  (FLAGS)
+  - 执行操作：**(SP)  ←  (SP) – 2 ，((SP)+1，(SP))  ←  (FLAGS)**
 
   
 
 - ##### 标志出栈指令：`POPF` （FLAGS 的高和低两字节） 
 
   - 功能：写入堆栈的 2 个字节内容到标志位中；
-  - 执行操作：(FLAGS)  ←  ((SP)+1, (SP))，(SP)  ←  (SP) + 2
+  - 执行操作：**(FLAGS)  ←  ((SP)+1, (SP))，(SP)  ←  (SP) + 2**
 
 
 
@@ -1294,7 +1300,7 @@ XLAT  TABLE
 
      
 
-> 8086 指令中专门提供了一条 **溢出中断指令 `INTO`**，用来判断有符号数加减运算是否有溢出；
+> 8086 指令中专门提供了一条 **[溢出中断指令 `INTO`](https://github.com/Sayaka-4987/Notes_for_BJTU_Finals/blob/main/21-Fall-%E6%B1%87%E7%BC%96%E4%B8%8E%E6%8E%A5%E5%8F%A3%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0.md#%E4%B8%AD%E6%96%AD%E4%B8%8E%E4%B8%AD%E6%96%AD%E8%BF%94%E5%9B%9E%E6%8C%87%E4%BB%A4intintoiret)**，用来判断有符号数加减运算是否有溢出；
 >
 > 该命令常用于算术运算中，若算术运算（它的上一条指令）的结果产生溢出，即 OF=1 ，则立即调用一个处理算术溢出的中断服务程序；否则不进行任何操作，接着执行下一条指令；
 
@@ -1312,8 +1318,6 @@ BX = 0005H，CX = 8100H
 ADD  AX, CX    ; (1) 执行后，(AX) = 7465H，CF=1，OF=1
 ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 ```
-
-
 
 
 
@@ -1362,7 +1366,7 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 * 有符号减法下 CF 没有意义，无符号数减法下 OF 没有意义；
 * `CMP` 指令执行后对标志位的影响：
 
-<img src=".\media\CMP指令执行后对标志位的影响.png" style="zoom:38%;" />
+<img src=".\media\CMP指令执行后对标志位的影响.webp" style="zoom:38%;" />
 
 
 
@@ -1385,9 +1389,9 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
   *  SRC 不能为立即数，因为位宽不详；
   *  除 CF 和 OF 外，对条件标志位无定义；
 
-<img src=".\media\乘法指令对CF和OF的影响.png" style="zoom:38%;" />
+<img src=".\media\乘法指令对CF和OF的影响.webp" style="zoom:38%;" />
 
-<img src=".\media\乘法指令对CF和OF的影响2.png" style="zoom: 25%;" />
+<img src=".\media\乘法指令对CF和OF的影响2.webp" style="zoom: 25%;" />
 
 
 
@@ -1440,7 +1444,7 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 
 例：
 
-<img src=".\media\逻辑运算使用例.png" style="zoom:38%;" />
+<img src=".\media\逻辑运算使用例.webp" style="zoom:38%;" />
 
 
 
@@ -1461,13 +1465,11 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 
 
 
-<img src=".\media\移位指令1.png" style="zoom:38%;" />
+<img src=".\media\移位指令1.webp" style="zoom:38%;" />
 
-<img src=".\media\移位指令2.png" style="zoom:38%;" />
+<img src=".\media\移位指令2.webp" style="zoom:38%;" />
 
 
-
-### 控制转移指令
 
 #### 无条件转移指令：JMP
 
@@ -1500,9 +1502,9 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 
 
 
-（还是 PPT 最靠后出现的这张表比较细 …… ）
+（还是 PPT 最靠后出现的这张表比较细……）
 
-<img src=".\media\条件转移指令表.png" style="zoom:75%;" />
+<img src=".\media\条件转移指令表.webp" style="zoom:75%;" />
 
 
 
@@ -1510,7 +1512,7 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 
 * ##### 根据单个条件标志的设置情况转移
 
-  <img src=".\media\根据单个条件标志.png" style="zoom:38%;" />
+  <img src=".\media\根据单个条件标志.webp" style="zoom:38%;" />
 
   
 
@@ -1518,7 +1520,7 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 
   * 适用于地址（为无符号数）或双精度数低位字（为无符号数）的比较
 
-<img src=".\media\比较两个无符号数.png" style="zoom:38%;" />
+<img src=".\media\比较两个无符号数.webp" style="zoom:38%;" />
 
 
 
@@ -1527,7 +1529,7 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
   * 参考有符号数的 CMP 指令或减法指令对 SF/OF 的影响
   *  适用于有符号数的比较
 
-<img src=".\media\比较两个带符号数.png" style="zoom:38%;" />
+<img src=".\media\比较两个带符号数.webp" style="zoom:38%;" />
 
 
 

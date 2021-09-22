@@ -137,7 +137,7 @@ TCP/IP 是先有实物后有模型；
 
 ### TCP/IP 模型与 OSI 模型的对比
 
-<img src=".\media\TCPIP和ISOOSI分层比较.png" style="zoom:75%;" />
+<img src=".\media\TCPIP和ISOOSI分层比较.webp" style="zoom:75%;" />
 
 
 
@@ -237,7 +237,7 @@ TCP/IP 是先有实物后有模型；
 
 ### 常见应用的协议使用表
 
-<img src=".\media\TCP和UDP协议应用表.png" style="zoom:38%;" />
+<img src=".\media\TCP和UDP协议应用表.webp" style="zoom:38%;" />
 
 
 
@@ -249,13 +249,13 @@ TCP/IP 是先有实物后有模型；
 
 包括请求行、首部行、换行回车符
 
-<img src=".\media\HTTP请求报文.png" style="zoom: 80%;" />
+<img src=".\media\HTTP请求报文.webp" style="zoom: 80%;" />
 
 #### 响应报文
 
 包括状态行、首部行、数据
 
-<img src=".\media\HTTP响应报文.png" style="zoom:80%;" />
+<img src=".\media\HTTP响应报文.webp" style="zoom:80%;" />
 
 
 
@@ -263,12 +263,12 @@ TCP/IP 是先有实物后有模型；
 
 #### Web 缓存优化访问速度例题
 
-<img src=".\media\缓存例题.png" style="zoom: 33%;" />
+<img src=".\media\缓存例题.webp" style="zoom: 33%;" />
 
 方法1：增加带宽，使用更快的接入链路
 
-<img src=".\media\缓存例题2.png" style="zoom: 33%;" />
+<img src=".\media\缓存例题2.webp" style="zoom: 33%;" />
 
 方法2：安装本地缓存
 
-<img src=".\media\缓存例题3.png" style="zoom: 33%;" />
+<img src=".\media\缓存例题3.webp" style="zoom: 33%;" />
