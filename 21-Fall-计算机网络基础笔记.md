@@ -233,7 +233,7 @@ TCP/IP 是先有实物后有模型；
 | 中英对照                            | 概念（待编辑补充）                                           | 备注 |
 | ----------------------------------- | ------------------------------------------------------------ | ---- |
 | 域名系统（DNS，Domain name system） | 负责将有意义的字符串网址转换为二进制的网络地址；<br>是将域名（主机名）和 IP 地址相互映射的一个分布式数据库，能够使人更方便地访问互联网；<br/>使用 UDP 端口 53； |      |
-| 顶级域（top lever domains）         |                                                              |      |
+| 顶级域（top lever domains）         | 域名由两组或两组以上的ASCII或各国语言字符构成，各组字符间由点号分隔开，最右边的字符组称为顶级域名或一级域名、倒数第二组称为二级域名、倒数第三组称为三级域名、以此类推；<br/>顶级域名又分为三类：一是国家和地区顶级域名，二是通用顶级域名，三是新顶级域名； |      |
 | 子域（subdomains）                  |                                                              |      |
 
 
@@ -275,3 +275,24 @@ TCP/IP 是先有实物后有模型；
 方法2：安装本地缓存
 
 <img src=".\media\缓存例题3.webp" style="zoom: 33%;" />
+
+#### 作业 2.7，2.8节后 15题
+
+**1.**   Consider Figure2.12, for which there is an institutional network connected to the Internet. Suppose that the average object size is 900,000 bits and that the average request rate from the institution’s browsers to the origin servers is 10 requests per second. Also suppose that the amount of time it takes from when the routers on the Internet side of the access link forwards an HTTP request until it receives the response is two seconds on average (see Section 2.2.5). Model the total average response time as the sum of the average access delay (that is, the delay from Internet router to institution router) and the average Internet delay. For the average access delay, use△/(1-△β), where △ is the average time required to send an object over the access link andβis the arrival rate of objects to the access link.**（改成 15Mbps）**
+
+a.   Find the total average response time.
+
+b.   Now suppose a cache is installed in institution LAN. Suppose the hit rate is 0.6. Find the total response time.
+
+
+
+
+
+
+
+
+
+
+
+
+
