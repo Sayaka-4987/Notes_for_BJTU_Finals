@@ -1278,10 +1278,16 @@ XLAT  TABLE ; 指令执行后：(AL)=33H
   
   - 执行操作：**(DST) ← (SRC) + (DST)**
   
+
+
+
 - ##### 带进位加法指令：ADC  DST, SRC
   
   - 执行操作：**(DST) ← (SRC) + (DST) + CF**
   
+
+
+
 - ##### 加 1 指令：INC  OPR 
   
   - 执行操作：**(OPR) ← (OPR) + 1**
@@ -1323,9 +1329,7 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 
 
 
-### 减法指令：`SUB`、`SBB`、`DEC`、`NEG`、`CMP`
-
-
+### 减法指令：`SUB`、`SBB`、`DEC`、`NEG`
 
 - ##### 减法指令：SUB  DST, SRC
 
@@ -1350,13 +1354,14 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
   - 执行操作：**(OPR) ←  – (OPR)**
   - 功能：将操作数按位求反后末位加1，因而操作也可以表示为（OPR）←  0FFFFH（补码的 -1） –  (OPR) + 1（也可以写成 0 -  (OPR) 
   - 例：如果 (CL) = 100，执行 NEG CL 后 (CL)=1001 1100B，是 -100 的补码；如果(CL) = –8，执行 NEG CL 后 (CL)=0000 1000B，是 8 的补码
+  - 
 
+### 比较指令 `CMP`
 
-
-- ##### 比较指令： CMP  OPR1, OPR2 
+- ##### 格式： CMP  OPR1, OPR2 
 
   - 执行操作： **(OPR1) – (OPR2)**
-  - 功能：该指令与SUB指令一样执行减法操作，但它并不保存结果，只是根据结果 **设置条件标志位**；
+  - 功能：该指令与 SUB 指令一样执行减法操作，但它不保存结果，只根据结果 **设置条件标志位**；
   - CMP 指令后一般跟随条件转移指令，根据比较结果产生不同的程序分支；
   - 说明：OPRT1 和 OPRT2 可以是寄存器或存储器，但**不能同时为存储器**（否则位宽不能保证），OPRT2 还可以为立即数
 
@@ -1367,6 +1372,7 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 * `DEC` 指令不影响 CF 标志（硬件结构决定的），对其它条件标志位都有影响；
 * 有符号减法下 CF 没有意义，无符号数减法下 OF 没有意义；
 * `CMP` 指令执行后对标志位的影响：
+  * 对于有符号数，SF 异或 OF 等于 1 时是小于，
 
 <img src=".\media\CMP指令执行后对标志位的影响.webp" style="zoom:38%;" />
 
@@ -1473,7 +1479,7 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 
 
 
-### 无条件转移指令：JMP
+### 无条件转移指令：`JMP`
 
 - ##### 段内直接短转移：JMP   SHORT  OPR 
 
@@ -1545,18 +1551,29 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 
 ### 循环指令：`LOOP`、`LOOPZ/LOOPE`、`LOOPNZ/LOOPNE`
 
-- 格式：
+- ##### 循环指令：**LOOP   OPR**
 
-  - 循环指令：**LOOP   OPR**
-    测试条件：(CX) ≠ 0
-  - 为零或相等时循环指令：**LOOPZ(LOOPE)   OPR**
-    测试条件：ZF=1 且 (CX) ≠ 0
-  - 不为零或不相等时循环指令：**LOOPNZ(LOOPNE)   OPR**
-    测试条件：ZF=0 且 (CX) ≠ 0
+  测试条件：(CX) ≠ 0
 
-- 功能：执行步骤： (1)   (CX) ← (CX) - 1    (2)  检查是否满足测试条件，如满足则 (IP) ← (IP) + 8 位位移量，实行循环；不满足则 IP 不变，退出循环；
+  
 
-  - **LOOP  AGAIN** 等价于 **DEC  CX；JNZ  AGAIN**，可以进行等价替换
+- ##### 为零或相等时循环指令：**LOOPZ(LOOPE)   OPR**
+
+  测试条件：ZF=1 且 (CX) ≠ 0
+
+  
+
+- ##### 不为零或不相等时循环指令：**LOOPNZ(LOOPNE)   OPR**
+
+  测试条件：ZF=0 且 (CX) ≠ 0
+
+  
+
+- 执行步骤：
+
+  - (CX) ← (CX) - 1   
+  - 检查是否满足测试条件，如满足则 (IP) ← (IP) + 8 位位移量，实行循环；不满足则 IP 不变，退出循环；
+    - **LOOP  AGAIN** 等价于 **DEC  CX；JNZ  AGAIN**，可以进行等价替换
 
 - 注意：
 
@@ -1607,7 +1624,7 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 
     
 
-- 段内间接近调用：CALL  DST（其中 DST 为寄存器如BX或存储器地址 WORD PTR [BX]）
+- 段内间接近调用：**CALL  DST**，其中 DST 为寄存器（如 BX）或存储器地址（如 WORD PTR [BX]）
 
   - 执行操作： **(SP) ← (SP) – 2**
 
@@ -1652,7 +1669,7 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 #### **中断向量**
 
 - 中断向量是中断例行程序的入口地址，存放于中断向量区，指向中断服务程序的段值和偏移量（CS:IP）；
-- CPU在执行INT指令时，从中断向量表中取出相应的值赋值给 CS 和 IP，转去执行中断服务程序。这些操作是由硬件直接实现的，把它称为中断隐指令，其操作过程程序员不可见；程序员能够做的就是修改中断向量表中存储的值。
+- CPU 在执行 `INT` 指令时，从中断向量表中取出相应的值赋值给 CS 和 IP，转去执行中断服务程序。这些操作是由硬件直接实现的，把它称为中断隐指令，其操作过程程序员不可见；程序员能够做的就是修改中断向量表中存储的值。
 - 中断隐指令并不是指令系统中的一条真正的指令，它没有操作码，所以中断隐指令是一种特殊指令。
 
 
@@ -1661,17 +1678,68 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 
 
 
-- 中断指令格式：**INT   TYPE**  或  **INT** （没有类型号就默认调用 3 号中断）
-- 
-- 中断返回指令：**IRET**
-- 
-- 溢出中断指令：**INTO**
-- 
+#### 中断指令格式：`INT   TYPE` 或  `INT`（没有类型号就默认调用 3 号中断）
+
+- 隐含的操作：**(SP) ← (SP) - 2**
+
+  ​                       **( (SP)+1, (SP) ) ← (FLAGS)**
+
+  ​                       **(SP) ← (SP) - 2**
+
+  ​                       **( (SP)+1, (SP) ) ← (CS)**
+
+  ​                       **(SP) ← (SP) - 2**
+
+  ​                       **( (SP)+1, (SP) ) ← (IP)**
+
+  ​                       **(IP) ← (TYPE\*4)**
+
+  ​                       **(CS) ← (TYPE\*4+2)**
 
 - 注意：
+
   - TYPE (0~255) 是中断类型号
-  - INT 指令还把 IF 和 TF 置0，但不影响其它标志位
-  - IRET 指令执行完，标志位由堆栈中取出的值确定
+
+
+
+#### 中断返回指令：**`IRET`**
+
+- 执行操作： **(IP) ← ( (SP)+1,(SP) )** 
+
+  ​                    **(SP) ← (SP) + 2**
+
+  ​                    **(CS) ← ( (SP)+1,(SP) )** 
+
+  ​                    **(SP) ← (SP) + 2**
+
+  ​                    **(FLAGS) ← ( (SP)+1,(SP) )** 
+
+  ​                    **(SP) ← (SP) + 2**
+
+  - `INT` 指令还把 IF 和 TF 置0，但不影响其它标志位
+  - `IRET` 指令执行完，标志位由堆栈中取出的值确定
+
+
+
+#### 溢出中断指令：**`INTO`**
+
+- 执行操作：**若 OF=1**，则 **(SP) ← (SP) - 2**
+
+  ​                                          **( (SP)+1, (SP) ) ← (FLAGS)**
+
+  ​                                          **(SP) ← (SP) - 2**
+
+  ​                                          **( (SP)+1, (SP) ) ← (CS)**
+
+  ​                                          **(SP) ← (SP) - 2**
+
+  ​                                          **( (SP)+1, (SP) ) ← (IP)**
+
+  (最后两步不一样)
+
+  ​                                          **(IP) ← (10H)**
+
+  ​                                          **(CS) ← (12H)**
 
 
 
@@ -1679,11 +1747,11 @@ ADC  DX, BX    ; (2) 执行后，(DX) = 0008H，CF=0，OF=0
 
 #### 标识处理指令
 
-`CLC`、 `STC`、 `CMC`：对CF位清零/置位/取反
+- ##### `CLC`、 `STC`、 `CMC`：对CF位清零/置位/取反
 
-`CLD`、`STD`：字符串移动方向增/减标志
+- ##### `CLD`、`STD`：字符串移动方向增/减标志
 
-`CLI`、`STI`：开/关中断  
+- ##### `CLI`、`STI`：开/关中断  
 
 
 
@@ -1720,7 +1788,666 @@ LOCK指令可以保证是在其后指令执行过程中，禁止协处理器修�
 该指令的执行不影响任何标志位。
 
 
-## 习题课
+
+
+## 习题课（作业 1 ~ 作业 3）
+
+- 寄存器和立即数寻址没有物理地址
+- 汇编机器中数字一律以补码形式储存，**DB -12H** 记成 **0EEH**  
+- 一个 Byte 只能放一个字母的 ascii 码值
+- 定义字符串可以后加 `,’$’`，类似于 C 语言的 `\0`，代表显示字符串结束
+
+
+
+课堂小测题：
+
+1、指出下列指令的错误
+
+(1)	**MOV	AH,BX**                                 错，位宽不匹配
+
+(2)	**MOV	[BX],[SI]**                              错，不能在内存之间mov
+
+(3)	**MOV	AX,\[DI][SI]**                          错，DI和SI都是变址寄存器
+
+(4)	**MOV	MYDAT\[BX][SI],ES:AX**      错，1.两个内存不能mov，2.AX不能进行段超越，应该是ES:[BX]
+
+(5)	**MOV	CS,AX**                                  错，CS不能用mov改变
+
+
+
+2、下列哪些指令是非法的
+
+(1)	**CMP	15,BX**                                  错，第一个不能是立即数
+
+(2)	**CMP	BYTE PTR OP1,25**             对
+
+(3)	**CMP	OP1,OP2**                            错，不能同时是存储器寻址
+
+(4)	**CMP	AX,OP1**                               对
+
+
+
+## 5. 汇编程序的结构设计
+
+
+
+### 编写汇编代码的一般步骤
+
+1. 分析题意，确定算法
+2. 确定解决问题的思路和方法
+3. 根据算法画出程序框图
+4. 根据框图编写程序
+5. 上机调试程序
+
+
+
+#### 两个常用中断指令调用
+
+参考 [中断功能表（全英文）](https://github.com/Sayaka-4987/Notes_for_BJTU_Finals/blob/main/21-Fall-%E6%B1%87%E7%BC%96%E4%B8%8E%E6%8E%A5%E5%8F%A3%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0.md#%E4%B8%AD%E6%96%AD%E5%8A%9F%E8%83%BD%E8%A1%A8%E5%85%A8%E8%8B%B1%E6%96%87) 部分；
+
+- ##### `INT 21H`，功能号 `02H`
+  向显示屏幕上输出来自 DL 的单个字符；
+
+```assembly
+MOV  DL, ‘A’ 	; 调用参数: 输出字符 ‘A’ 
+MOV	 AH, 02	    ; DOS功能号: 显示输出
+INT	 21H		; DOS调用
+```
+
+
+
+- ##### `INT 21H`，功能号 `09H`
+  向显示屏幕上输出来自 DX 的字符串；
+
+```assembly
+STR	DB ‘computer’, ‘$’	 ;在数据段定义
+
+MOV	DX, OFFSET STR        ; 调用参数: 输出字符串 ‘computer’ 
+MOV	AH, 09H               ; DOS功能号: 显示输出串
+INT	21H 	              ; DOS调用
+```
+
+
+
+### 分支结构程序设计
+
+首先需要理明白程序逻辑；
+
+#### 分支程序涉及的条件转移指令
+
+##### 无条件转移指令 `JMP`
+
+功能：无条件地使程序转移到指定的目标地址
+
+<img src=".\media\JMP类型表.png" style="zoom:38%;" />
+
+
+
+例：不同类型的 `JMP` 指令
+
+```assembly
+JMP  NEXT                ; 段内直接转移
+JMP  SHORT LP1           ; 段内直接转移，LP1 为短距离标号
+JMP  AX                  ; 段内间接转移，IP ← AX
+JMP  [BX]                ; 段内间接转移，IP ← [BX+1][BX]
+JMP  LABLE_NAME          ; 段间直接转移，LABEL_NAME 标号在其他代码段
+JMP  DWORD PTR[BX][SI]   ; 段间间接转移，DWORD PTR 说明后面是双字数据
+```
+
+
+
+##### 条件转移指令 
+
+<img src=".\media\条件转移指令表.webp" style="zoom:75%;" />
+
+
+
+例：字符比较程序，两个字符相同时，显示 YES ；否则显示 NO ；
+
+```assembly
+DATA SEGMENT
+  D1   DB ‘A’
+  D2   DB ‘B’
+  RES1 DB ‘YES’, ’$’
+  RES2 DB ‘NO’,  ’$’
+DATA ENDS
+CODE SEGMENT	
+ASSUME CS:CODE,
+	   DS:DATA
+START: MOV AX,DATA
+       MOV DS,AX
+       MOV AL,D1
+       MOV BL,D2    
+       CMP AL,BL 
+       JNE NEXT1
+       LEA DX,RES1 
+       JMP NEXT2         
+NEXT1: LEA DX,RES2
+NEXT2: MOV AH,09H
+       INT 21H
+       MOV AH,4CH
+       INT 21H
+CODE ENDS
+     END START
+```
+
+
+
+例：设存储单元 A 和 B 各有一 **无符号字节数**，比较大小，将较大数送A单元
+
+```assembly
+DATA  SEGMENT
+  A   DB 39H             
+  B   DB 0B4H
+DATA  ENDS
+
+CODE  SEGMENT	
+      ASSUME CS:CODE,DS:DATA
+START:MOV AX,DATA
+      MOV DS,AX
+      MOV AL,A
+      CMP AL,B
+      JNB NEXT
+      XCHG AL,B
+      MOV A,AL
+NEXT: MOV AH,4CH
+      INT 21H	
+CODE ENDS
+     END START
+```
+
+
+
+#### 分支程序的 CASE 和 IF-THEN-ELSE 结构
+
+实现方法：
+
+1. 用多个双分支结构实现多分支结构
+2. 利用地址表法实现多分支结构（存指令入口地址）
+3. 利用转移表法实现多分支结构（存指令）
+4. 利用逻辑分解法实现多分支结构
+
+
+
+例：计算符号函数 SNG（X）的值
+
+```assembly
+DATA   SEGMENT
+   X   DB 0B9H
+   Y   DB ?
+DATA   ENDS
+CODE   SEGMENT	
+       ASSUME CS:CODE,DS:DATA 
+START: MOV AX,DATA
+       MOV DS,AX
+       MOV AL,X
+       CMP AL,0
+       JL NEXT1
+       CMP AL,0
+       JG NEXT2      	
+       MOV Y,0 	   	; 0 送 Y
+       JMP RES	  
+NEXT1: MOV Y,0FFH	; -1 送 Y    
+       JMP RES
+NEXT2: MOV Y,1	   	; 1 送 Y
+    RES: MOV AH,4CH
+         INT 21H
+CODE  ENDS
+      END START
+```
+
+
+
+#### 地址表法
+
+设计方法：把各分支程序段的入口地址依次存放在 **数据段用 `ADTAB` 定义的一个表中**，形成地址表，取各分支程序段的编号作为各分支入口地址的表地址的位移量；
+
+某个分支程序入口地址的表地址为：**表地址 = 编号 * 2（IP 是 16 位，占两个字节）+ 入口地址首地址**
+
+
+
+例：用地址表法编写程序实现从低到高逐位检测一个字节数据，找出第一个非0的位数；
+
+检测时，为0则继续检测，为1则转移到对应的处理程序段显示相应的位数；
+
+```assembly
+DATA   SEGMENT
+    NUM   DB 78H
+    ADTAB DW AD0,AD1,AD2,AD3,AD4,AD5,AD6,AD7
+DATA   ENDS
+
+CODE   SEGMENT
+       ASSUME CS:CODE,DS:DATA
+       
+START: MOV AX,DATA
+       MOV DS,AX
+       MOV AL,NUM
+       MOV DL,'?'
+       CMP AL,0
+       JZ DISP
+       MOV BX,0
+       
+AGAIN: SHR AL,1
+       JC NEXT
+       INC BX
+       JMP AGAIN
+       
+ NEXT: SHL BX,1        
+       JMP ADTAB[BX]
+       
+  AD0: MOV DL,’0’ 
+       JMP DISP
+  AD1: MOV DL,’1’
+       JMP DISP
+  AD2: MOV DL,’2’
+       JMP DISP
+  AD3: MOV DL,’3’
+       JMP DISP
+  AD4: MOV DL,’4’
+       JMP DISP 
+  AD5: MOV DL,’5’
+       JMP DISP
+  AD6: MOV DL,’6’
+       JMP DISP
+  AD7: MOV DL,’7’
+  
+ DISP: MOV AH,2
+       INT 21H
+       MOV AH,4CH
+       INT 21H
+CODE ENDS
+     END START 
+```
+
+
+
+#### 转移表法
+
+设计方法：把转移到各分支程序段的转移指令依次存放在一起，用 `TAB: ` 开头，作为转移表；
+
+使用时，以各转移指令在表中的位置，即离表首地址的偏移量，作为转移条件，偏移量加上表首地址作为转移地址，转到表的相应位置，执行相应的无条件转移指令；
+
+转移表中每条转移指令（段内短转移）占用2个字节，计算公式如下：**表地址 = 模式字 * 2 + 转移表首地址**
+
+
+
+例：根据输入值（0~4）的不同，执行不同的操作，用转移表法编写程序
+
+```assembly
+CODE   SEGMENT
+       ASSUME CS:CODE
+START: LEA BX,TAB    ; 转移表首地址送BX
+       MOV AH,1           
+       INT 21H       ; 输入字符送AL  
+       SUB AL,30H    ; 字符变数字
+       MOV AH,0
+       ADD AX,AX     ; 模式字*2送AX
+       ADD BX,AX
+       JMP BX
+       
+  TAB: JMP SHORT MODE0    ; 转移表
+       JMP SHORT MODE1
+       JMP SHORT MODE2
+       JMP SHORT MODE3
+       JMP SHORT MODE4 
+
+MODE0: MOV DL,30H
+       JMP EXIT
+MODE1: MOV DL,31H
+       JMP EXIT
+MODE2: MOV DL,32H
+       JMP EXIT
+MODE3: MOV DL,33H
+       JMP EXIT
+MODE4: MOV DL,34H
+
+     EXIT: MOV AH,2
+           INT 21H
+           MOV AH,4CH
+           INT 21H
+           
+CODE  ENDS
+      END START
+```
+
+
+
+#### 逻辑分解法
+
+设计方法：将多分支结构采用逻辑等效的方法，按条件的先后，依次分解成一串双分支结构，然后再使用双分支的方法来进行程序设计；
+
+例：根据AL中的值（0~4），执行不同的操作，但用逻辑分解法编写程序    
+
+```assembly
+DATA  SEGMENT
+      NUM   DB 2
+DATA  ENDS
+
+CODE  SEGMENT
+ASSUME CS:CODE,DS:DATA
+START: MOV AX,DATA
+       MOV DS,AX
+       MOV AL,NUM
+       CMP AL,0
+       JZ NEXT0
+       CMP AL,1       
+       JZ NEXT1
+       CMP AL,2
+       JZ NEXT2
+       CMP AL,3
+       JZ NEXT3
+       CMP AL,4
+       JZ NEXT4
+NEXT0: MOV DL,30H
+       JMP EXIT
+NEXT1: MOV DL,31H
+       JMP EXIT
+NEXT2: MOV DL,32H
+       JMP EXIT
+NEXT3: MOV DL,33H
+       JMP EXIT
+NEXT4: MOV DL,34H
+    EXIT: MOV AH,2
+          INT 21H
+          MOV AH,4CH
+          INT 21H
+CODE ENDS
+     END START
+```
+
+
+
+
+
+
+
+### 循环结构程序设计
+
+<img src=".\media\循环程序的两种结构.png" style="zoom:38%;" />
+
+循环结构包括这些部分：
+
+- 初始化：设置循环的初始状态
+- 循环体：循环的工作部分及修改部分
+- 控制条件：
+  - 计数控制
+  - 特征值控制
+  - 地址边界控制
+
+
+
+可以用分支指令控制循环：
+
+```assembly
+DATA  SEGMENT
+  STR  DB ’computer$’
+  LEN  DB ?
+DATA  ENDS
+
+CODE  SEGMENT
+      ASSUME CS:CODE,DS:DATA
+START:
+    MOV AX,DATA	
+    MOV DS,AX
+    LEA SI,STR		    ; 串首地址
+    XOR BL,BL		    ; 计数器清0
+    LOP:
+        MOV AL,[SI]	    ; 取一个字节
+        CMP AL,24H      ; 和’$’进行比较
+        JZ STOP         ; 相等则结束
+        INC BL          ; 否则计数器加1
+        INC SI          ; 地址指针加1
+        JMP LOP         ; 转回到LOP
+    STOP:
+        MOV LEN,BL  ; 存储字符个数
+        MOV AH,4CH 
+        INT 21H
+CODE  ENDS	
+      END START
+```
+
+
+
+#### 用专用的循环指令控制循环
+
+循环指令执行步骤： 
+
+1.  **(CX)  ←  (CX) - 1**
+
+2.  检查是否满足测试条件，如满足则 (IP) ← (IP) + 8 位位移量，实行循环；不满足则 IP 不变，退出循环；
+
+
+
+注意：`LOOP` 指令执行时，CX 是否为 0 不影响 ZF 和 CF 的变化，等价于 `DEC` 指令；所以 `LOOP` 指令和 `LOOPNZ` 指令才有区别；
+
+| 指令                        | 转移条件                   | 说明                 |
+| --------------------------- | -------------------------- | -------------------- |
+| **`LOOP  OPR`**             | 测试条件：(CX) ≠ 0         |                      |
+| **`LOOPZ (LOOPE)   OPR`**   | 测试条件：ZF=1 且 (CX) ≠ 0 | 为零或相等时循环     |
+| **`LOOPNZ (LOOPNE)   OPR`** | 测试条件：ZF=0 且 (CX) ≠ 0 | 不为零或不相等时循环 |
+
+
+
+例：求以 BUF 为首地址的10个内存单元的无符号数据和。已知其和小于等于 255，将结果存入第 11 个内存单元
+
+```assembly
+DATA  SEGMENT
+  BUF  DB 12H,38H,46H,0BH,09H,41H,32H,56,02H,26H
+  RES  DB ?
+DATA  ENDS
+CODE  SEGMENT
+      ASSUME CS:CODE,DS:DATA
+START: 
+    MOV AX,DATA	
+    MOV DS,AX
+    MOV AL,0	; 存放累加之和
+    MOV CX,0AH  ; 累加次数
+    LEA BX,BUF  ; 数据表的首地址	
+    LP: 
+        ADD AL,[BX]          ; 累加
+        INC BX          	 ; 地址增1     	
+        LOOP LP              ; 若CX-1不为0，则继续循环
+    MOV RES,AL 	         ; CX-1=0，则存累加和 
+    MOV AH,4CH
+    INT 21H
+CODE  ENDS	
+      END START
+```
+
+
+
+例：在字节数组中找出第一个非 0 的数据，并将其下标存入 RES 单元，假设其下标值小于 10 
+
+```assembly
+DATA  SEGMENT
+  ARR  DB 0,0,38H,46H	
+       DB 89H,67H,0H,92H
+  CNT  EQU $–ARR
+  RES  DW ?
+DATA  ENDS
+CODE  SEGMENT	
+      ASSUME CS:CODE,DS:DATA
+START: 
+    MOV AX,DATA
+    MOV DS,AX
+    MOV CX,CNT   ; 循环次数为 CNT 数组长度
+    MOV DI,-1    ; 数组下标从 0 开始
+AGAIN: 
+    INC DI                                       
+    CMP ARR[DI],0       ; 和0比较
+    LOOPZ AGAIN         ; 为0，且没比较完，则循环
+    JZ EXIT             ; 比较完仍为0，转 EXIT
+    MOV RES,DI          ; 找到了，送下标号到 RES
+EXIT: 
+    MOV AH,4CH
+    INT 21H 
+CODE  ENDS
+      END START
+```
+
+
+
+#### 按问题的条件控制循环
+
+含义：用转移指令来判断循环条件
+
+应用场合：循环次数不确定
+
+
+
+例：记录某个字节存储数据单元中1的个数，并把结果存入RES中
+
+```assembly
+DATA  SEGMENT
+  NUM  DB  75H
+  RES  DB  ?
+DATA  ENDS   
+
+CODE  SEGMENT
+      ASSUME CS:CODE,DS:DATA
+START:
+    MOV AX,DATA        
+    MOV DS,AX
+    MOV BL,NUM    	
+    XOR DL,DL    ; DL清零    
+    AGAIN:
+        TEST BL,0FFH
+        JZ NEXT      ; 判断数据是否0
+        SHR BL,1     ; 逻辑右移1位
+        ADC DL,0     ; 带进位加法
+        JMP AGAIN
+NEXT:
+    MOV RES,DL
+    MOV AH,4CH
+    INT 21H		
+CODE  ENDS	       
+      END START
+```
+
+
+
+#### 按逻辑变量控制循环
+
+含义：用转移指令来判断循环条件
+
+应用场合：控制转入不同的循环支路
+
+方法：把逻辑变量送入寄存器中，以逻辑变量各位的状态作为执行某段程序的标志
+
+
+
+例：在以 BUF 为起始地址的内存中放有若干个字节型无符号数，假定某逻辑变量的长度为一个字节（其值为10010101），它的 D0 \~ D7 位对应着 BUF \~ BUF + 7 单元内容的运算。即某位为 0，则将相应单元内容的最高位求反，其它位不变；而某位为 1，则将相应单元内容之高低四位互换
+
+```assembly
+DATA  SEGMENT
+ BUF  DB 75H,12H,87H,98H
+      DB 81H,56H,73H,51H
+  B   EQU 8
+  C   EQU 10010101B
+DATA  ENDS	
+
+CODE  SEGMENT	                          
+      ASSUME CS:CODE,DS:DATA
+START:
+    MOV AX，DATA        
+    MOV DS,AX            
+    MOV AH,B       ; 指示数据个数
+    MOV CH,C
+    LEA BX,BUF
+LP:
+    MOV AL,[BX]      
+    SHR CH,1
+    JNC NEXT       ; CF=0跳转
+    MOV CL,4
+    ROL AL,CL      ; 高低位交换
+    JMP RES
+    
+NEXT:
+    XOR AL,80H     ; 高位取反
+    
+RES:
+    MOV [BX],AL 
+    INC BX
+    DEC AH         ; 数据个数-1
+    JNZ LP         ; 未读完则继续
+    MOV AH,4CH
+    INT 21H
+    
+CODE ENDS
+     END START
+```
+
+
+
+<img src=".\media\例8配图.png" style="zoom:48%;" />
+
+
+
+#### 多重循环程序设计
+
+含义：指循环体内还有循环，也就是嵌套循环
+
+注意：(1) 不允许循环结构交叉；(2) 转移指令只能从循环结构内转出或可在同层循环内转移
+
+
+
+例：设在以 EXST 为首址的存储区中依次存放着某考区 245 个理科生的七门成绩，现要统计每个考生的总成绩，并将其存放在该考生单科成绩之后的两个单元
+
+```assembly
+DATA  SEGMENT
+    EXST  DB 01,75,82,84,92,78,49,85,00,00
+          DB 02,83,92,63,76,82,58,69,00,00
+    ……      
+DATA  ENDS   
+
+CODE  SEGMENT                                                            
+    ASSUME CS:CODE,DS:DATA                               
+    MOV AX,DATA                                                     
+    MOV DS,AX
+START:
+    LEA SI,EXST		; 数据表首地址
+    MOV BL,245  	; 245个学生，外循环次数
+    LOP2: 
+        MOV CX,7        ; 七门课成绩，内循环次数 
+        XOR AX,AX		; 清0，存总成绩
+        INC SI     		; 跳过准考证号
+        LOP1: 
+            ADD AL,[SI]	    ; 单科成绩累加
+            ADC AH,0	    ; 加进位位
+            INC SI 		    ; 修改地址指针
+            LOOP LOP1       ; 没累加完单科成绩，则继续   
+        MOV WORD PTR [SI],AX   ; 累加完，存总成绩
+        INC SI 		           ; 跳过存总成绩的2个单元               
+        INC SI                                     
+        DEC BL 		           ; 外循环次数减1
+        JNZ LOP2		       ; 不为0，则求下个学生总成绩              
+    MOV AH,4CH             
+    INT 21H
+CODE  ENDS                                           
+END  START
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1738,6 +2465,52 @@ LOCK指令可以保证是在其后指令执行过程中，禁止协处理器修�
 - 用于 **快速入门** 编写汇编语言；
 
 （目前不太确定这部分放在哪，因为在教师课件那里 **8086的指令系统** 安排太靠后，但在课件介绍具体功能前，就已经出现了很多指令，暂时先放在这）
+
+
+
+### MASM debug 常用命令
+
+- #### r 命令：查看或者改变CPU寄存器的内容
+
+  - 查看寄存器：r
+  - 改变某个寄存器内容：`r 寄存器`（如：ax），之后按下 Enter 出现 `:` ，再输入值
+
+
+
+- #### d 命令：查看某段内存内容
+
+  - 查看内存内容：`d 段地址:偏移地址` （结束的偏移地址，可忽略）
+  - 注意：直接使用 d 命令，显示的是 debug 预设地址处的内容
+
+
+
+- #### e 命令：改变内存内容
+
+  - 改变内存内容：`e 段地址:偏移地址` 写入的数据
+  - 也可以通过 `e 段地址:偏移地址 "字符串"`    这种方式向内存中写入字符串的 16 进制值
+
+
+
+- #### u 命令：将机器指令翻译成汇编指令
+
+  - 机器指令翻译成汇编指令：`u 段地址:偏移地址`
+  - 注意：如果直接使用命令 u，debug 会把 CPU 中 CS:IP 指向的内存内容翻译成汇编指令
+
+
+
+- #### t 命令：让 cpu 执行 CS:IP 指向的指令
+
+
+
+- #### a 命令：以汇编指令的格式在内存中写入机器指令
+
+  - 写入汇编指令：`a 段地址:偏移地址`，按下 enter 键后，输入汇编指令，当不想输入时直接按 enter 退出输入
+
+  
+
+- #### q 命令：退出 debug 
+
+  
 
 
 
@@ -2101,4 +2874,10 @@ DEFINE_PTHIS
 
 END ; 结束
 ```
+
+
+
+- 
+
+
 
