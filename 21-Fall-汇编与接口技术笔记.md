@@ -1847,7 +1847,7 @@ LOCK指令可以保证是在其后指令执行过程中，禁止协处理器修�
   向显示屏幕上输出来自 DL 的单个字符；
 
 ```assembly
-MOV  DL, ‘A’ 	; 调用参数: 输出字符 ‘A’ 
+MOV  DL, 'A' 	; 调用参数: 输出字符 ‘A’ 
 MOV	 AH, 02	    ; DOS功能号: 显示输出
 INT	 21H		; DOS调用
 ```
@@ -2534,6 +2534,595 @@ D 命令 **默认显示 CS 段的内容**；
 
 
 <img src=".\media\标志位取值.jpg" style="zoom:33%;" />
+
+
+
+## 6. 子程序结构
+
+###  `CALL` 调用指令
+
+- 段内直接近调用：`CALL  DST`（DST 为子程序名）
+  - 执行操作： **(SP) ← (SP) – 2           ;断点压入堆栈**
+                                        **( (SP)+1,(SP) ) ← (IP) ; 主程序地址压栈**
+                                        **(IP) ← (IP) + 16位位移量**
+  - 注意：IP 为 Call 指令的下一条指令的地址，其与 DST 子程序的地址间的相对地址或位移量是固定的
+
+
+
+- 段内间接近调用：`CALL  DST`（DST 为寄存器如 BX，或存储器地址 WORD PTR [BX]）
+  - 执行操作： **(SP) ← (SP) – 2**
+                           **( (SP)+1,(SP) ) ← (IP)**
+                           **(IP) ← (EA) (DST为内存地址)**
+
+
+
+### `RET` 返回指令
+
+- 段内近返回：`RET`
+  - 功能：将堆栈中保存的2字节断点的偏移地址恢复 IP 中，CS 不变
+  - 执行操作： **(IP) ← ( (SP)+1,(SP) )** 
+                        **(SP) ← (SP) + 2**
+
+
+
+- 段内带立即数近返回：`RET  EXP`
+  - 功能：EXP 表示，弹出断点之后，使 SP 内容再回退 EXP 个字节单元，作用是使断点之后的 EXP 个字节单元分数据失效
+
+
+
+### 过程定义伪操作
+
+格式：
+
+```assembly
+[过程名] PROC (NEAR/FAR)
+
+……
+
+[过程名] ENDP
+```
+
+
+
+#### `NEAR` 段内调用
+
+调用程序和子程序在同一代码段中
+
+
+
+#### `FAR` 段间调用
+
+调用程序和子程序不在同一代码段中              
+
+ 
+
+#### 使用场合
+
+<img src=".\media\段内和段间调用.jpg" style="zoom:50%;" />
+
+
+
+### 子程序的调用与返回
+
+子程序调用会隐含使用堆栈保存返回地址
+
+- `call  near ptr  subp`
+  - 保存返回地址：仅offset地址
+  - 转子程序
+- `call  far  ptr  subp`
+  - 保存返回地址：seg + offset
+  - 转子程序
+
+
+
+#### 保存与恢复寄存器
+
+```assembly
+subt   proc    near（far）
+        push    ax
+        push    bx
+        push    cx
+        push    dx
+        ……
+        ……
+        pop     dx
+        pop     cx
+        pop     bx
+        pop     ax
+        ret
+subt   endp
+```
+
+
+
+### 子程序的参数传递方法
+
+
+
+#### 通过寄存器传送参数
+
+- 把参数存于 **约定的寄存器** 中，可以传值，也可以传址
+- 子程序对带有出口参数的寄存器 **不能** 保护和恢复（主程序视具体情况进行保护）
+- 子程序对带有入口参数的寄存器可以保护，也可以不保护，但最好一致
+- 寄存器参数传递特点：
+  - 简单方便，只需约定寄存器即可
+  - 寄存器的个数和容量非常有限，适用于传递较少的参数信息
+
+
+
+例：将给定的一组字数据X、Y代入Z=((X+Y)×2-X)×4 公式中，计算相应的Z值。假设Z的值不会超过16位。
+
+```assembly
+DATA SEGMENT
+   X   DW 5,3,8,9,2,5,3,4,7,1
+   Y   DW 1,5,7,0,4,3,1,4,8,1
+   Z   DW 10 DUP (?) 
+DATA ENDS 
+CODE SEGMENT
+    ASSUME CS:CODE, DS:DATA
+START:
+    MOV AX,DATA
+    MOV DS,AX
+    LEA SI,X
+    LEA DI,Y
+    LEA BX,Z
+    MOV CX,Y-X   ; 字节数
+    SHR CX,1     ; 字数/数组个数
+REAPT:
+    MOV AX,[SI]
+    MOV DX,[DI]
+    CALL SUBR
+    MOV [BX],AX
+    ADD SI,2
+    ADD DI,2       
+    ADD BX,2
+    LOOP REAPT
+EXIT:
+    MOV AH,4CH
+    INT 21H
+    SUBR PROC NEAR
+          PUSH BX 
+          PUSH CX
+          MOV BX,AX
+          ADD AX,DX    ; AX=X+Y
+          SAL AX,1     ; AX=(X+Y)×2
+          SUB AX,BX    ; AX=(X+Y)×2-X
+          MOV CL,2
+          SAL AX,CL    ; AX=((X+Y)×2-X)×4 
+          POP CX
+          POP BX
+          RET
+    SUBR ENDP
+CODE ENDS
+     END START
+```
+
+
+
+
+
+
+
+#### 通过存储单元传送参数
+
+- 约定存储单元交互信息，即主程序和子程序直接采用同一个变量名，共享同一个变量，实现参数的传递
+- 可以在调用程序与子程序间传递大量数据
+
+
+
+例：累加数组中的元素
+
+```assembly
+data  segment
+    ary     dw   1,2,3,4,5,6,7,8,9,10
+	count   dw   10
+	sum     dw   ?
+
+	ary1    dw   10,20,30,40,50,60,70,80,90,100
+	count1  dw   10
+	sum1    dw   ?
+data  ends
+
+code segment
+    assume cs:code,ds:data
+main:mov ax,data
+    mov ds,ax
+
+    lea si,ary
+    mov cx,count
+    call proadd
+    mov sum,ax
+
+    lea si,ary1
+    mov cx,count1
+    call proadd
+    mov sum1,ax
+
+    mov ax,4c00h
+    int 21h
+code ends
+    end main
+
+proadd proc near
+	xor ax,ax
+    next:  
+        add ax,[si]
+      	add si,2
+      	loop next
+	ret
+proadd endp
+```
+
+
+
+#### 通过堆栈传送参数或参数地址
+
+- 操作：
+  - 主程序将子程序的入口参数压入堆栈，子程序从堆栈中取出参数；
+  - 子程序将出口参数压入堆栈，主程序弹出堆栈取得它们；
+- 适用于参数较多，子程序有多层嵌套、递归调用的情况
+- 步骤：
+  - 主程序把参数或参数地址压入堆栈；
+  - 子程序使用堆栈中的参数或通过栈中参数地址取到参数（用 BP 访问堆栈段）；
+  - 子程序返回时使用 RET n 指令，调整 SP 指针，以便删除堆栈中已用过的参数，保持堆栈平衡，保证程序的正确返回。
+
+
+
+<img src="media/image-20211013113725823.png" alt="image-20211013113725823" style="zoom:33%;" />
+
+例：累加数组中的元素
+
+```assembly
+data  segment
+      ary    dw 10,20,30,40,50,60,70,80,90,100
+      count  dw 10
+      sum    dw ?
+data  ends
+
+stack segment   
+      dw   100    dup (?)    ; 首个字节地址为SS首地址；
+      tos  label  word       ; 定义 tos 为栈底，其具体值相当于$
+stack ends                   ; 因为使用到堆栈段来传递参数，所以要先定义STACK
+
+code1 segment
+main  proc far
+      assume cs:code1,ds:data,ss:stack
+start:
+      mov ax,stack
+      mov ss,ax    
+      mov sp,offset tos  ; 初始时栈顶与栈底地址相同，为SS:SP
+      mov ax,data
+      mov ds,ax
+      mov bx,offset ary  ; 通过堆栈传递参数时要先将参数地址压入栈中
+      push bx
+      mov bx,offset count
+      push bx
+      mov bx,offset sum
+      push bx
+      call far ptr proadd
+      mov ax,4c00h
+      int 21h
+main  endp
+code1 ends
+
+code2    segment
+  assume cs:code2
+
+proadd   proc  far
+  push  bp
+  mov   bp, sp
+
+  push  ax
+  push  cx
+  push  si
+  push  di
+
+  mov   si,[bp+0ah]
+  mov   di,[bp+8]
+  mov   cx,[di]
+  mov   di,[bp+6]
+  xor   ax, ax
+next:
+  add   ax, [si]
+  add   si, 2
+  loop  next
+  mov   [di],ax
+
+  pop   di
+  pop   si
+  pop   cx
+  pop   ax
+
+  pop   bp
+
+  ret   6 ; (SP)<-(SP)+6,即废除压入栈中的ARY/COUNT/SUM,清空栈
+
+proadd  endp
+
+code2    ends
+         end start
+```
+
+
+
+#### `LABEL` 伪指令
+
+含义： 为本伪指令之后的标号/变量定义 **一个不同类型的别名**
+
+用法： 变量/标号 LABEL 类型(byte, word, dword, near, far)
+
+例：
+
+```assembly
+VAR LABEL WORD
+X  DB  "AB"   ; 变量 VAR 和其后的 X 指向内存中的同一单元，但两者类型分别为 WORD 类型、BYTE 类型；
+
+MOV AX, VAR   ; 等价于 MOV AX, 4241H
+MOV AL,  X    ; 等价于 MOV AL, 41H
+```
+
+
+
+### 多模块之间的参数传递
+
+在某一个模块中定义，而在另外一个模块中引用的符号称为外部符号；
+
+
+
+#### `PUBLIC` 伪指令
+
+- 格式：`PUBLIC 符号[,...]` 
+- 说明：在一个模块中定义的符号（变量、标号、过程名）在提供给其他模块使用时，必须要用 PUBLIC 定义该符号为外部符号
+
+
+
+#### `EXTRN` 伪指令
+
+- 格式： `EXTRN 符号:类型[,...]` 
+- 说明：在另一个模块中定义，而要在本模块中使用的符号，必须要用 EXTRN 说明
+  - 若符号为标号或过程名，则类型near或far；
+  - 若符号为变量，则类型为byte、word、dword等
+
+
+
+例：
+
+主程序（lie6d6.asm）
+
+```assembly
+public d1,d2,n1			；全局变量定义
+extrn  Lie6d6a: far		；外部过程说明
+extrn  Lie6d6b: far		；外部过程说明
+dat   segment para ‘dat’	；数据段
+	d1 db 98h,35h,54h,78h
+	n1=$-d1
+	d2 db 12h,34h,56h
+dat   ends
+stac  segment para ‘stack’	；堆栈段
+	stal dw 100 dup(?)
+stac  ends
+code  segment para ‘code’	；代码段
+	assume cs: code, ds: dat, ss: stac
+sta   proc far
+	…
+	lea si,d1		      ；全局变量的引用
+	lea di,d2
+	mov cx,n1
+	…
+	call Lie6d6a	      ；外部过程的引用
+      …
+	call Lie6d6b	      ；外部过程的引用
+      …
+      ret
+sta   endp
+code  ends
+	end sta
+```
+
+
+
+子程序1  lie6d6a.asm
+
+```assembly
+public  Lie6d6a		；全局过程
+code    segment para ‘code’
+	  assume cs: code
+lie6d7a proc far
+	  push ax
+	  …
+	  pop ax
+	  ret
+lie6d7a endp
+   code ends
+	  end
+```
+
+
+
+子程序2   lie6d6b.asm
+
+```assembly
+public  Lie6d6b		 ；全局过程
+extrn   d1: byte, d2: byte
+code    segment para ‘code’
+	  assume cs: code
+Lie6d7b proc far
+	  …
+	  lea si,d1		 ；全局变量
+	  lea di,d2
+	  …
+	  ret
+Lie6d7b endp
+   code ends
+	  end
+```
+
+
+
+<img src="media/image-20211013114605683.png" alt="image-20211013114605683" style="zoom:50%;" />
+
+
+
+## 7. BIOS 和 DOS 中断
+
+### 预备知识
+
+- BIOS（Basic Input/Output System 基本输入输出系统） 
+
+<img src="media/image-20211013115057734.png" alt="image-20211013115057734" style="zoom: 50%;" />
+
+- 存储系统中从地址 0FE000H～0FFFFFH 的 8KB ROM 中装入的基本输入输出的例行程序，主要包括系统加电自检、引导装入、I/O设备的处理程序以及接口控制功能模块(最接近硬件);
+
+- 包括：
+  - 主要的I/O设备处理和接口控制程序
+  - I/O设备硬件中断处理程序
+  - I/O设备软件中断调用处理程序
+  - 许多常用的系统例行程序
+  - 系统加电自检、引导装入等功能模块
+- 一般以中断处理程序的形式存在、被调用
+- 例如：软件中断调用
+  - 显示输出：10H号中断处理程序
+  - 打印输出：17H号中断处理程序
+  - 键盘输入：16H号中断处理程序
+
+
+
+- DOS （Disk Operating System 磁盘操作系统）两个功能模块：
+
+  - IBMBIO.COM：I/O 设备处理程序，完成设备到内存或内存到外设数据传送
+    - 例如：DOS 调用 BIOS 显示输出程序完成显示输出，调用 BIOS 打印输出程序完成打印输出，调用BIOS键盘输入程序完成键盘输入等
+  - IBMDOS.COM：作业管理与监控、文件管理程序、设备处理程序
+    - 设备管理与监控：通过 IBMBIO.COM 形成一个或多个 BIOS 调用
+
+  
+
+- DOS 的两个功能模块与 BIOS 之间的关系 ：
+  说明：大多数情况下用户调用 DOS 功能调用，少数情况直接调用 BIOS 功能； 
+
+
+
+### BIOS 和 DOS 基本调用
+
+调用方法：
+
+1. 将调用参数装入指定的寄存器中；
+2. BIOS 或 DOS 功能号装入 AH；
+3. 如需子功能号，把它装入 AL；
+4. 按中断号调用DOS或BIOS中断 (INT) ;
+5. 检查或取得返回参数；
+
+
+
+例：DOS调用：键盘输入，显示输出
+
+```assembly
+MOV AH, 01   ; DOS功能号:键盘输入 
+INT 21H      ; DOS调用
+MOV CHAR, AL ; 返回参数: 键入字符的 ASCII码(在AL中)
+
+MOV DL, ’A’  ;调用参数: 输出字符
+MOV AH, 02   ;DOS功能号: 显示输出
+INT 21H      ;DOS调用
+```
+
+
+
+#### BIOS键盘中断 `INT 16H`
+
+| **AH** | **功   能**        | **返回参数**                                               |
+| ------ | ------------------ | ---------------------------------------------------------- |
+| 0      | 从键盘读一字符     | AL = 字符码，AH = 扫描码（对应键盘的物理按键情况）         |
+| 1      | 读键盘缓冲区的字符 | 如ZF = 0，AL = 字符码，AH = 扫描码；<br>如ZF = 1，缓冲区空 |
+| 2      | 取键盘状态字节     | AL = 键盘状态字节                                          |
+
+
+
+例：读取键盘状态字节，并以十六进制打印出来
+
+```assembly
+again：
+	mov	ah，02h
+	int       16h     ；读取键盘状态字节
+	mov  	bx,ax
+	call    binihex ；该子程序实现二进制和16进制转换
+
+	mov     dl,0dh
+	mov     ah,02h
+	int       21h      ；显示
+	jmp      again
+```
+
+
+
+#### DOS键盘中断 `INT 21H`
+
+|**AH**|**功能**|**调用参数**|**返回参数**|
+|------|--------------------------------------------|------------------------------------------------|-----------------------------------------------------|
+|1|从键盘输入一个字符并回显在屏幕上||AL=字符|
+|6|读键盘字符，不回显|DL=0FFH|若有字符可取，AL=字符，ZF=0若无字符可取，AL=0，ZF=1|
+|7|从键盘输入一个字符，不回显||AL=字符|
+|8|从键盘输入一个字符，不回显，检测 Ctrl_Break||AL=字符|
+|A|输入字符到缓冲区|DS:DX=缓冲区首址||
+|B|读键盘状态||AL=0FFH有键入，AL=00无键入|
+|C|清除键盘缓冲区并调用一种键盘功能|AL=键盘功能号(1,6,7,8或A)||
+
+
+
+例：DOS调用从键盘输入字符
+
+```assembly
+MOV AH, 01    ; DOS功能号:键盘输入 
+INT 21H 	  ; DOS调用
+MOV CHAR, AL  ; 返回参数:键入字符的ASCII码(AL)
+```
+
+
+
+例: 输入字符串到缓冲区 STRING
+
+```assembly
+DATA   SEGMENT
+   MAXLEN   DB   32         ; 定义缓冲区存放字符的字节数
+   ACTLEN   DB   ?          ; 预留一个字节，由系统填写实际键入的字符个数
+   STRING   DB   32 DUP(?)  ; 32个字节空间存放键入的字符数
+DATA   ENDS
+
+CODE	SEGMENT
+   ASSUME CS:CODE,DS:DATA
+START:	MOV	AX,DATA
+	MOV	DS,AX
+	LEA	DX,MAXLEN ; 把MAXLEN所在地址赋值给DX；并且21H的0A号 功能规定了缓冲区的长度设置、存放的内容和顺序，回车符（0DH）表示输入结束，见右上图
+	MOV	AH,0AH    ; 屏幕出现光标，让用户输入字符串！
+	INT	21H
+CODE	ENDS
+	END	START
+```
+
+
+
+#### DOS显示功能调用中断 `INT  21H`
+|**AH**|**功能**|**调用参数**|
+|------|--------------------------------|------------------------------------------------------------|
+|2|显示一个字符(检验Ctrl-Break)|DL=字符<br/>光标跟随字符移动|
+|6|显示一个字符(不检验Ctrl-Break)|DL=字符<br/>光标跟随字符移动|
+|9|显示字符串|DS:DX=串地址，**串必须以 `$` 结束**<br>光标跟随串移动|
+
+
+
+例：显示字符串
+
+```assembly
+MESSAGE DB "Thesortoperationisfinished.",13,10,'$'
+    MOV AH, O9H ; 09H功能号送AH
+    MOV DX, SEGMESSAGE
+    MOV DS, DX ; 输出缓冲区的段基址装入DS
+    MOV DX,OFFSETMESSAGE; 输出缓冲区的偏移地址装入DX
+INT 21H
+```
+
+
+
+
 
 
 

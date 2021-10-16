@@ -1,12 +1,3 @@
-| **查询条件** | **谓词**                                                     |
-| ------------ | ------------------------------------------------------------ |
-| **比    较** | **=****、****>**  **、**  **<**  **、**  **>=**  **、**  **<=**  **、****<>**  **、****!=** **、****!>**  **、****!<** |
-| **确定范围** | **BETWEEN  AND** **、****NOT  BETWEEN AND**                  |
-| **确定集合** | **IN** **、** **NOT  IN**                                    |
-| **字符匹配** | **LIKE**  **、****NOT  LIKE**                                |
-| **空    值** | **IS  NULL** **、****IS  NOT NULL**                          |
-| **多重条件** | **AND**  **、****OR****、****NOT**                           |
-
 # 数据库系统原理笔记（已转型为 SQL 常用语句）
 
 
@@ -14,7 +5,7 @@
 写在最前面：
 
 - 基本是课件内容，还包括各种网络教程转载，整理自用；
-- 若出现报错 `ERROR 1064` 请首先注意关键字的字母 **拼写问题**；
+- 若出现报错 `ERROR 1064` ，请首先注意关键字的字母 **拼写问题**；
 - SQL 的关键字 **默认不区分大小写**；
 - 还是老一套免责声明：我太菜了，没法保证内容不出错，欢迎各位神仙大佬拍砖；
 
@@ -287,10 +278,6 @@ DROP INDEX SC_INDDEX
 
 
 
-
-
-
-
 ## 数据查询
 
 ### 查询语句的基本结构：`SELECT - FROM - WHERE`
@@ -418,13 +405,13 @@ order by year_of_birth,sno desc
 
 ### 集合函数
 
-#### `count ([distinct]<列名>)`
+#### `count([distinct]<列名>)`
 
 统计一列中值的个数,不计算空值
 
 
 
-#### `count ([distinct] *)`
+#### `count([distinct] *)`
 
 计算元组的个数，不管列值是否为空
 
@@ -455,17 +442,198 @@ order by year_of_birth,sno desc
 
 求一列值中的最小值
 
-
-
-例：
+例：求男同学的总人数和平均年龄
 
 ```sql
-select count(*), avg(age) from student where sex='M'    -- 求男同学的总人数和平均年龄
+select count(*), avg(age) from student where sex='M' 
 ```
 
 
 
+### 对查询结果分组
 
+#### `GROUP` 子句
+
+将查询结果按某一列或多列值分组，值相等的为一组。
+
+分组的目的是细化集合函数的作用对象，如果未分组，集合函数作用于整个查询结果；分组后作用于每一组，即每一组有一个函数值；
+
+例：求每个同学的平均分
+
+```sql
+select sno, avg(grade) from SC group by sno；
+```
+
+
+
+#### `HAVING` 子句
+
+分组后还要求按一定条件对这些组进行选择，最终只输出满足条件的组；
+
+例：查询选修课程在三门以上的同学学号
+
+```sql
+select sno from sc group by sno having count(cno)>3
+```
+
+
+
+#### 区分 `WHERE` 和 `HAVING` 子句
+
+注意：若使用分组子句 `GROUP BY`，则查询结果列表中的每个列，要么是 **分组依据的列**，要么是 **集合函数**；
+
+- `WHERE` 子句作用于 **基本表或视图**，从中选择满足条件的元组
+  - `GROUP BY` 对 `WHERE` 的结果进行 **分组**
+    - `HAVING` 子句作用于组，从中选择满足条件的组，即 **对分组数据进一步筛选**
+
+
+
+### 多表查询（连接查询）
+
+SQL **没有自然连接**，只有等值连接；
+
+- 连接查询：同时涉及多个表的查询
+- 连接条件或连接谓词：用来连接两个表的条件
+- 一般格式：
+  - `[<表名1>.]<列名1>  <比较运算符>  [<表名2>.]<列名2>`
+  - `[<表名1>.]<列名1> BETWEEN [<表名2>.]<列名2> AND [<表名2>.]<列名3>`
+- 连接字段：连接谓词中的列名称
+- 连接条件中的各连接字段类型必须是可比的，但名字不必是相同的
+
+
+
+#### 连接操作执行过程
+
+- 嵌套循环法(NESTED-LOOP)
+- 排序合并法(SORT-MERGE)
+- 索引连接(INDEX-JOIN)
+
+
+
+#### 连接的两种语法
+
+- ANSI SQL-89 语法：`SELECT  Student.*，SC.* FROM Student，SC WHERE  Student.Sno = SC.Sno；`
+- ANSI SQL-92 语法：`SELECT  Student.*，SC.* FROM Student JOIN SC ON Student.Sno = SC.Sno；`
+
+
+
+#### 等值与非等值连接查询 
+
+- 连接运算符 `=` 
+
+例：查询每个学生及其选修课程的情况
+
+```sql
+SELECT  Student.*, SC.* FROM Student, SC WHERE  Student.Sno = SC.Sno;
+```
+
+例：查询选修 c2 或 c4 课程的学生学号和姓名
+
+```sql
+select s.sno,sname from s，sc where s.sno=sc.sno and (cno='c2' or cno='c4');
+```
+
+例：查询平均分90以上的女生
+
+```sql
+select sno,sname from s,sc  where s.sno=sc.sno and sex='女' group by sno,sname having avg(grade)>90;
+
+-- 嵌套查询的版本：
+select sname from s where sno in
+    (select sno from s,sc where s.sno=sc.sno and sex='女' group by sno having avg(grade)>90); 
+```
+
+
+
+#### 自身连接
+
+- 同一个表的不同元组之间的连接称为自身连接；
+- 必须给表取别名，当作两个不同的表来处理；
+
+例：查询每一门课的间接先修课（即先修课的先修课）
+
+```sql
+SELECT  FIRST.Cno,SECOND.Cpno  
+FROM   Course FIRST,Course SECOND  
+WHERE  FIRST.Cpno = SECOND.Cno; 
+```
+
+例：查询选修课程名为DB的学生学号和姓名
+
+```sql
+select s.sno,sname  from  s,sc,c  where  s.sno=sc.sno  and sc.cno=c.cno  and c.cname='DB'; 
+```
+
+
+
+#### 外连接
+
+- 外连接与普通连接的区别
+  - 普通连接操作只输出满足连接条件的元组
+  - 外连接操作以指定表为连接主体，将主体表中不满足连接条件的元组一并输出
+- 左外连接
+  - 列出左边关系中所有的元组，右边关系中未有匹配的列用 NULL 作为占位符
+- 右外连接
+  - 列出右边关系中所有的元组，左边关系中未有匹配的列用 NULL 作为占位符
+- 全外连接
+  - 列出两边关系中所有的元组，未有匹配的列用 NULL 作为占位符
+
+例：
+
+```sql
+SELECT Student.Sno,Sname,Ssex,Sage,Sdept,Cno,Grade
+FROM  Student  LEFT OUTER JOIN SC ON (Student.Sno=SC.Sno); 
+```
+
+SQL 92 语法：在外连接中，可以在表名之间使用关键字 `LEFT OUTER JOIN` , `RIGHT OUTER JOIN` , `FULL OUTER JOIN` , `LEFT` 关键字表示左边表的行是保留的， `RIGHT` 关键字表示右边表的行是保留的， `FULL` 关键字表示左右两边表的行都是保留的
+
+
+
+### 嵌套查询（子查询）
+
+- 一个 `SELECT-FROM-WHERE` 语句称为一个查询块，将一个查询块嵌套在另一个查询块的 `WHERE` 子句的条件中的查询称为嵌套查询；
+- 子查询可分成 **不相关子查询**（子查询的查询条件不依赖于父查询，子查询可以独立执行）和 **相关子查询**（子查询的查询条件依赖于外层父查询的某个属性值）；
+- 不相关子查询一般用 `IN` ，相关子查询一般用 `EXISTS` 
+
+
+
+例：查询选修c2课程的学生姓名
+
+```sql
+Select sname from s where sno in (select sno from sc where cno='C2');
+```
+
+例：查询有一门课程成绩等于95分的学生的学号和姓名（采用不相关子查询）
+
+```sql
+select sno,sname  from s  where sno in (select sno  from sc  where grade = 95);
+```
+
+例：查询有一门课程成绩等于95分的学生学号和姓名（采用相关子查询）
+
+- 执行过程：首先取外层查询中表 s 的第1个元组，根据它与内层查询相关的属性值 sno 处理内层查询，若查询结果非空，则 WHERE 子句返回真，则取此元组放入结果表中，然后取外层查询中表的下一个元组，重复上述过程，直到外层查询中表全部检索完为止
+
+```sql
+select sno,sname from s where exists 
+(select * from sc where s.sno=sc.sno and grade=95); 
+```
+
+
+
+#### `IN` 谓词
+
+当子查询的结果是一个集合时，常用带 `IN` 谓词的子查询
+<元素> in <子查询的结果集>
+
+
+
+#### 比较运算符
+
+当用户能确切知道内层子查询返回的是单值时，可以用比较运算符代替 `IN` 
+
+
+
+#### `ANY` , `ALL` 谓词
 
 
 
