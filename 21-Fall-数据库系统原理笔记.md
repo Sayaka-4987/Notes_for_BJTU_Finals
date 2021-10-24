@@ -409,6 +409,12 @@ order by year_of_birth,sno desc
 
 统计一列中值的个数,不计算空值
 
+例：查看 table3 表中数据条数
+
+```sql
+select count(*) from table3;
+```
+
 
 
 #### `count([distinct] *)`
@@ -452,7 +458,7 @@ select count(*), avg(age) from student where sex='M'
 
 ### 对查询结果分组
 
-#### `GROUP` 子句
+#### `GROUP BY` 子句
 
 将查询结果按某一列或多列值分组，值相等的为一组。
 
@@ -606,7 +612,7 @@ Select sname from s where sno in (select sno from sc where cno='C2');
 例：查询有一门课程成绩等于95分的学生的学号和姓名（采用不相关子查询）
 
 ```sql
-select sno,sname  from s  where sno in (select sno  from sc  where grade = 95);
+select sno,sname  from s  where sno in (select sno from sc where grade = 95);
 ```
 
 例：查询有一门课程成绩等于95分的学生学号和姓名（采用相关子查询）
@@ -634,6 +640,372 @@ select sno,sname from s where exists
 
 
 #### `ANY` , `ALL` 谓词
+
+- any ：<表达式> <比较运算符> any <子查询结果集> 
+  - 表示子查询结果集的某个值
+- all： <表达式> <比较运算符>　all <子查询结果集>
+  - 表示子查询结果集的所有值
+- 需要配合使用比较运算符
+
+| 符号          | 功能                                         |
+| ------------- | -------------------------------------------- |
+| ANY           | 大于子查询结果中的某个值                     |
+| ALL           | 大于子查询结果中的所有值                     |
+| < ANY         | 小于子查询结果中的某个值                     |
+| < ALL         | 小于子查询结果中的所有值                     |
+| = ANY         | 大于等于子查询结果中的某个值                 |
+| = ALL         | 大于等于子查询结果中的所有值                 |
+| <= ANY        | 小于等于子查询结果中的某个值                 |
+| <= ALL        | 小于等于子查询结果中的所有值                 |
+| = ANY         | 等于子查询结果中的某个值                     |
+| =ALL          | 等于子查询结果中的所有值（通常没有实际意义） |
+| !=（或<>）ANY | 不等于子查询结果中的某个值                   |
+| !=（或<>）ALL | 不等于子查询结果中的任何一个值               |
+
+
+
+例：查询男同学中比某一女生年龄小的学生姓名和年龄
+
+```sql
+-- 用 any:
+select sname,age  from s 
+where sex='男' and 
+      age< any(select age 
+               from s 
+               where sex='女');
+
+-- 用 all:
+select sname,age  from s 
+where sex='男' and 
+      age<(select max(age) 
+           from s 
+           where sex='女');
+```
+
+
+
+#### `EXISTS` , `NOT EXISTS` 谓词
+
+- EXISTS代表存在量词；
+- 带有EXISTS谓词的子查询不返回任何数据，只产生逻辑真值“true”或逻辑假值“false”；
+- 若子查询结果为非空，则父查询的 WHERE 子句返回真值，否则，返回假值。
+
+
+
+例：查询选修c2课程的学生学号和姓名
+
+```sql
+select sno,sname from s
+where exists                         
+    (select * from sc
+     where s.sno=sc.sno
+     and cno='c2');
+```
+
+
+
+例：查询**没**选修c2课程的学生学号和姓名
+
+```sql
+select sno,sname     
+from s
+where not exists                         
+    (select * from sc
+     where s.sno=sc.sno 
+     and cno='c2');
+```
+
+
+
+SQL语言中没有提供全称量词，但可以把 **带有全称量词的谓词** 转换成等价的 **带有存在量词的谓词**。
+
+
+
+例：检索选修全部课程的学生姓名（相当于查询这样的学生，没有一门课是他不选的）
+
+```sql
+select sname from s
+where not exists
+   (select * from c
+       where not exists
+       (select * from sc
+            where s.sno=sc.sno and sc.cno=c.cno))；
+```
+
+
+
+说明：
+
+- SQL语言中表名的顺序，条件顺序无关，SQL是非过程化语言
+- 查询条件包括：连接条件+选择条件
+- 不相关子查询不一定能转化为多表的连接查询，而连接查询一定能用不相关子查询实现
+
+
+
+### 集合查询
+
+- SELECT 语句的查询结果是元组的集合，可以将多个SELECT语句的结果进行集合操作
+- 集合操作主要包括 `UNION`（并）、`INTERSECT`（交）、`MINUS` / `EXCEPT`（差）
+- 注意：参加集合操作的各个结果表的列数必须相同，对应项的数据类型也必须相同
+
+
+
+例：查询选修课程1或选修课程2的学生
+
+（`UNION` 首先需要扫描两遍，其次还需要排序去重，效率较低，**不建议使用**）
+
+```sql
+(select sno from sc where cno='1')
+union 
+(select sno from sc Where cno='2');
+```
+
+
+
+### 基于派生表的查询
+
+子查询不仅可以出现在Where子句中，还可以出现在From子句中，这时子查询生成的临时派生表成为主查询的查询对象
+
+例：找出每个学生超过他选修课程平均成绩的课程号。
+
+```sql
+SELECT Sno,Cno
+FROM SC x
+WHERE Grade >=(SELECT AVG(Grade) FROM SC y WHERE y.Sno=x.Sno);
+```
+
+
+
+## 数据更新
+
+### 数据插入
+
+#### `VALUES` 子句
+
+语法：insert into <基本表名>[(列名表)] values (元组值);
+
+例：
+
+```sql
+insert into s(sno,sname,age) values ('s1', '李涛',19)
+```
+
+例：把不及格的学生的学号、姓名、课程号和成绩存入另一个已知基本表 NoPass(sno ,sname ,cno,grade) 中
+
+```sql
+insert into NoPass
+select s.sno,sname,cno,grade
+from s,sc 
+where s.sno =sc.sno and grade <60;
+```
+
+
+
+### 数据删除
+
+- 格式：DELETE FROM 基本表名 [WHERE 条件表达式];
+
+- DELETE语句只能从一个基本表中删除满足WHERE子句中的条件的元组，即其后只能有一个基本表名；
+- DELETE只删表中的数据，表的定义仍然在数据字典中；
+
+
+
+例：在sc表中删除‘操作系统’课程成绩低于该课的平均成绩的所有元组。
+
+```sql
+DELETE FROM SC WHERE CNO=
+   (SELECT CNO 
+    FROM C
+    WHERE CNAME='操作系统') 
+AND GRADE<
+   (SELECT 
+    AVG(GRADE)
+    FROM SC,C
+    WHERE SC.CNO=C.CNO AND CNAME='操作系统')
+```
+
+
+
+### 数据修改
+
+语法:
+**UPDATE 基本表名**
+**SET 列名=新值表达式**
+**[,列名=新值表达式...]**
+**[WHERE 条件表达式];** 
+
+update 语句只能修改一个基本表中满足 where 条件的元组的某些列值，即其后只能有一个基本表名。
+
+例：将c2课程的非空成绩提高10%。
+
+```sql
+UPDATE SC
+SET GRADE=GRADE*(1+10%)
+WHERE CNO='C2' AND GRADE IS NOT NULL
+```
+
+
+
+## 空值处理
+
+空值出现的情况：
+
+- 属性应该有值，但目前不知道具体的值
+- 属性不应该有值，如缺考学生的成绩
+- 由于某种原因不便填写，如一个人的电话号码不想让人知道
+
+
+
+具有 `NOT NULL` 约束条件，`UNIQUE` 约束条件，`PRIMARY KEY` 约束条件中任一条件的属性是不能取空值的
+
+查询时，只有使 `WHERE` 和 `HAVING` 子句中的选择条件为TRUE的元组才输出
+
+
+
+算术运算：只要存在操作数为空值的情况，计算结果就是空值
+
+比较运算：只要存在操作数为空值的情况，比较结果就是UNKNOWN
+
+逻辑运算：三值逻辑 (TRUE, FALSE, UNKNOWN)
+
+
+
+### 逻辑运算真值表
+
+|X|Y|NOT X|X AND Y|X OR Y|
+|----------|-------------|-------------|----------|---------|
+|TRUE|TRUE|FALSE|TRUE|TRUE|
+|TRUE|UNKNOWN|FALSE|UNKNOWN|TRUE|
+|TRUE|FALSE|FALSE|FALSE|TRUE|
+|UNKNOWN|TRUE|UNKNOWN|UNKNOWN|TRUE|
+|UNKNOWN|UNKNOWN|UNKNOWN|UNKNOWN|UNKNOWN|
+|UNKNOWN|FALSE|UNKNOWN|FALSE|UNKNOWN|
+|FALSE|TRUE|TRUE|FALSE|TRUE|
+|FALSE|UNKNOWN|TRUE|FALSE|UNKNOWN|
+|FALSE|FALSE|TRUE|FALSE|FALSE|
+
+
+
+
+
+## 视图
+
+视图的特点：
+
+- 虚表，是从一个或几个基本表（或视图）导出的表
+- 只存放视图的定义，不存放视图对应的数据
+- 基表中的数据发生变化，从视图中查询出的数据也随之改变
+
+
+
+基于视图的操作
+
+- 查询
+- 删除
+- 受限更新
+- 定义基于该视图的新视图
+
+
+
+### 创建视图
+
+- 语法：`CREATE VIEW <视图名> [(<列名１>,<列名２>,…)] AS SELECT 查询语句 [WITH CHECK OPTION];`  
+  - 其中 `WITH CHECK OPTION` 表示对视图进行 UPDATE , INSERT 和 DELETE 操作时要保证更新、插入和删除的行满足视图定义中的谓词条件
+
+- 组成视图的属性列名或者全部省略，或者全部指定，没有第三种选择；
+- 子查询不允许含有 `ORDER BY` 子句和 `DISTINCT` 短语
+- 下列情况下必须明确指定组成视图的所有列名：
+  - 某个目标列是聚集函数或列表达式
+  - 多表连接时，选出了几个同名列作为视图的字段
+- RDBMS 执行 CREATE VIEW 语句时只是把视图定义存入数据字典，并不执行其中的SELECT语句，引用视图的时候才会执行；
+- 在对视图查询时，按视图的定义从基本表中将数据查出。
+
+
+
+例：
+
+```sql
+CREATE VIEW S_G(sno,sname,cname,Grade)
+        AS SELECT  s.sno, sname, cname, Grade 
+               FROM   S,SC,C
+        WHERE  S.SNO=SC.SNO
+               AND SC.CNO=C.CNO；
+```
+
+
+
+视图的分类：
+
+1. 行列子集视图：若一个视图从单个基本表导出，并且只是去掉了基本表的某些行和某些列，但保留了主码，称这类视图为行列子集视图。
+2. 带表达式视图：在定义视图时根据需要设置一些派生列，这些派生列在基本表中并不实际存在，所以称为虚拟列，带虚拟列的视图称为带表达式视图。
+3. 分组视图：带有集合函数和GROUP BY子句的查询来定义视图，这种视图称为分组视图。
+
+
+
+例：建立一个行列子集视图。建立一个男生的视图，并保证进行插入和修改操作时该视图只有男生。
+
+```sql
+Create view M_student
+As  select sno,sname,age
+       from s
+       where sex='男'
+       with check option;
+```
+
+由于在定义视图时加了with check option子句，以后对该视图进行更新操作，就会自动补充条件；
+
+修改操作：自动加上sex='男'的条件
+删除操作：自动加上sex='男'的条件
+插入操作：自动检查sex属性值是否为'男'
+
+如果不是，则拒绝该插入操作
+
+如果没有提供sex属性值，则自动定义sex为'男'
+
+
+
+例：建立一个分组视图，反映学生的学号和平均成绩。
+
+```sql
+Create view s_avg_g(sno,gavg)
+As select sno,avg(g)
+From sc
+Group by sno;
+```
+
+
+
+### 删除视图
+
+语法：DROP VIEW <视图名> [可选：CASCADE] 
+
+`CASCADE` 语句会将某个视图及其导出的所有视图全部删除
+
+
+
+### 查询视图
+
+视图定义后，就可以像对基本表一样对视图进行查询，表名换视图名即可；
+
+
+
+### 更新视图 
+
+对视图的查询是和基本表相同的，但是更新操作则受到下列三条规则的限制：
+
+- 如果视图是从多个基本表使用联接操作导出的，则不允许更新。 
+- 如果导出的视图使用了分组和聚集操作，也不允许更新。 
+- 如果视图是从单个基本表使用选择和投影操作导出的，并且包括了基本表的主键，即视图为行列子集视图，则可以执行更新操作
+
+
+
+
+
+
+
+
+
+
 
 
 

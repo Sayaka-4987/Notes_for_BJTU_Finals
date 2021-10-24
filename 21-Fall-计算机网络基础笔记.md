@@ -367,15 +367,27 @@ b.   Now suppose a cache is installed in institution LAN. Suppose the hit rate i
 
 ### 3.4 可靠数据传输原理
 
-| 中英对照                                           | 概念（待编辑补充）                                           | 备注 |
-| -------------------------------------------------- | ------------------------------------------------------------ | ---- |
-| 肯定确认（positibe acknowledgment）                | \                                                            |      |
-| 否定确认（negative acknowledgment）                | \                                                            |      |
-| 自动重传请求协议（ARQ，Automatic Repeat  reQuest） | 包括三种协议功能：差错检测，接受方反馈（表明接受方正确接收了内容还是没有），重新传输（接受方有误时，发送方重新传输该分组） |      |
+| 中英对照                                                     | 概念（待编辑补充）                                           | 备注 |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ---- |
+| 可靠数据传输协议（reliable data transfer protocol）          | 能够使数据通过一条可靠信道传输的服务模型，借助可靠信道，传输数据比特不会损坏或丢失，且所有数据都是按照发送顺序进行交付； |      |
+| 自动重传请求协议（ARQ，Automatic Repeat  reQuest）           | 包括三种协议功能：差错检测，接受方反馈（表明接受方正确接收了内容还是没有），重新传输（接受方有误时，发送方重新传输该分组） |      |
+| 有限状态机（FSM，Finite-State Machine）                      | \                                                            |      |
+| 肯定确认（positibe acknowledgment）                          | \                                                            |      |
+| 否定确认（negative acknowledgment）                          | \                                                            |      |
+| 停止等待协议（stop-and-wait）                                | 发送方确信已正确接收当前分组后，才发送下一块新数据；         |      |
+| 冗余数据分组（duplicate data packet）                        | \                                                            |      |
+| 倒计数定时器（countdown timer）                              | \                                                            |      |
+| 回退 N 步（GBN，Go-Back-N）或滑动窗口协议（Sliding-window protocol） | 这里放个 [演示动画](https://media.pearsoncmg.com/ph/esm/ecs_kurose_compnetwork_8/cw/content/interactiveanimations/go-back-n-protocol/index.html) |      |
+| 选择重传（SR，Selective Repeat）                             | \                                                            |      |
+| 累积确认（cumulative acknowledgment）                        | \                                                            |      |
 
 
 
+### 3.5 TCP 连接
 
+| 中英对照 | 概念（待编辑补充） | 备注 |
+| -------- | ------------------ | ---- |
+|          |                    |      |
 
 
 
@@ -390,6 +402,18 @@ b.   Now suppose a cache is installed in institution LAN. Suppose the hit rate i
 <img src="media/image-20211013083737325.png" alt="image-20211013083737325" style="zoom:50%;" />
 
 <img src="media/image-20211013083647760.png" alt="image-20211013083647760" style="zoom:50%;" />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
