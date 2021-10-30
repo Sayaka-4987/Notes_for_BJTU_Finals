@@ -936,9 +936,9 @@ CREATE VIEW S_G(sno,sname,cname,Grade)
 
 视图的分类：
 
-1. 行列子集视图：若一个视图从单个基本表导出，并且只是去掉了基本表的某些行和某些列，但保留了主码，称这类视图为行列子集视图。
-2. 带表达式视图：在定义视图时根据需要设置一些派生列，这些派生列在基本表中并不实际存在，所以称为虚拟列，带虚拟列的视图称为带表达式视图。
-3. 分组视图：带有集合函数和GROUP BY子句的查询来定义视图，这种视图称为分组视图。
+1. **行列子集视图**：若一个视图从单个基本表导出，并且只是去掉了基本表的某些行和某些列，但保留了主码，称这类视图为行列子集视图。
+2. **带表达式视图**：在定义视图时根据需要设置一些派生列，这些派生列在基本表中并不实际存在，所以称为虚拟列，带虚拟列的视图称为带表达式视图。
+3. **分组视图**：带有集合函数和GROUP BY子句的查询来定义视图，这种视图称为分组视图。
 
 
 
@@ -995,7 +995,470 @@ Group by sno;
 
 - 如果视图是从多个基本表使用联接操作导出的，则不允许更新。 
 - 如果导出的视图使用了分组和聚集操作，也不允许更新。 
-- 如果视图是从单个基本表使用选择和投影操作导出的，并且包括了基本表的主键，即视图为行列子集视图，则可以执行更新操作
+- 如果视图是从单个基本表使用选择和投影操作导出的，并且包括了基本表的主键，即视图为 **行列子集视图**，则可以执行更新操作
+
+
+
+## 数据库安全性
+
+
+
+<img src="media/image-20211026105132195.png" alt="image-20211026105132195" style="zoom: 67%;" />
+
+
+
+非法使用数据库的情况：
+
+- 编写合法程序绕过DBMS及其授权机制
+- 直接或编写应用程序执行非授权操作
+- 通过多次合法查询数据库从中推导出一些保密数据
+
+
+
+数据库安全性控制的常用方法：
+
+- 用户标识和鉴定
+- 存取控制
+- 视图
+- 审计
+- 密码存储
+
+
+
+### 用户标识与鉴别
+
+系统提供的最外层安全保护措施，系统核对口令以鉴别用户身份 
+
+- 用户标识
+- 口令
+
+
+
+### 存取控制
+
+存取控制机制组成：
+
+- 定义用户权限
+
+- 合法权限检查 
+
+
+用户权限定义和合法权检查机制一起组成了DBMS的安全子系统
+
+
+
+### 常用存取控制方法
+
+- 自主存取控制（Discretionary Access Control ，简称DAC）
+  - C2级
+  - 灵活
+
+- 强制存取控制（Mandatory Access Control，简称 MAC）
+  - B1级
+  - 严格
+
+
+
+#### 自主存取控制方法
+
+- 通过 SQL 的 `GRANT` 语句和 `REVOKE` 语句实现
+- 用户权限组成
+  - 数据对象
+  - 操作类型
+- 定义用户存取权限：定义用户可以在哪些数据库对象上进行哪些类型的操作
+- 定义存取权限称为授权 
+
+
+
+|对象类型|对象|操作类型|
+|--------------|----------------|------------------------------------------------------------|
+|数据库模式|模式|CREATE SCHEMA|
+||基本表|CREATE TABLE，ALTER TABLE|
+||视图|CREATE VIEW|
+||索引|CREATE INDEX|
+|数据|基本表和视图|SELECT，INSERT，UPDATE，DELETE，REFERENCES，ALL PRIVILEGES|
+||属性列|SELECT，INSERT，UPDATE，REFERENCES，ALL PRIVILEGES|
+
+
+
+#### 授权语句 `GRANT` 
+
+功能：将对指定操作对象的指定操作权限授予指定的用户 
+
+格式：
+
+```sql
+GRANT <权限>[,<权限>]... 
+[ON <对象类型> <对象名>]
+TO <用户>[,<用户>]...
+[WITH GRANT OPTION];
+```
+
+发出GRANT：
+
+- DBA
+- 数据库对象创建者（即属主Owner）
+- 拥有该权限的用户
+
+接受权限的用户：
+
+- 一个或多个具体用户
+- PUBLIC（全体用户）  
+
+
+
+例：把查询Student表权限授给用户U1，U1不能转授
+
+```sql
+GRANT SELECT ON TABLE School.Student TO U1;
+```
+
+
+
+例：把对Student表和Course表的全部权限授予用户U2和U3
+
+```sql
+GRANT ALL PRIVILIGES ON TABLE School.Student,School.Course TO U2, U3;
+```
+
+
+
+#### `WITH GRANT OPTION` 子句
+
+- 指定：被授权的用户可以再授权给别人
+- 没有指定：不能传播
+  - 不允许循环授权
+
+
+
+#### 回收授权语句 `REVOKE`
+
+- 授予的权限可以由DBA或其他授权者用REVOKE语句收回
+- REVOKE语句的一般格式为：
+
+```sql
+REVOKE <权限>[,<权限>]... 
+[ON <对象类型> <对象名>]
+FROM <用户>[,<用户>]...
+[CASCADE|RESTRICT];
+```
+
+
+
+例：把用户U4修改学生学号的权限收回
+
+```sql
+REVOKE UPDATE(Sno)
+ON TABLE Student 
+FROM U4;
+```
+
+
+
+例：把用户U5对SC表的INSERT权限收回
+
+- 假设之前U5还授权给了 U6，U7，所以将用户 U5 的INSERT权限收回的时候必须级联（CASCADE）收回 
+- 系统只收回直接或间接从 U5 处获得的权限 
+
+```sql
+REVOKE INSERT 
+ON TABLE SC 
+FROM U5 CASCADE ;
+```
+
+
+
+### SQL 授权机制小结
+
+- DBA：拥有所有对象的所有权限
+  - 不同的权限授予不同的用户
+- 用户：拥有自己建立的对象的全部的操作权限
+  - GRANT：授予其他用户
+- 被授权的用户
+  - “继续授权”许可：再授予
+- 所有授予出去的权力在必要时又都可用REVOKE语句收回
+
+
+
+#### DBA在创建用户时实现
+
+CREATE USER语句格式：
+
+```sql
+CREATE USER <username> 
+[WITH] [DBA | RESOURCE | CONNECT]
+```
+
+ 
+
+#### 拥有的权限 / 是否可以进行特定操作表
+
+
+||CREATE USER| CREATE SCHEMA | CREATE TABLE |登录数据库执行数据查询和操纵|
+|----------------|------------------|-----------------|----------------------------------|----------------------------|
+|DBA|可以|可以|可以|可以|
+|RESOURCE|不可以|不可以|可以|可以|
+|CONNECT|不可以|不可以|不可以|可以，但必须拥有相应权限|
+
+
+
+### 数据库角色
+
+角色可以理解为权限的集合；
+
+
+
+#### 创建角色
+
+CREATE  ROLE  <角色名> 
+
+
+
+#### 给角色授权 
+
+GRANT  <权限>［，<权限>］…  
+ON <对象类型>对象名  
+TO <角色>［，<角色>］…
+
+
+
+#### 将一个角色授予其他的角色或用户
+
+GRANT  <角色1>［，<角色2>］…
+TO  <角色3>［，<用户1>］… 
+［WITH ADMIN OPTION］ 
+
+
+
+#### 角色权限的收回 
+
+REVOKE <权限>［，<权限>］…
+ON <对象类型> <对象名>
+FROM <角色>［，<角色>］…
+
+
+
+例：通过角色来实现将一组权限授予一个用户。
+步骤如下：
+
+1. 首先创建一个角色 R1
+    `CREATE ROLE R1;`
+2. 然后使用GRANT语句，使角色R1拥有Student表的SELECT、UPDATE、INSERT权限
+    `GRANT SELECT，UPDATE，INSERT ON TABLE Student TO R1;`
+3. 将这个角色授予王平，张明，赵玲。使他们具有角色R1所包含的全部权限
+    `GRANT  R1  TO 王平，张明，赵玲; `
+4. 也可以一次性通过R1来回收王平的这3个权限
+     `REVOKE  R1 FROM 王平;`
+5. 还可以修改R1这个角色的权限：
+     `GRANT DELETE ON TABLE Student TO R1;`
+
+
+
+### 审计日志
+
+审计分为
+
+- 用户级审计
+  - 针对自己创建的数据库表或视图进行审计 
+  - 记录所有用户对这些表或视图的一切成功和（或）不成功的访问要求以及各种类型的 SQL 操作 
+- 系统级审计 
+  - DBA 设置 
+  - 监测成功或失败的登录要求 
+  - 监测 GRANT 和 REVOKE 操作以及其他数据库级权限下的操作
+
+
+
+#### 设置审计 `AUDIT` 
+
+例：对修改SC表结构或修改SC表数据的操作进行审计
+
+`AUDIT ALTER,UPDATE  ON  SC;`
+
+
+
+#### 取消审计功能 `NOAUDIT`
+
+例：取消对SC表的一切审计
+
+`NOAUDIT  ALTER,UPDATE  ON  SC;`
+
+
+
+## 数据加密
+
+- 数据加密：防止数据库中数据在存储和传输中失密的有效手段
+
+- 
+  加密的基本思想：根据一定的算法将原始数据（明文）变换为不可直接识别的格式（密文），从而使不知道解密算法的人无法获知数据的内容
+
+
+
+
+### 加密方法
+
+- 替换方法：使用密钥将明文中的每个字符转换为密文中的一个字符
+- 置换方法：将明文中的字符按不同的顺序重新排列
+- 混合方法：DBMS中的数据加密
+   - 有些数据库产品提供了数据加密例行程序，可根据用户的要求自动对存储和传输的数据进行加密处理
+   - 另一些数据库产品本身未提供加密程序，但提供了接口，允许用户用其他厂商的加密程序对数据加密
+
+
+
+## 数据库完整性
+
+“现实世界抽象出的约束条件”可以进一步分类：
+
+- 关系模型要求的约束：实体完整性，参照完整性，数据类型等
+- 用户定义的约束：可以按照约束影响的范围分为：单一属性上的，单一元组上的，单一表上的，多个表之间的；范围越小，维护的代价越小
+
+在高效统一地处理各种不同的约束有困难的时候，分而治之、各个击破是好办法。
+
+
+
+### 实体完整性
+
+#### `PRIMARY KEY` 定义实体完整性
+
+列级约束条件可以写在列属性，表级约束条件必须写在表级；
+
+插入或对主码列进行更新操作时，RDBMS 按照实体完整性规则自动进行检查。包括：
+1. 检查主码值是否唯一，如果不唯一则拒绝插入或修改
+2. 检查主码的各个属性是否为空，只要有一个为空就拒绝插入或修改
+
+```sql
+CREATE TABLE Student(
+    Sno  CHAR(9),
+    Sname  CHAR(20) NOT NULL,
+    Ssex  CHAR(2),
+    Sage  SMALLINT,
+    Sdept  CHAR(20),
+    PRIMARY KEY (Sno)
+);
+```
+
+
+
+### 参照完整性
+
+#### `FOREIGN KEY` 定义外码
+
+用 `REFERENCES` 短语指明这些外码参照哪些表的主码：
+
+除了应该定义外码，还应定义外码列是否允许空值； 
+
+例：关系SC中一个元组表示一个学生选修的某门课程的成绩，（Sno，Cno）是主码。Sno，Cno分别参照引用Student表的主码和Course表的主码 
+
+```sql
+CREATE TABLE SC (
+    Sno    CHAR(9)  NOT NULL,
+    Cno    CHAR(4)  NOT NULL,
+    Grade  SMALLINT,
+    PRIMARY KEY (Sno, Cno),                    -- 在表级定义实体完整性
+    FOREIGN KEY (Sno) REFERENCES Student(Sno), -- 在表级定义参照完整性
+    FOREIGN KEY (Cno) REFERENCES Course(Cno)   -- 在表级定义参照完整性
+);
+```
+
+
+
+#### 参照完整性违约处理
+
+- **拒绝执行（NO ACTION）**
+
+  - 不允许该操作执行
+  - 一般设置为默认策略
+
+- **级联操作（CASCADE）**
+
+  - 当删除或修改被参照表(Student)的一个元组造成了与参照表(SC)的不一致，则删除或修改参照表中的所有造成不一致的元组
+  - 例如，删除Student表中的元组，Sno值为200215121，则从SC表中级连删除 SC.Sno='200215121'的所有元组
+
+- **设置为空值（SET-NULL）**
+
+  - 当删除或修改被参照表的一个元组时造成了不一致，则将参照表中的所有造成不一致的元组的对应属性设置为空值
+
+  
+
+一般默认操作是拒绝执行，如果想让系统采用其他的策略，则必须在创建表的时候显式地加以说明
+
+
+
+### 用户定义的完整性
+
+#### 属性上的约束条件
+
+- 列值非空 `NOT NULL`
+- 列值唯一 `UNIQUE`
+- 检查列值是否满足一个布尔表达式 `CHECK`
+
+插入元组或修改属性的值时，RDBMS 检查属性上的约束条件是否被满足，如果不满足则拒绝执行 
+
+
+
+例：SC表，成绩Grade的值应该在0和100之间
+
+```sql
+CREATE TABLE SC(
+    Sno    CHAR(9),
+    Cno    CHAR(4),
+    Grade  SMALLINT CHECK(Grade>=0 AND Grade<=100),
+    PRIMARY KEY (Sno, Cno),
+    FOREIGN KEY (Sno) REFERENCES Student(Sno),
+    FOREIGN KEY (Cno) REFERENCES Course(Cno)
+);
+```
+
+
+
+例：当学生的性别是男时，其名字不能以Ms.打头
+
+```sql
+CREATE TABLE Student(
+    Sno    CHAR(9),
+    Sname  CHAR(8) NOT NULL,
+    Ssex   CHAR(2),
+    Sage   SMALLINT,
+    Sdept  CHAR(20),
+    PRIMARY KEY (Sno),
+    /*定义了元组中Sname和 Ssex两个属性值之间的约束条件*/
+    CHECK (Ssex='女' OR Sname NOT LIKE 'Ms.%')
+);
+```
+
+
+
+### `CONSTRAINT` 子句命名完整性约束条件
+
+格式：
+
+```sql
+CONSTRAINT <完整性约束条件名> [PRIMARY KEY短语 | FOREIGN KEY短语 | CHECK短语]
+```
+
+
+
+例：修改表Student中的约束条件，要求学号改为在900000-999999之间，年龄由小于30改为小于40
+
+```sql
+ALTER TABLE Student DROP CONSTRAINT C1;
+ALTER TABLE Student ADD CONSTRAINT C1 CHECK (Sno BETWEEN 900000 AND 999999);
+ALTER TABLE Student DROP CONSTRAINT C3;
+ALTER TABLE Student ADD CONSTRAINT C3 CHECK (Sage < 40);
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
