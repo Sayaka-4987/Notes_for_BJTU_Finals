@@ -338,9 +338,9 @@ b.   Now suppose a cache is installed in institution LAN. Suppose the hit rate i
 
 #### P2P 和 CS 模式的下载速度
 
-<img src=".\media\image-20211013080435827.png" alt="image-20211013080435827" style="zoom: 50%;" />
+<img src=".\media\image-20211013080435827.webp" alt="image-20211013080435827" style="zoom: 50%;" />
 
-<img src=".\media\image-20211013080518980.png" alt="image-20211013080518980" style="zoom: 50%;" />
+<img src=".\media\image-20211013080518980.webp" alt="image-20211013080518980" style="zoom: 50%;" />
 
 
 
@@ -410,9 +410,9 @@ b.   Now suppose a cache is installed in institution LAN. Suppose the hit rate i
 | 否定确认     | 接收方用于告诉发送方某个分组未被正确地接收；<br>否定确认报文通常携带着未被正确接收的分组的序号； |
 | 窗口、流水线 | 发送方也许被限制仅发送那些序号落在一个指定范围内的分组；<br/>通过允许一次发送多个分组但未被确认，发送方利用率可在"停等"操作模式的基础上增加；<br>窗口的长度可根据接收方接收和缓存报文的能力、网络中的拥塞程度或两者情况来进行设置； |
 
-<img src="media/image-20211013083737325.png" alt="image-20211013083737325" style="zoom:50%;" />
+<img src="media/image-20211013083737325.webp" alt="image-20211013083737325" style="zoom:50%;" />
 
-<img src="media/image-20211013083647760.png" alt="image-20211013083647760" style="zoom:50%;" />
+<img src="media/image-20211013083647760.webp" alt="image-20211013083647760" style="zoom:50%;" />
 
 
 
