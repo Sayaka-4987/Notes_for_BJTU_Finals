@@ -1384,7 +1384,7 @@ unordered_map 和 unordered_set 都**没有比较运算**符，通常使用哈�
 
 ## 12.1 动态内存和智能指针
 
-### 建议使用unique_ptr，在所有不需要引用计数的时候
+### 建议在所有不需要引用计数的时候使用 unique_ptr
 
 原因：
 
@@ -1827,17 +1827,13 @@ shared_ptr 指针析构时，同时会释放相关联的内存
 
 <img src="media/50e5aba63ff3ed2bb8123b4d06beefab.webp"/>
 
-### 重新抛出
-
-throw;
+### throw; 重新抛出
 
 一条catch语句可以通过重新抛出将异常传递给另外一个catch语句
 
-### 捕获所有异常
+### catch(...) 捕获所有异常 
 
-catch(...)
-
-<img src="media/523d50fd7782c755759abb961961db8f.webp"/>
+如果catch(...)与其他几个catch语句一起出现，则 catch(.. .)必须在最后的位置。出现在捕获所有异常语句后面的catch语句将永远不会被匹配。
 
 ### C++11：noexcept说明和noexcept运算符
 
@@ -1861,13 +1857,11 @@ catch(...)
 
 目的是避免名字之间相互冲突（命名空间污染）
 
->   namespace barbarbar
-
->   {
-
->   class foo { /\*...\*/ }
-
->   } // 不需要分号
+```c++
+namespace barbarbar {
+	class foo { /\*...\*/ }
+} // 不需要分号
+```
 
 -   位于命名空间内的代码，可以被该命名空间内的其他成员直接访问；
 
