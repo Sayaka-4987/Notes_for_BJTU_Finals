@@ -1065,7 +1065,7 @@ constexpr构造函数必须初始化所有数据成员、初始值、或者使�
 
 反向迭代器++指上一个元素。
 
-<img src="media/50c1205b2d494d409851efb586145235.webp"/>
+<img src="media/50c1205b2d494d409851efb586145235.webp" style="zoom:67%;" />
 
 ### C++：assign成员允许从相容的类型赋值
 
