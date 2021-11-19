@@ -1609,6 +1609,10 @@ shared_ptr 指针析构时，同时会释放相关联的内存
 
 ### C++11：用std::forward保持类型信息
 
+- `std::move`执行到右值的无条件的转换，但就自身而言，它不移动任何东西；
+- `std::forward`只有当它的参数被绑定到一个右值时，才将参数转换为右值；
+- `std::move`和`std::forward`在运行期什么也不做；
+
 <img src="media/51324c197e0304712076ecec308be90d.webp"/>
 
 ## 17.1 tuple类型
