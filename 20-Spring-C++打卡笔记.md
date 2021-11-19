@@ -14,6 +14,40 @@
 
 
 
+# Modern Effective C++
+
+链接：[感谢 ZX 整理的静态页面](https://effectivemoderncppebook-pdsjtawv-zx-11.4everland.app/)
+
+推荐先阅读以下内容再观看；
+
+## C++11：使用 deleted 而非使用未定义的私有声明
+
+任何函数都可以加 `deleted` （但只有成员函数可以 `private`；
+
+`deleted` 让编译器报错更聪明；
+
+```c++
+template <class charT, class traits = char_traits<charT> >
+class basic_ios : public ios_base {
+public:
+    …
+
+    basic_ios(const basic_ios& ) = delete;
+    basic_ios& operator=(const basic_ios&) = delete;
+    …
+};
+```
+
+
+
+- 如果函数不抛出异常请使用 `noexcept`
+- 尽可能的用 `const_iterator` 而非 `iterator`
+- 尽可能的使用 `constexpr` 
+
+
+
+
+
 # 现代C++教程：高速上手C++11/14/17/20
 
 > 这个部分放在这，是为了**快速查阅**有什么特性、语法糖的，详细学习还请看《C++ primer》
@@ -52,11 +86,11 @@ int main() {
 }
 ```
 
-### C++11：用 nullptr 替代NULL
+### C++11：用 `nullptr` 替代NULL
 
 过去的标准将NULL定义成0，会导致C++中重载特性发生混乱，因此C++11引入了nullptr关键字，nullptr的类型是nullptr_t，这一类型可以隐式转换为任何指针、成员指针的类型，也能和那些类型进行相等或不等的比较；
 
-### C++11：constexpr 把函数在编译阶段变成常量表达式
+### C++11：`constexpr` 把函数在编译阶段变成常量表达式
 
 ```C++
 constexpr int fibonacci(const int n) {
@@ -64,7 +98,7 @@ constexpr int fibonacci(const int n) {
 }
 ```
 
-#### C++14：开始允许 constexpr 函数在内部使用局部变量、循环、分支等简单语句；
+#### C++14：开始允许 `constexpr` 函数在内部使用局部变量、循环、分支等简单语句；
 
 ```C++
 constexpr int fibonacci(const int n) {
@@ -74,11 +108,14 @@ constexpr int fibonacci(const int n) {
 }
 ```
 
-### C++17：在 if/switch 中声明临时变量
+### C++17：在 `if`/`switch` 中声明临时变量
 
 ```c++
-for (std::vector<int>::iterator element = vec.begin(); element != vec.end(); ++element)
-        std::cout << *element << std::endl;
+for (std::vector<int>::iterator element = vec.begin(); 
+     element != vec.end(); 
+     ++element) {
+    std::cout << *element << std::endl;
+}
 ```
 
 ### C++17：结构化绑定
@@ -102,7 +139,7 @@ int main() {
 }
 ```
 
-### C++：用 auto 推导变量类型
+### C++：用 `auto` 推导变量类型
 
 -   不能用于函数传参；
 
@@ -118,7 +155,7 @@ for (auto it = magicFoo.vec.begin(); it != magicFoo.vec.end(); ++it) {
 }
 ```
 
-### C++：用 decltype 推导类型
+### C++：用 `decltype` 推导类型
 
 弥补auto**只能对变量进行类型推导**的缺陷；
 
@@ -133,7 +170,7 @@ if (std::is_same<decltype(x), decltype(z)>::value)
     std::cout << "type z == type x" << std::endl;
 ```
 
-#### C++：用 std::is_same 比较两个类型是否相同
+#### C++：用 `std::is_same` 比较两个类型是否相同
 
 #### 注意：typename 和 class
 
@@ -142,16 +179,17 @@ typename 和 class 在模板参数列表中没有区别，在 typename 这个关
 
 ### C++11：尾返回类型
 
-利用auto关键字，将返回类型后置
+利用 `auto` 关键字，将返回类型后置
 
 #### C++14：普通函数也具备返回值推导
 
-(markdown是不能在表格里插代码块吗？)
+（markdown 好像是不能在表格里插代码块吗）
 
-| C++11 <img src="media/855d298af58102dc05d82f82aebbf62f.webp"/> | C++14（新）<img src="media/6a4881a0778d1cb3bb1982e7446f1fe3.webp"/> |
+| C++11                                                        | C++14（新）                                                  |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| // C11 还需要手动 decltype 一下<br/>template<typename T, typename U> <br/>auto add2(T x, U y) -> decltype(x + y) {<br/>	return x+y; <br/>} | // C14 直接 auto 就可以了<br/>// 而且不只有成员函数能推导<br>template<typename T, typename U> <br/>auto add3(T x, U y) {<br/>	return x+y; <br/>} |
 
-### C++14：decltype(auto) 推导转发函数或封装的返回类型
+### C++14：`decltype(auto)` 推导转发函数或封装的返回类型
 
 重点：decltype(auto) 用于对转发函数或封装的返回类型进行推导；
 
@@ -174,12 +212,12 @@ decltype(auto) look_up_a_string_2() {
 }
 ```
 
-### C++17：允许在 if 前声明 constexpr
+### C++17：允许在 `if` 前声明 `constexpr` 常量表达式
 
 |<img src="media/2c493aa57aa9b9f86b8f150232765cbb.webp"/> | 编译时：<img src="media/6481a40b44cad00ecd8690554c0ea7cd.webp"/> |
 |-------------------------------------------------|----------------------------------------------------------|
 
-### C++11：基于范围的 for 迭代
+### C++11：基于范围的 `for` 迭代
 
 ```C++
 if (auto itr = std::find(vec.begin(), vec.end(), 3); itr != vec.end()) 
@@ -198,9 +236,9 @@ for (auto &element : vec) { // 可以写入 element
 
 <img src="media/ba2b56941bb86f51645b4c1c4bf14824.webp"/>
 
-### C++11：类型别名模板
+### C++11：类型别名模板 `using` 
 
-关键字 using
+由于 `using` 可以避免一些 `typedef` 的问题（不能被模板化），建议全改用 using 
 
 ```C++
 /* 通常我们使用 typedef 定义别名的语法是：typedef 原名称 新名称;，但是对函数指针等别名的定义语法却不相同，这通常给直接阅读造成了一定程度的困难。*/
@@ -239,7 +277,7 @@ template<typename Require, typename... Ts> class Magic;	 // 需要至少有一�
 
 ### C++ 11：变长参数模板的解包方法
 
-sizeof...(argsName) 	// 可以计算参数的个数
+`sizeof...(argsName) `	// 可以计算参数的个数
 
 ```C++
 template<typename... Ts>
@@ -261,11 +299,13 @@ template<typename T0>
 void printf1(T0 value) {
     std::cout << value << std::endl;
 }
+
 template<typename T, typename... Ts>
 void printf1(T value, Ts... args) {
     std::cout << value << std::endl;
     printf1(args...);
 }
+
 int main() {
     printf1(1, 2, "123", 1.1);
     return 0;
@@ -283,7 +323,7 @@ void printf2(T0 t0, T... t) {
 }
 ```
 
-#### 初始化列表展开（用到了lambda表达式）
+#### 初始化列表展开（用到了 lambda 表达式）
 
 额外使用了 C++11 中提供的`初始化列表`以及 `Lambda 表达式`的特性（下一节中将提到）。
 
@@ -305,12 +345,13 @@ template<typename ... T>
 auto sum(T ... t) {
     return (t + ...);
 }
+
 int main() {
     std::cout << sum(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) << std::endl;
 }
 ```
 
-### C++17：auto可推导模板参数的类型
+### C++17：`auto` 可推导模板参数的类型
 
 ```C++
 template <auto value> void foo() {
@@ -361,7 +402,7 @@ public:
 };
 ```
 
-### C++11：override和final关键字
+### C++11：`override` 和 `final` 关键字
 
 当重载虚函数时，引入override
 关键字将显式的告知编译器进行重载，编译器将检查基函数是否存在这样的虚函数，否则将无法通过编译:
@@ -376,7 +417,7 @@ struct SubClass: Base {
 };
 ```
 
-final则是为了防止类被继续继承以及终止虚函数继续重载引入的。
+`final` 则是为了防止类被继续继承以及终止虚函数继续重载引入的。
 
 ```C++
 struct Base {
@@ -393,7 +434,7 @@ struct SubClass3: Base {
 };
 ```
 
-### 重载 \<\< 运算符以输出enum类型的值
+### 重载 `<<` 运算符以输出 enum 类型的值
 
 ```c++
 #include <iostream>
@@ -408,23 +449,22 @@ std::ostream>::type& stream)
 std::cout << new_enum::value3 << std::endl
 ```
 
-### C++：Lambda表达式
+### C++：Lambda 表达式
 
-<img src="media/d786da0591008f12b385df37d0ab3daf.webp"/>
+基本语法：
 
-#### 值捕获
+```c++
+[捕获列表](参数列表) /* 可选：mutable() */ 异常属性 -> 返回类型 {
+    // 函数体
+}
+```
 
-拷贝一份变量，不改变原值
+捕获列表有以下几种：
 
-#### 引用捕获
-
-保存的是原值的引用，可以修改
-
-#### 隐式捕获
-
-**捕获列表写一个=或者&**，让编译器自己推导;
-
-<img src="media/3ab0ade50cf30c2fb5f902c05a490466.webp" style="zoom: 50%;" />
+- 空捕获列表
+- 值捕获 [name1, name2, ...]：拷贝一份变量，不改变原值
+- 引用捕获 [&]：保存的是原值的引用，可以修改
+- 隐式捕获 [=]：**捕获列表写一个=或者&**，让编译器自己推导；
 
 #### C++14：表达式捕获
 
@@ -446,7 +486,7 @@ int main() {
 }
 ```
 
-#### C++14：用auto关键字产生泛型Lambda
+#### C++14：用 `auto` 关键字产生泛型 Lambda
 
 ```C++
 auto add = [](auto x, auto y) {
@@ -457,10 +497,9 @@ add(1, 2);
 add(1.1, 2.2);
 ```
 
-### C++11：可调用类型std::function
+### C++11：可调用类型 `std::function`
 
-std::function
-是一种通用、多态的函数封装，它的实例可以对任何可以调用的目标实体进行存储、复制和调用操作，它也是对C+＋中现有的可调用实体的一种类型安全的包裹，相当于函数的容器。
+`std::function` 是一种通用、多态的函数封装，它的实例可以对任何可以调用的目标实体进行存储、复制和调用操作，它也是对C+＋中现有的可调用实体的一种类型安全的包裹，相当于函数的容器。
 
 有函数的容器之后，能够更加方便的将函数、函数指针作为对象进行处理。
 
@@ -487,7 +526,9 @@ int main() {
 }
 ```
 
-### C++11：std::bind 和 std::placeholder 
+### C++11：`std::bind` 和 `std::placeholder`
+
+std::bind 用于绑定函数调用的参数；
 
 <img src="media/0738fa8d6c580bca9d58c92f0cc9823a.webp"/>
 
@@ -499,7 +540,7 @@ int main() {
 
 -   右值引用让临时的将亡值可以延续生存周期
 
--   可以用std::move将左值无条件的转换为右值的临时对象
+-   可以用 `std::move` 将左值无条件的转换为右值的临时对象
 
 ```C++
 #include <iostream>
@@ -533,7 +574,7 @@ int main()
 }
 ```
 
-### 用 std::move 减少不必要的拷贝
+### 用 `std::move` 减少不必要的拷贝
 
 ```C++
 int main() {
@@ -569,7 +610,7 @@ int main() {
 | T&&          | 左引用       | T&                 |
 | T&&          | 右引用       | T&&                |
 
-### std::forward_list容器
+### `std::forward_list` 单向链表容器
 
 <img src="media/9fd3a552a81b78813ddb2a1c73517039.webp"/>
 
@@ -632,15 +673,15 @@ static_cast<T&&> 传参: 左值引用
 
 -   unordered_multiset
 
-### C++11：tuple
+### C++11：`tuple`
 
-1.  pair 只能放两个元素，元组用tuple保存
+1.  `pair` 只能放两个元素，元组用 `tuple` 保存
 
-2.  std::make_tuple 可以构造元组
+2.  `std::make_tuple` 可以构造元组
 
-3.  std::get 获得元组某个位置的值
+3.  `std::get` 获得元组某个位置的值
 
-4.  std::tie 对元组拆包（操作如下）
+4.  `std::tie` 对元组拆包（操作如下）
 
 ```C++
 #include <tuple>
@@ -678,7 +719,7 @@ int main() {
 }
 ```
 
-### C++11：合并和遍历tuple
+### C++11：合并和遍历 `tuple`
 
 常见的需求就是合并两个元组，这可以通过 `std::tuple_cat` 来实现：
 
@@ -704,7 +745,7 @@ for(int i = 0; i != tuple_len(new_tuple); ++i)
     std::cout << tuple_index(new_tuple, i) << std::endl;
 ```
 
-### C++14：std::get\<T\> t 加使用类型获取元组中的对象
+### C++14：`std::get<T> t` 加使用类型获取元组中的对象
 
 此处的 std::get\<T\> 必须依赖编译期就存在的常量；
 
@@ -716,7 +757,7 @@ std::cout << std::get<double>(t) << std::endl;
 std::cout << std::get<3>(t) << std::endl;
 ```
 
-### C++17：给 std::variant\<\> 提供类型模板参数
+### C++17：给 `std::variant<>` 提供类型模板参数
 
 使用 std::variant<>，提供给 variant<> 的类型模板参数，可以让一个 variant<> 容纳**提供的几种类型**的变量
 
@@ -750,19 +791,21 @@ std::cout << tuple_index(t, i) << std::endl;
 
 ### C++11：智能指针和内存管理
 
-#### std::shared_ptr：记录引用计数的智能指针
+#### `std::shared_ptr`：记录引用计数的智能指针
 
 记得用make_shared\<T\> ();初始化；
 
 <img src="media/8b87d40eb4c9f658da0b97f2c51958cd.webp"/>
 
-#### std::weak_ptr，不会引起引用数增加的弱引用指针
+#### `std::weak_ptr`，不会引起引用数增加的弱引用指针
+
+用途就是它有 expired 方法检测 shared_ptr 是否存在；
 
 <img src="media/d83551cd7ad6fd6988a6eb08d327628f.webp"/>
 
 #### （推荐）std::unique_ptr，独占的智能指针
 
-C++14 才有make_unique\<T\>函数; （就是他们委员会忘了写，没啥深意）
+C++14 才有 `make_unique<T>` 函数; （就是他们委员会忘了写，没啥深意）
 
 虽然 C++11 没有提供 `std::make_unique`，但可以自行实现：
 
@@ -813,9 +856,11 @@ constexpr指针只能指向nullptr、0、或储存在固定地址的对象
 
 #### 待补充的引用折叠：auto &&i
 
+就一种万能的引用方式，剩下的都交给编译器处理了；
+
 <img src="media/e0c8276a9caf42877abdfc35e919c4f7.webp"/>
 
-### C++11：decltype类型
+### C++11：`decltype` 类型
 
 <img src="media/34d9f23ccdfe72eea721dce8b8de02d5.webp"/>
 
@@ -823,7 +868,7 @@ constexpr指针只能指向nullptr、0、或储存在固定地址的对象
 
 <img src="media/187b878a23a612059314e19e8d2b264a.webp"/>
 
-## 3.2、3.3 标准库类型string和vector
+## 3.2、3.3 标准库类型 string 和 vector
 
 ### C++：一些初始化写法
 
@@ -835,15 +880,15 @@ constexpr指针只能指向nullptr、0、或储存在固定地址的对象
 
 <img src="media/d35177ecc78cfa5e5088961c7e66f1e3.webp"/>
 
-### C++11：size_type是无符号整型，避免和int混用
+### C++11：size_type 是无符号整型，避免和int混用
 
 <img src="media/8223bbdab54129e8932430d4aef060e0.webp"/>
 
-### 注意C++引用C的头文件格式
+### 注意 C++ 引用 C 的头文件格式
 
 <img src="media/bfd173a27d6adc416b69ca1f0d45806d.webp"/>
 
-### C++：初始化vector对象
+### C++：初始化 vector 对象
 
 <img src="media/004090856c1f6a93ddb9313f09937537.webp"/><img src="media/019351c3bd67f47ca6b749a70c4f5ebe.webp"/>
 
@@ -922,7 +967,7 @@ expr的，还是要尽量避免强制类型转换。
 
 ## 6.2.6 含有可变形参的函数
 
-### C++11：initializer_list形参
+### C++11：initializer_list 形参
 
 <img src="media/abba4c1ccb0bcffb1981b0f4747a1112.webp"/>
 
@@ -932,13 +977,15 @@ expr的，还是要尽量避免强制类型转换。
 
 <img src="media/5731ada95d14c7f8a58cd67988defaf9.webp"/>
 
-### C++ ：省略符形参，访问一些特殊的C代码
+### C++ ：省略符形参，访问一些特殊的 C 代码
 
-特殊的C代码：指使用了varargs的C标准库功能
+此处特殊的C代码指使用了varargs的C标准库功能
+
+~~我也不知道这是啥~~
 
 <img src="media/1c983c2757cc573e055d7c67890bfdc6.webp"/>
 
-## 6.5.2 内联函数和constexpr函数
+## 6.5.2 内联函数和 constexpr 函数
 
 内联函数：在编译时展开，能减少函数运行开销
 
@@ -974,7 +1021,7 @@ constexpr函数最大的特性：调用该函数的语句，会在编译阶段�
 
 <img src="media/87e94dbdedde346c70592820bf3ce75b.webp"/>
 
-### 关键字explicit：抑制构造函数定义的隐式转换
+### 关键字 explicit：抑制构造函数定义的隐式转换
 
 <img src="media/e463785d6df3b64e18af2efcbf97d096.webp"/>
 
@@ -984,7 +1031,7 @@ constexpr函数最大的特性：调用该函数的语句，会在编译阶段�
 
 <img src="media/3a002354f142b835658d2e798e61672b.webp"/>
 
-### C++11：constexpr构造函数
+### C++11：constexpr 构造函数
 
 constexpr构造函数必须初始化所有数据成员、初始值、或者使用一个constexpr构造函数、或者是一条常量表达式。
 
