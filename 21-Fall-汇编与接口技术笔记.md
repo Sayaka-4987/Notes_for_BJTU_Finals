@@ -17,6 +17,10 @@
 
 
 
+# 汇编部分
+
+
+
 ## 1. 基础知识
 
 ### 1.2 硬件接口
@@ -2533,7 +2537,7 @@ D 命令 **默认显示 CS 段的内容**；
 
 
 
-<img src=".\media\标志位取值.jpg" style="zoom:33%;" />
+<img src=".\media\标志位取值.webp" style="zoom:33%;" />
 
 
 
@@ -2601,7 +2605,7 @@ D 命令 **默认显示 CS 段的内容**；
 
 #### 使用场合
 
-<img src=".\media\段内和段间调用.jpg" style="zoom:50%;" />
+<img src=".\media\段内和段间调用.webp" style="zoom:50%;" />
 
 
 
@@ -4061,6 +4065,8 @@ DELAY:
 
 ### 可编程定时/计数器 82C54A
 
+是 8253 的升级版（
+
 #### 82C54的外部连接特性与内部结构
 
 <img src="media/image-20211104163205273.webp" alt="image-20211104163205273" style="zoom:50%;" />
@@ -4090,7 +4096,7 @@ DELAY:
   -  $\overline{CS}$ 由CPU输出的地址码经译码产生。
 - 读信号 $\overline{RD}$ ：输入信号，低电平有效
 - 写信号 $\overline{WR}$ ：输入信号，低电平有效
-- 地址线 A1,A0  : 这两根线接到系统地址总线的 A1,A0 上，用于片内寻址
+- 地址线 A1, A0  : 这两根线接到系统地址总线的 A1, A0 上，用于片内寻址
   -  8254有4个I/O端口地址，按从低到高地址的字节顺序为：通道0、1、2、方式字
   - 各占一个字节宽度的I/O地址
   - 如果要向方式字所在I/O地址传送两个字节，那么需要连续两次向该IO地址传输内容
@@ -4334,6 +4340,7 @@ D5-D4用于选择读当前状态还是当前计数值，0：要读取，1：不�
 
 - 在计数器工作期间，如果重新写入新的计数值，计数器将按新写入的计数初值重新工作。
 - 小细节：
+  - CLK上升沿启动，（正脉冲）n+1次（负脉冲则是n+2）变成高电平
   - 程序写完计数初值只是写入初值寄存器，之后到来的第一个CLK输入脉冲（先由低电平变为高电平，再由高电平变为低电平）才将初值送入减1计数器。
   - 从第二个CLK的下降沿才开始减1计数。
 
@@ -4440,7 +4447,7 @@ D5-D4用于选择读当前状态还是当前计数值，0：要读取，1：不�
 |1控制字写入|当控制字写入后，OUT=1|
 |2计数值写入|OUT=1|
 |3启动方式|GATE上升沿可启动，或者GATE=1时写入计数值也可以启动。在启动后的下一个时钟脉冲时OUT=1|
-|4计数期间|若计数值N为偶数，则在前N/2计数期间，OUT=1;后N/2计数期间OUT=0；如为奇数，则前(N+1)/2期间，OUT=1；后(N-1)/2期间，OUT=0|
+|4计数期间|若计数值N为偶数，则在前N/2计数期间，OUT=1；后N/2计数期间OUT=0；<br>如为奇数，则前(N+1)/2期间，OUT=1；后(N-1)/2期间，OUT=0|
 |5计数为0时|OUT=1，完成一个周期；然后计数值自动装入减1计数器，开始下一周期|
 |6计数期间写入新的计数值|不影响当前输出周期；当计数值为0或者GATE有上升沿后，在当前输出周期结束以后时钟下降沿以新计数周期输出方波|
 |7GATE的作用|GATE=0时，OUT=1，停止计数；GATE上升沿时，下一周期按新计数值重启计数器；GATE=1时不影响计数过程；|
@@ -4472,8 +4479,8 @@ D5-D4用于选择读当前状态还是当前计数值，0：要读取，1：不�
 |3启动方式|写入计数值后再过一个时钟周期开始根据计数初值减1计数|
 |4计数期间|OUT=1|
 |5计数为0时|输出一个负脉冲，其宽度为1个时钟周期，然后自动变为高电平并保持下去。|
-|6计数期间写入新的计数值|立即有效。在写入新计数值之后，在下一个时钟周期时以新计数值计数减1。如果写入的计数值是2个字节，在写入第一个字节时，计数不受影响；在写入第二个字节时，下一个时钟周期以新计数值计数减1。|
-|7GATE的作用|GATE=0时，OUT=1，停止计数；GATE=1时开始计数；GATE状态不影响OUT的值。|
+|6计数期间写入新的计数值|立即有效；在写入新计数值之后，在下一个时钟周期时以新计数值计数减1；<br>如果写入的计数值是2个字节，在写入第一个字节时，计数不受影响；<br>在写入第二个字节时，下一个时钟周期以新计数值计数减1。|
+|7GATE的作用|GATE=0时，OUT=1，停止计数；<br>GATE=1时开始计数；<br>GATE状态不影响OUT的值。|
 |8计数值有效期|计数值一次有效；|
 
 
@@ -4531,7 +4538,7 @@ D5-D4用于选择读当前状态还是当前计数值，0：要读取，1：不�
 
 
 
-<img src=".\media\8255的6种工作方式小结.webp" style="zoom:50%;" />
+<img src=".\media\8255的6种工作方式小结.webp" style="zoom: 50%;" />
 
 
 
@@ -4917,8 +4924,8 @@ PC微机中断优先级的顺序：软件中断>不可屏蔽中断> 可屏蔽中
 
 ## ※ 82C59A端口地址
 
-- 主片端口地址：20H和21H
-- 从片端口地址：0A0H和0A1H
+- 主片端口地址：20H 和 21H 
+- 从片端口地址：0A0H 和 0A1H 
   - 具体使用哪个端口地址，由初始化命令ICW，和操作命令OCW的标志位A0指示
 
 
@@ -4968,11 +4975,23 @@ PC微机中断优先级的顺序：软件中断>不可屏蔽中断> 可屏蔽中
 
 ## ※ 82C59A的编程命令
 
-### 初始化命令字
+8259A有两类编程命令，初始化命令字ICW和操作命令字OCW，都是通过D0-D7传输的。
+
+- **ICW** 
+  - 在初始化里完成，必须按一定的顺序
+  - 在PC机中已有系统软件完成，不需要也**不允许**由用户自己去设置
+  - 一般只对于没有配置完善操作系统的单板微机上进行
+- **OCW** 
+  - 没有一定的顺序，一般也不安排在程序的开头
+  - 在初始化后的任何时候进行动态控制
+
+
+
+### 初始化命令字 ICW 
 
 - 设置中断屏蔽方式是默认常规屏蔽方式，如要改动，可以执行操作命令OCW3
 - 注意：必须在对82C59A初始化时完成；
-- 需要**按顺序发送**ICW1 – ICW4；
+- 需要**按顺序发送**ICW 1 – ICW4；
 
 
 
@@ -5037,7 +5056,7 @@ OUT  21H, AL
 
 
 
-### 操作命令字
+### 操作命令字 OCW 
 
 - 初始化后，使用OCW命令对中断控制器进行动态控制
 - 不需要按顺序发送，在程序中任意安排
@@ -5075,7 +5094,7 @@ OUT  21H, AL
   - SL（D6）=1，结束指定中断  
     - OCW2=01100L2L1L0
 
-例：指定IR5的中断结束，则 OCW2=01100101B=65H
+例：指定IR5的中断结束，则 OCW2=01100**101**B=65H
 
 
 
@@ -5090,7 +5109,7 @@ OUT  21H, AL
 
 
 
-#### OCW2 总结
+##### OCW2 总结
 
 <img src="media/image-20211117121300163.webp" alt="image-20211117121300163" style="zoom:50%;" />
 
@@ -5120,11 +5139,464 @@ OUT  20H, AL   ; 写入OCW2端口(A0=0)
 
 #### OCW3：设定屏蔽方式和读取状态
 
+- 读取8259A的IRR、ISR寄存器的内容
+- 设置特定屏蔽方式
+- 查询中断方式
+
+<img src="media/image-20211121223909362.webp" alt="image-20211121223909362" style="zoom:50%;" />
+
+
+
+##### 读状态操作（OCW3格式中的D1-D0 ）
+
+- 8259A内部有3个寄存器IRR、ISR、IMR可供CPU读出当前的内容。
+- 读IRR和ISR的方法：
+  - CPU先指定读哪个寄存器，然后再发IN指令，才能读取ISR和IRR中的内容
+  - 当8259A初始化后，自动指向读IRR寄存器
+- 读IMR的方法：
+  - 不需要先发指定命令，只要**读奇地址端口**
+  - OCW1的例子中的 `IN  AL, 21H` 读了21H端口的内容
+
+
+
+例1：读ISR寄存器的内容
+
+步骤：
+
+- 通过OCW3指定被读的寄存器
+- OCW3为00001**011**B, 表示下个RD要读ISR
+- 用IN指令读出ISR寄存器的内容
+
+程序段如下：
+
+```assembly
+MOV  AL, 0BH    ; OCW3表示读ISR
+OUT  20H, AL    ; 20H为OCW3的端口地址
+IN   AL, 20H    ; 读ISR寄存器  
+```
+
+
+
+例2：读IRR寄存器的内容
+
+步骤：
+
+- 通过OCW3指定被读的寄存器
+- OCW3为00001**010**B, 表示下个RD要读IRR
+- 用IN指令读出IRR寄存器的内容
+
+程序段如下：
+
+```assembly
+MOV  AL, 0AH    ; OCW3表示读IRR
+OUT  20H, AL    ; 20H为OCW3的口地址
+IN   AL, 20H    ; 读IRR寄存器
+MOV  AH, AL     ; 保存IRR->AH
+```
+
+
+
+例3：读查询字(读回中断状态)
+
+步骤：
+
+- 通过OCW3发送出查询命令
+- OCW3为00001**100**B, 表示下个RD要读查询字
+- 用IN指令读出查询字的内容
+
+程序段如下：
+
+```assembly
+MOV  AL, 0CH    ; 用 OCW3 发送查询命令
+OUT  20H, AL    ; 20H 为 OCW3的口地址
+IN   AL, 20H    ; 读查询字
+MOV  AH, AL     ; 保存查询字 ->AH 
+```
+
+
+
+##### 查询字的格式
+
+当有中断请求时，8259A将IRR中的相应位置1，同时将查询字送到数据总线上供CPU读取；
+
+查询中断前CPU先关闭中断申请，再发查询命令；
+
+<img src="media/image-20211121225611698.webp" alt="image-20211121225611698" style="zoom:50%;" />
 
 
 
 
 
+#### 8259A 的同一端口如何区分 ICW 和 OCW 
+
+A0=0 (偶地址端口) 写入：
+
+- D4=1 → ICW1
+- D4=D3=0 → OCW2
+- D4=0, D3=1 → OCW3
+
+A0=1 (奇地址端口) 写入：
+
+- 按顺序写 ICW2 → （ICW3 → ICW4） → OCW1 
+
+
+
+### 8259工作原理小结
+
+两个阶段：初始化阶段和工作阶段
+
+
+
+<img src="media/image-20211122081116830.webp" alt="image-20211122081116830" style="zoom:50%;" /> 
+
+
+
+<img src="media/image-20211122081127484.webp" alt="image-20211122081127484" style="zoom:50%;" /> 
+
+
+
+### 可屏蔽中断系统
+
+对系统的82C59A初始化编程不是由用户设定，而是在微机启动后由处理器按初始化设置要求自动完成。
+
+用户的工作是：
+
+- 修改中断向量
+- 发中断屏蔽/开放及中断结束命令
+- 编写中断服务程序
+
+<img src="media/image-20211122081247205.webp" alt="image-20211122081247205" style="zoom:67%;" />
+
+
+
+#### 系统对中断控制器初始化程序段
+
+82C59A主片初始化程序段如下：
+
+```assembly
+INTA00 EQU 020H       	;82C59A主片端口(A0=0)
+INTA01 EQU 021H       	;82C59A主片端口(A0=1)
+
+MOV AL,11H           	;ICW1：边沿触发，多片，要ICW4（A0=0）
+OUT INTA00,AL
+JMP SHORT$+2          	;I/O端口延时要求（下同）
+MOV AL,8H             	;ICW2：中断号的高5位（A0=1）
+OUT INTA01,AL
+JMP SHORT$+2
+MOV AL,04H           	;ICW3：主片的IR2上接从片（A0=1）
+OUT INTA01,AL
+JMP SHORT$+2
+MOV AL,01H           	;ICW4：非缓冲，全嵌套，16位的CPU，非自动结束
+OUT INTA01,AL
+```
+
+
+
+82C59A从片初始化程序段如下：
+
+```assembly
+INTB00 EQU 0A0H      	;82C59A从片端口(A0=0)
+INTB01 EQU 0A1H      	;82C59A从片端口(A0=1)
+
+MOV AL,11H          	;ICW1：边沿触发，多片，要ICW4
+OUT INTB00, AL
+JMP SHORT$+2
+MOV AL,70H          	;ICW2：中断号的高5位
+OUT INTB01, AL
+JMP SHORT$+2
+MOV AL,02H          	;ICW3：从片接主片的IR2（ID2ID1ID0=010）
+OUT INTB01,AL
+JMP SHORT$+2
+MOV AL,01H              ;ICW4：非缓冲，全嵌套，16位的CPU，非自动结束
+OUT INTB01,AL
+```
+
+
+
+### 修改中断向量
+
+中断向量修改的方法是利用DOS功能调用INT21H的35H号功能和25H号功能
+
+INT21H系统功能调用为用户程序修改中断向量提供了两个读/写中断向量的功能号
+
+<img src="media/image-20211122090135013.webp" alt="image-20211122090135013" style="zoom:50%;" />
+
+
+
+#### 中断向量修改与恢复的步骤
+
+1. 调用35H号功能，从向量表中读取某一中断号的原中断向量，并保存在双字节变量中；
+
+2. 调用25H号功能，将新中断向量写入中断向量表中原中断向量的位置，取代原中断向量；
+
+3. 新中断服务程序完毕后，再用25H号功能将保存在双字节变量中的原中断向量写回去，恢复原中断向量；
+
+
+
+```assembly
+CLI   ; 修改中断向量时要关中断！
+MOV	AH, 35H
+MOV	AL,	N			 
+INT	    21H
+
+MOV	OLD_SEG，ES  ; 保存原中断向量
+MOV	OLD_OFF，BX
+MOV	DX,  SEG INTRnew     ; 取新中断向量段基地址
+MOV	DS,  DX
+MOV	DX,  OFFSET INTnew   ; 取新中断向量偏移地址
+MOV	AL,	 N			     ; 中断类型号为N
+MOV	AH,  25H
+INT	     21H
+
+; 新中断程序服务 ...
+
+MOV	DS,  OLD_SEG
+MOV	DX,  OLD_OFF					
+MOV	AL,	 N
+MOV	AH,  25H
+INT	     21H 
+```
+
+
+
+#### 发中断屏蔽/开放和中断结束指令
+
+- 主程序中写OCW1执行中断屏蔽与开放
+- 中断服务程序中写OCW2，发中断结束信号EOI和使用IRET中断返回。
+
+一般格式：
+
+```assembly
+NEW_INT PROC FAR
+; 寄存器进栈，保护现场
+CLI    ; 关中断
+
+...	; 服务程序主体
+			
+; 向主/从82C59A发中断结束命令	
+	MOV  AL, 20H
+	OUT  20H, AL
+; 寄存器出栈，恢复现场(注意顺序对称)
+
+STI    ; 开中断
+IRET   ; 中断返回
+NEW_INT ENDP
+```
+
+
+
+### 中断服务程序设计
+
+##### 例1  利用82C59A主片设计中断服务程序
+
+<img src="media/image-20211122091930905.webp" alt="image-20211122091930905" style="zoom:67%;" />
+
+- 要求：电路如图所示。微动开关SW中断请求连接到IRQ7。每按下一次申请1次中断。按8次后显示“OK!”，程序结束。
+- 分析：IRQ7的中断号为0FH，系统分配给打印机中断。当打印机空闲不用时，可以通过修改中断向量加以利用
+
+
+
+程序：
+
+```assembly
+; 堆栈段定义
+STACK SEGMENT
+     DW 200 DUP(?)
+STACK ENDS
+
+; 数据段定义
+DATA SEGMENT
+     OLD_IV DD ?    ; 保存原中断向量的双字单元
+     MK_BUF DB ?    ; 保存原屏蔽字的字节单元
+     BUF DB 'OK!',ODH,OAH,$   ; 提示符
+DATA ENDS
+
+CODE SEGMENT
+ASSUME CS:CODE, DS:DATA, SS:STACL
+; 发中断开放指令
+START: 
+    MOV AX,DATA
+    MOV DS,AX
+    IN AL,21H               ; 保存原屏蔽字
+    MOV MK_BUF,AL
+    CLI                     ; 关中断
+    AND AL,01111111B  ; 开放0FH号中断(OCW1), (01111111B=7FH)
+    OUT 21H,AL
+
+; 修改中断向量
+      CALL GET_IV    ; 获取原中断向量，并保存
+      CALL SET_IV    ; 设置用户程序新中断向量
+; 主程序主体
+      XOR DX,DX      ; 清空计数器 DX 
+L1: 
+      STI            ; 开中断
+      CMP DX,8       ; 计数是否到8
+      JNZ L1         ; 未到，继续等待微动开关中断
+      
+; 中断8次结束，恢复原来的中断向量和屏蔽字    
+      CLI              ; 已到，关中断
+      CALL RENEW_IV    ; 恢复原中断向量
+      MOV AL,MK_BUF    ; 恢复原屏蔽字(OCW1)
+      OUT 21H,AL
+      STI              ; 开中断
+      
+; 中断结束，显示“OK!”
+      MOV AX, SEG BUF
+      MOV DS, AX
+      MOV DX, OFFSET BUF
+      MOV AH,09H
+      INT 21H
+      
+; 返回DOS 
+      MOV AX,4C00H
+      INT 21H
+
+
+; 中断服务程序SW_INT
+SW_INT PROC FAR             
+    PUSH AX
+    CLI           ; 关中断
+    INC DX        ; 计数加1
+    MOV AL,67H    ; 发中断结束命令（OCW2）
+    OUT 20H,AL
+    POP AX
+    STI           ; 开中断
+    IRET          ; 中断返回
+SW_INT ENDP
+
+
+; 获取原中断向量子程序
+GET_IV PROC NEAR
+      MOV AX,350FH
+      INT 21H
+      MOV WORD PTR OLD_IV, BX
+      MOV	BX，ES
+      MOV WORD PTR OLD_IV+2,BX
+      RET
+GET_IV ENDP
+
+
+; 设置新中断向量子程序
+SET_IV PROC NEAR
+       PUSH DS
+       MOV AX,SEG SW_INT
+       MOV DS,AX
+       MOV DX,OFFSET SW_INT
+       MOV AX,250FH
+       INT 21H
+       POP DS
+       RET
+SET_IV ENDP
+
+
+; 恢复原来的中断向量子程序
+RENEW_IV PROC NEAR
+         PUSH DS
+         MOV DX,WORD PTR OLD_IV
+         MOV AX,WORD PTR OLD_IV+2
+         MOV DS,AX
+         MOV AX,250FH
+         INT 21H
+         POP DS
+         RET
+RENEW_IV ENDP
+```
+
+
+
+##### 例2  利用82C59A从片设计中断服务程序
+
+- 要求：电路如图所示。微动开关SW中断请求连接到IRQ10。每按下一次申请1次中断,显示“OK!”，程序结束
+- 
+  分析：IRQ10是从片的IR2引脚上的中断请求，中断号为72H，是系统保留的，用户可以使用。由于是从片，在执行屏蔽开放和中断结束命令时，要考虑主片的相应操作。		
+
+```assembly
+; 数据段定义
+DATA SEGMENT
+     INT_OFF DW ?
+     INT_SEG DW ?
+     BUF DB 'OK!',ODH,OAH,$
+DATA ENDS
+
+; 段地址定义
+STACK SEGMENT
+     DW 200 DUP(?)
+STACK ENDS
+
+START: MOV AX, DATA
+       MOV DS, AX
+       MOV ES, AX
+       MOV AX, STACK
+       MOV SS, AX
+; 获取原中断向量
+      MOV AX,3572H
+      INT 21H  
+      MOV INT_OFF,BX
+      MOV BX,ES
+      MOV INT_SEG,BX
+; 装入新中断向量
+      CLI
+      MOV DX,SEG SW_INT
+      MOV DS,DX
+      MOV DX,OFFSET SW_INT
+      MOV AX,2572H
+      INT 21H
+      MOV AX,DATA
+      MOV DS,AX
+; 开放主片IRQ2的中断屏蔽
+      IN AL,21H
+      AND AL,11111011B(FBH)
+      OUT 21H,AL
+; 开放从片IQR2的中断屏蔽
+      IN  AL,0A1H
+      AND AL,11111011B(FBH)
+      OUT 0A1H,AL
+; 主程序
+      STI
+      HLT
+
+; 中断结束恢复原中断向量
+      CLI
+      MOV DX,INT_SEG
+      MOV DS,DX
+      MOV DX,INT_OFF
+      MOV AX,2572H
+      INT 21H
+      MOV AX,DATA
+      MOV DS,AX
+; 中断结束屏蔽主片IRQ2
+       IN AL,21H
+       OR AL,00000100B(04H)
+       OUT 21H,AL
+; 中断结束屏蔽从片IQR2
+       IN  AL,0A1H
+       OR AL,00000100B(04H)
+       OUT 0A1H,AL
+       STI
+; 中断结束，显示“OK!”
+      MOV AX, SEG BUF
+      MOV DS, AX
+      MOV DX, OFFSET BUF
+      MOV AH,09H
+      INT 21H
+; 返回DOS 
+      MOV AX,4C00H
+      INT 21H
+
+
+; 中断服务程序SW_INT
+SW_INT PROC FAR             
+       PUSH AX
+       CLI 
+       MOV AL,20H ; 主片发EOI命令
+       OUT 2OH,AL
+       MOV AL,62H ; 从片发EOI命令
+       OUT 0A1H,AL
+       STI     
+       POP AX
+       IRET
+SW_INT ENDP
+```
 
 
 
