@@ -1563,6 +1563,45 @@ ALTER TABLE Student ADD CONSTRAINT C3 CHECK (Sage < 40);
 
 
 
+## 存储过程、触发器
+
+当修改表的数据而引发了触发器时，触发器将执行一系列 T-SQL 命令，在执行这些动作之前系统首先自动建立两个专用临时表：inserted 表和 deleted 表；
+
+1. 这两个表的结构与触发器表完全相同。而且只能由创建他们的触发器引用
+2. 它们是临时的逻辑表,由系统来维护,不允许用户直接对它们进行修改，只能在触发器程序中查询表中的内容。
+3. 它们存放在内存中,并不存放在数据库中,触发器执行完毕后，与该触发器相关的这两个表也会被删除。
+
+
+
+自己写的时候最好全用存储过程；
+
+```sql
+# 作业里的存储过程
+CREATE PROCEDURE `delete_post`(IN `pid` int(11), IN `fname` varchar(16))
+BEGIN
+    delete from `reply` where `post_id`=pid;
+    delete from `post` where `post_id`=pid;
+    update `forum` set `total_post`=`total_post`-1 where `forum_name`=fname;
+END;
+
+# 触发器例
+CREATE TRIGGER `insert_reply`
+after insert on `reply` for each row   
+BEGIN 
+    update `post` set `replies`=`replies`+1 where `post_id`=new.`post_id`;
+    update `post` set `last_reply_time`=now() where `post_id`=new.`post_id`;
+END;  
+```
+
+
+
+如果在触发器中发出ROLLBACK TRANSACTION ，系统将作如下处理：
+
+- 回滚当前事务的所有修改，包括触发器所做的修改
+- 触发器继续执行ROLLBACK语句之后的所有其余语句，如果这些语句中的任意语句修改数据，则不回滚这些修改。
+- 批处理中，不执行所有位于激发触发器的语句之后的语句。
+- 注意：`TRUNCATE TABLE `清空表的操作不能恢复，也不会引发 DELETE 触发器；
+
 
 
 
