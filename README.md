@@ -1,11 +1,11 @@
 # Notes_for_BJTU_Finals
 一个绩点低于3.4的菜鸟笔记 / Notes from a rookie with a GPA below 3.4
 
-使用 `typora` 编写，图片使用相对路径存放，资源都在仓库同目录 `.\media` 路径下（抄ipLee作业）
+使用 `typora` 编写，图片使用相对路径存放，资源都在仓库同目录 `.\media` 路径下（跟 ipLee 学的）
 
-图片资源已用 `WebPconv` 优化为 .webp 格式（感谢ZX建议）
+图片资源会定期批量用 `WebPconv` 优化为 .webp 格式（感谢 ZX 建议）
 
-~~这要再刷不出来就是 GFW 的问题了~~
+~~这要再刷不出来就是 GFW 的问题了，别找我~~
 
 ### 声明：
 

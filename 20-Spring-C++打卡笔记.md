@@ -1179,7 +1179,7 @@ constexpr构造函数必须初始化所有数据成员、初始值、或者使�
     std::function\<int(double,double)\>）
 
 -   lambda表达式是可调用对象，因此可代替一些简单函数，比如用作std::sort(std::begin(a),
-    std::end(a), [](int a, int b) { return a \> b; });的比较函数；
+    std::end(a), \[](int a, int b) { return a \> b; });的比较函数；
 
    <img src="media/b9034958cd86f54e9dae586361f7f749.webp"/>
 
