@@ -1,13 +1,91 @@
 # 数据库系统原理笔记（已转型为 SQL 常用语句）
 
-
-
 写在最前面：
 
 - 基本是课件内容，还包括各种网络教程转载，整理自用；
 - 若出现报错 `ERROR 1064` ，请首先注意关键字的字母 **拼写问题**；
 - SQL 的关键字 **默认不区分大小写**；
 - 还是老一套免责声明：我太菜了，没法保证内容不出错，欢迎各位神仙大佬拍砖；
+
+
+
+## 期末划重点
+
+### 考试范围
+
+**书目录画星号 `*` 的章节都不考**
+
+第1章绪论，基本概念都考（三级模式两级映像、组成）
+
+第2章关系数据库，2.5不考，注意关系模型、操作、完整性定义
+
+第3章SQL，都考，提到的SQL操作应该全部掌握，会用视图
+
+第4章数据库安全性，4.2.6，4.5，4.6不考，其它都要掌握
+
+第5章数据库完整性，5.4，5.5，5.6不考，其它都要掌握，主要是完整性和触发器
+
+第6章关系数据理论，只考到6.2.6的BCNF，往后的不考，需要清楚各种码定义，会判断关系是第几范式
+
+第7章数据库设计，画星号的不考，主要理解概念，重点是E-R模型和用E-R图转关系模型
+
+第8章数据库编程，掌握基本概念（游标，和高级语言通信）即可，不考编程题
+
+第9章查询优化，画星号的不考，理解SQL语句如何转换为关系代数的规则，查询树如何画（选择和连接必须会，按PPT上写法），理解如何计算比较查询快慢
+
+第10章数据库恢复，全都考，最重要的是事务概念，ACID准则，了解事务系统介质各种故障怎么恢复（冗余）
+
+第11章并发，11.7，11.8，11.9不考，理解读锁和写锁（只有读和读不冲突），活锁和死锁以及怎么解决，可串行性，冲突可串行化调度（冲突调度变串行），两段锁协议
+
+
+
+### 题型
+
+四道大题
+
+1. 选择题40%
+2. 关系代数和查询优化10%
+3. SQL语句6道题30%
+4. E-R模型关系模型规范化20%
+
+
+
+### 作业讲评
+
+#### 并发控制
+
+- 3个事务的并发，串行执行次序有 $A_{3}^{3}$ 种结果；
+- 会设计可串行化调度（多个事务的**并发执行是正确的** 当且仅当 **其结果与按某一次序串行地执行这些事务时的结果相同**）、非可串行化调度
+  - 正确调度=可串行化的调度，串行调度一定是正确调度，正确调度不一定是串行调度
+  - 可串行化不一定满足两阶段锁，两段锁的一定可串行化
+  - 两阶段锁满足不一定不死锁，可以画事务等待图分析
+- 对同一个事务的冲突操作不允许交换顺序
+
+#### 恢复
+
+- 在故障发生前已经提交的事务要重做（redo），在故障发生时尚未提交的事务需要回滚（undo）
+- 有检查点要另外考虑
+
+#### 查询优化
+
+- 需要会计算磁盘读写代价 
+- 写关系代数（注意**记一下关系代数的符号**）→ 根据关系表达式画查询树
+- 优化原则：选择操作尽可能下推，笛卡尔积一定化成连接，投影列可以写可以不写
+
+#### 数据库设计、关系数据理论
+
+- 画E-R图转关系模式
+- **E-R图的实体需要写属性！！！！**
+- 关系模式主键下划线，外键波浪线
+- 记一下几种范式
+- 注意识别题目文字中比较隐晦的 m-n, 1-n 关系
+
+#### SQL语句
+
+- 不要用 `<>` 和 `!=` 符号
+- 
+
+
 
 
 
@@ -343,7 +421,7 @@ select sname,sno from student where age>18 and sex='F'；  -- 查询所有年
 ```sql
 select sno,sname from student where sname like "赵%"    -- 查找姓赵的同学
 select sname from s where sno like "_1%";   -- 查询学号第二位是1的同学
-select cno from courses where cname like "DB\-DE" escape '\'    -- 查询课程名为“DB_DE”的课程号，escape 用了换码字符，这里的 '_' 不再是通配符
+select cno from courses where cname like "DB\_DE" escape '\'    -- 查询课程名为“DB_DE”的课程号，escape 用了换码字符，这里的 '_' 不再是通配符
 ```
 
 
@@ -396,7 +474,7 @@ select sno from sc where cno in ('1', '2');
 ```sql
 -- 查询学生学号、姓名和出生年份,并按出生年份的升序排列，出生年份相同时，按学号的降序排列
 select sno,sname,2020-age as year_of_birth from S 
-order by year_of_birth,sno desc
+order by year_of_birth,sno desc;
 ```
 
 注意：含有空值的时候，若按升序排列，含空值的元组将最后显示；若按降序排列，含空值的元组将最先显示。           
@@ -407,7 +485,7 @@ order by year_of_birth,sno desc
 
 #### `count([distinct]<列名>)`
 
-统计一列中值的个数,不计算空值
+统计一列中值的个数，不计算空值
 
 例：查看 table3 表中数据条数
 
@@ -428,13 +506,13 @@ select count(*) from table3;
 
 #### `sum([distinct]<列名>)`
 
-计算一列的总和(此列必须是数值型) 
+计算一列的总和（此列必须是数值型）
 
 
 
 #### `avg([distinct]<列名>)`
 
-计算一列的平均值(此列必须是数值型)
+计算一列的平均值（此列必须是数值型）
 
 
 
@@ -451,7 +529,7 @@ select count(*) from table3;
 例：求男同学的总人数和平均年龄
 
 ```sql
-select count(*), avg(age) from student where sex='M' 
+select count(*), avg(age) from student where sex='M' ;
 ```
 
 
@@ -467,7 +545,7 @@ select count(*), avg(age) from student where sex='M'
 例：求每个同学的平均分
 
 ```sql
-select sno, avg(grade) from SC group by sno；
+select sno, avg(grade) from SC group by sno;
 ```
 
 
@@ -479,7 +557,7 @@ select sno, avg(grade) from SC group by sno；
 例：查询选修课程在三门以上的同学学号
 
 ```sql
-select sno from sc group by sno having count(cno)>3
+select sno from sc group by sno having count(cno)>3;
 ```
 
 
@@ -588,7 +666,7 @@ select s.sno,sname  from  s,sc,c  where  s.sno=sc.sno  and sc.cno=c.cno  and c.c
 
 ```sql
 SELECT Student.Sno,Sname,Ssex,Sage,Sdept,Cno,Grade
-FROM  Student  LEFT OUTER JOIN SC ON (Student.Sno=SC.Sno); 
+FROM Student LEFT OUTER JOIN SC ON (Student.Sno=SC.Sno); 
 ```
 
 SQL 92 语法：在外连接中，可以在表名之间使用关键字 `LEFT OUTER JOIN` , `RIGHT OUTER JOIN` , `FULL OUTER JOIN` , `LEFT` 关键字表示左边表的行是保留的， `RIGHT` 关键字表示右边表的行是保留的， `FULL` 关键字表示左右两边表的行都是保留的
@@ -612,7 +690,7 @@ Select sname from s where sno in (select sno from sc where cno='C2');
 例：查询有一门课程成绩等于95分的学生的学号和姓名（采用不相关子查询）
 
 ```sql
-select sno,sname  from s  where sno in (select sno from sc where grade = 95);
+select sno,sname from s where sno in (select sno from sc where grade = 95);
 ```
 
 例：查询有一门课程成绩等于95分的学生学号和姓名（采用相关子查询）
@@ -626,7 +704,7 @@ select sno,sname from s where exists
 
 
 
-#### `IN` 谓词
+#### `IN` , `NOT IN` 谓词
 
 当子查询的结果是一个集合时，常用带 `IN` 谓词的子查询
 <元素> in <子查询的结果集>
@@ -670,7 +748,7 @@ select sno,sname from s where exists
 -- 用 any:
 select sname,age  from s 
 where sex='男' and 
-      age< any(select age 
+      age<any(select age 
                from s 
                where sex='女');
 
@@ -829,10 +907,8 @@ AND GRADE<
 ### 数据修改
 
 语法:
-**UPDATE 基本表名**
-**SET 列名=新值表达式**
-**[,列名=新值表达式...]**
-**[WHERE 条件表达式];** 
+
+`UPDATE 基本表名 SET 列名=新值表达式 [,列名=新值表达式...]  [WHERE 条件表达式];`
 
 update 语句只能修改一个基本表中满足 where 条件的元组的某些列值，即其后只能有一个基本表名。
 
@@ -886,8 +962,6 @@ WHERE CNO='C2' AND GRADE IS NOT NULL
 
 
 
-
-
 ## 视图
 
 视图的特点：
@@ -896,9 +970,7 @@ WHERE CNO='C2' AND GRADE IS NOT NULL
 - 只存放视图的定义，不存放视图对应的数据
 - 基表中的数据发生变化，从视图中查询出的数据也随之改变
 
-
-
-基于视图的操作
+基于视图的操作：
 
 - 查询
 - 删除
@@ -920,16 +992,11 @@ WHERE CNO='C2' AND GRADE IS NOT NULL
 - RDBMS 执行 CREATE VIEW 语句时只是把视图定义存入数据字典，并不执行其中的SELECT语句，引用视图的时候才会执行；
 - 在对视图查询时，按视图的定义从基本表中将数据查出。
 
-
-
 例：
 
 ```sql
 CREATE VIEW S_G(sno,sname,cname,Grade)
-        AS SELECT  s.sno, sname, cname, Grade 
-               FROM   S,SC,C
-        WHERE  S.SNO=SC.SNO
-               AND SC.CNO=C.CNO；
+    AS SELECT  s.sno, sname, cname, Grade  FROM  S,SC,C  WHERE  S.SNO=SC.SNO AND SC.CNO=C.CNO；
 ```
 
 
@@ -977,7 +1044,7 @@ Group by sno;
 
 ### 删除视图
 
-语法：DROP VIEW <视图名> [可选：CASCADE] 
+语法：`DROP VIEW <视图名> [可选：CASCADE] `
 
 `CASCADE` 语句会将某个视图及其导出的所有视图全部删除
 
@@ -1003,7 +1070,7 @@ Group by sno;
 
 
 
-<img src="media/image-20211026105132195.png" alt="image-20211026105132195" style="zoom: 67%;" />
+<img src="media/image-20211026105132195.webp" alt="image-20211026105132195" style="zoom: 67%;" />
 
 
 
@@ -1088,10 +1155,7 @@ Group by sno;
 格式：
 
 ```sql
-GRANT <权限>[,<权限>]... 
-[ON <对象类型> <对象名>]
-TO <用户>[,<用户>]...
-[WITH GRANT OPTION];
+GRANT <权限>[,<权限>]... [ON <对象类型> <对象名>] TO <用户>[,<用户>]... [WITH GRANT OPTION];
 ```
 
 发出GRANT：
@@ -1112,8 +1176,6 @@ TO <用户>[,<用户>]...
 ```sql
 GRANT SELECT ON TABLE School.Student TO U1;
 ```
-
-
 
 例：把对Student表和Course表的全部权限授予用户U2和U3
 
@@ -1137,10 +1199,7 @@ GRANT ALL PRIVILIGES ON TABLE School.Student,School.Course TO U2, U3;
 - REVOKE语句的一般格式为：
 
 ```sql
-REVOKE <权限>[,<权限>]... 
-[ON <对象类型> <对象名>]
-FROM <用户>[,<用户>]...
-[CASCADE|RESTRICT];
+REVOKE <权限>[,<权限>]... [ON <对象类型> <对象名>] FROM <用户>[,<用户>]... [CASCADE|RESTRICT];
 ```
 
 
@@ -1148,9 +1207,7 @@ FROM <用户>[,<用户>]...
 例：把用户U4修改学生学号的权限收回
 
 ```sql
-REVOKE UPDATE(Sno)
-ON TABLE Student 
-FROM U4;
+REVOKE UPDATE(Sno) ON TABLE Student FROM U4;
 ```
 
 
@@ -1161,9 +1218,7 @@ FROM U4;
 - 系统只收回直接或间接从 U5 处获得的权限 
 
 ```sql
-REVOKE INSERT 
-ON TABLE SC 
-FROM U5 CASCADE ;
+REVOKE INSERT ON TABLE SC FROM U5 CASCADE;
 ```
 
 
@@ -1185,8 +1240,7 @@ FROM U5 CASCADE ;
 CREATE USER语句格式：
 
 ```sql
-CREATE USER <username> 
-[WITH] [DBA | RESOURCE | CONNECT]
+CREATE USER <username> [WITH] [DBA | RESOURCE | CONNECT]
 ```
 
  
@@ -1216,29 +1270,24 @@ CREATE  ROLE  <角色名>
 
 #### 给角色授权 
 
-GRANT  <权限>［，<权限>］…  
-ON <对象类型>对象名  
-TO <角色>［，<角色>］…
+GRANT  <权限>［，<权限>］…  ON <对象类型>对象名  TO <角色>［，<角色>］…
 
 
 
 #### 将一个角色授予其他的角色或用户
 
-GRANT  <角色1>［，<角色2>］…
-TO  <角色3>［，<用户1>］… 
-［WITH ADMIN OPTION］ 
+GRANT  <角色1>［，<角色2>］… TO  <角色3>［，<用户1>］… ［WITH ADMIN OPTION］ 
 
 
 
 #### 角色权限的收回 
 
-REVOKE <权限>［，<权限>］…
-ON <对象类型> <对象名>
-FROM <角色>［，<角色>］…
+REVOKE <权限>［，<权限>］… ON <对象类型> <对象名> FROM <角色>［，<角色>］…
 
 
 
 例：通过角色来实现将一组权限授予一个用户。
+
 步骤如下：
 
 1. 首先创建一个角色 R1
@@ -1246,7 +1295,7 @@ FROM <角色>［，<角色>］…
 2. 然后使用GRANT语句，使角色R1拥有Student表的SELECT、UPDATE、INSERT权限
     `GRANT SELECT，UPDATE，INSERT ON TABLE Student TO R1;`
 3. 将这个角色授予王平，张明，赵玲。使他们具有角色R1所包含的全部权限
-    `GRANT  R1  TO 王平，张明，赵玲; `
+    `GRANT  R1  TO 王平,张明,赵玲; `
 4. 也可以一次性通过R1来回收王平的这3个权限
      `REVOKE  R1 FROM 王平;`
 5. 还可以修改R1这个角色的权限：
@@ -1272,7 +1321,7 @@ FROM <角色>［，<角色>］…
 
 例：对修改SC表结构或修改SC表数据的操作进行审计
 
-`AUDIT ALTER,UPDATE  ON  SC;`
+`AUDIT ALTER, UPDATE ON SC;`
 
 
 
@@ -1280,7 +1329,7 @@ FROM <角色>［，<角色>］…
 
 例：取消对SC表的一切审计
 
-`NOAUDIT  ALTER,UPDATE  ON  SC;`
+`NOAUDIT ALTER,UPDATE ON SC;`
 
 
 
@@ -1377,7 +1426,6 @@ CREATE TABLE SC (
 
   - 当删除或修改被参照表的一个元组时造成了不一致，则将参照表中的所有造成不一致的元组的对应属性设置为空值
 
-  
 
 一般默认操作是拒绝执行，如果想让系统采用其他的策略，则必须在创建表的时候显式地加以说明
 
@@ -1408,8 +1456,6 @@ CREATE TABLE SC(
 );
 ```
 
-
-
 例：当学生的性别是男时，其名字不能以Ms.打头
 
 ```sql
@@ -1420,7 +1466,7 @@ CREATE TABLE Student(
     Sage   SMALLINT,
     Sdept  CHAR(20),
     PRIMARY KEY (Sno),
-    /*定义了元组中Sname和 Ssex两个属性值之间的约束条件*/
+    /* 定义了元组中Sname和 Ssex两个属性值之间的约束条件 */
     CHECK (Ssex='女' OR Sname NOT LIKE 'Ms.%')
 );
 ```
@@ -1434,8 +1480,6 @@ CREATE TABLE Student(
 ```sql
 CONSTRAINT <完整性约束条件名> [PRIMARY KEY短语 | FOREIGN KEY短语 | CHECK短语]
 ```
-
-
 
 例：修改表Student中的约束条件，要求学号改为在900000-999999之间，年龄由小于30改为小于40
 
@@ -1593,8 +1637,6 @@ BEGIN
 END;  
 ```
 
-
-
 如果在触发器中发出ROLLBACK TRANSACTION ，系统将作如下处理：
 
 - 回滚当前事务的所有修改，包括触发器所做的修改
@@ -1606,11 +1648,11 @@ END;
 
 ## 并发、封锁协议和隔离级别
 
-X锁：排他锁
+X锁：**排他**锁
 
 - 已经加了X锁的数据对象不能再加任何锁
 
-S锁：共享锁
+S锁：**共享**锁
 
 - 已经加了S锁的数据对象还可以加S锁
 - 主要是读锁，允许读不允许写
