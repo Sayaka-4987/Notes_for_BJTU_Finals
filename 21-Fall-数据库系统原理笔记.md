@@ -63,7 +63,9 @@
 ### 恢复
 
 - 在故障发生前已经提交的事务要重做（redo），在故障发生时尚未提交的事务需要回滚（undo）
-- 有检查点要另外考虑
+- 有检查点要另外考虑（如下图），检查点和故障时间点之间的才需要REDO
+
+<img src="media/image-20220109133527345.png" alt="image-20220109133527345" style="zoom:50%;" />
 
 ### 查询优化
 
@@ -268,6 +270,47 @@ BCNF：在第三范式的基础上，不能有“关键字段 x → 关键字段
 > - R∈1NF，若X→Y且Y不属于X，X中必含有侯选键（码），则 R∈BCNF
 
 
+
+### 怎么画 E-R 图
+
+实体矩形，联系菱形（1:1, 1:n, m:n三种），属性用椭圆形，注意别忘画属性
+
+
+
+### 存储过程之游标
+
+游标是系统为用户开设的一个数据缓冲区，存放SQL语句的执行结果，每个游标区有一个名字；
+可以联想 C/C++ 的指针，游标就是一个指针
+
+- 定义游标：`EXEC SQL DECLARE C1 CURSOR FOR SELECT sno,cno,grade FROM sc;`
+- 打开游标：`EXEC SQL OPEN C1;  -- 将执行定义中的 select 语句，此处游标指向查询结果第一个元素前一位`
+- 游标推进：`EXEC SQL FETCH C1 INTO :sno,:cno,:grade;  -- 按行移动游标，把游标指向行的值取出来送到主变量，一般FETCH 放在宿主语言的循环里`
+- 关闭游标：`EXEC SQL  CLOSE   <游标名> ;  -- 释放缓冲区资源`
+
+
+
+### 数据库恢复
+
+#### 事务 ACID 特性
+
+- 原子性（Atomicity)：一个事务中所有对数据库的操作是一个不可分割的操作序列。
+  保证原子性是数据库系统的职责，是由DBMS的事务管理子系统完成的。
+- 一致性（Consistency）：一个事务独立执行的结果将保证数据库的一致性，数据不会因事务的执行而遭受破坏。
+  这个性质由DBMS的完整性子系统执行测试。
+- 隔离性（Isolation）：隔离性要求在并发事务被执行时，系统应保证与这些事务先后单独执行时结果一样，使事务如同在单用户环境下执行一样。
+  隔离性是由DBMS的并发控制子系统实现的。
+- 持续性（也叫永久性，Durability）：要求对数据库的全部操作提交后，事务对数据库的所有更新应永久地反映在数据库中。
+  持久性是由DBMS的恢复管理子系统实现的。
+
+
+
+#### 事务内部故障、系统故障、介质故障的恢复
+
+恢复机制靠冗余数据，用日志记录事务执行的时间次序，先写日志后写数据库；
+
+- **恢复事务故障**：反向扫描日志，撤销（UNDO）此事务对数据库已进行的修改，直到读到此事务的起始
+- **恢复系统故障**：正向扫描日志，把已经提交的事务都重做（REDO），尚未提交的事务撤销（UNDO）
+- **恢复介质故障**：重装数据库最近的后备副本，然后重做（REDO）此时已经提交的事务
 
 
 
@@ -928,14 +971,14 @@ select sno,sname from s where exists
 
 ```sql
 -- 用 any:
-select sname,age  from s 
+select sname,age from s 
 where sex='男' and 
       age<any(select age 
                from s 
                where sex='女');
 
 -- 用 all:
-select sname,age  from s 
+select sname,age from s 
 where sex='男' and 
       age<(select max(age) 
            from s 
@@ -979,8 +1022,6 @@ where not exists
 
 SQL语言中没有提供全称量词，但可以把 **带有全称量词的谓词** 转换成等价的 **带有存在量词的谓词**。
 
-
-
 例：检索选修全部课程的学生姓名（相当于查询这样的学生，没有一门课是他不选的）
 
 ```sql
@@ -991,8 +1032,6 @@ where not exists
        (select * from sc
             where s.sno=sc.sno and sc.cno=c.cno))；
 ```
-
-
 
 说明：
 
@@ -1097,9 +1136,7 @@ update 语句只能修改一个基本表中满足 where 条件的元组的某些
 例：将c2课程的非空成绩提高10%。
 
 ```sql
-UPDATE SC
-SET GRADE=GRADE*(1+10%)
-WHERE CNO='C2' AND GRADE IS NOT NULL
+UPDATE SC SET GRADE=GRADE*(1+10%) WHERE CNO='C2' AND GRADE IS NOT NULL
 ```
 
 
@@ -1117,15 +1154,13 @@ WHERE CNO='C2' AND GRADE IS NOT NULL
 
 
 
+### 逻辑运算真值表
+
 算术运算：只要存在操作数为空值的情况，计算结果就是空值
 
 比较运算：只要存在操作数为空值的情况，比较结果就是UNKNOWN
 
 逻辑运算：三值逻辑 (TRUE, FALSE, UNKNOWN)
-
-
-
-### 逻辑运算真值表
 
 |X|Y|NOT X|X AND Y|X OR Y|
 |----------|-------------|-------------|----------|---------|
@@ -1774,9 +1809,8 @@ ALTER TABLE Student ADD CONSTRAINT C3 CHECK (Sage < 40);
 2. 它们是临时的逻辑表,由系统来维护,不允许用户直接对它们进行修改，只能在触发器程序中查询表中的内容。
 3. 它们存放在内存中,并不存放在数据库中,触发器执行完毕后，与该触发器相关的这两个表也会被删除。
 
-
-
-自己写的时候最好全用存储过程；
+- 多个触发器的激活顺序：before 触发器 → 执行激活触发器的 SQL 语句 → after 触发器
+- 自己写的时候最好全用存储过程；
 
 ```sql
 # 作业里的存储过程
