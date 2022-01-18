@@ -535,7 +535,11 @@ ALTER TABLE course ADD UNIQUE(course_name)
 
 ### 索引的建立、删除
 
-#### 建立索引  `CREATE [UNIQUE] [CLUSTER] INDEX <索引名> ON <表名>(<列名>[<次序>], ... ); `
+参考资料：[MySQL 索引背后的数据结构及算法原理](http://blog.codinglabs.org/articles/theory-of-mysql-index.html)
+
+#### 建立索引  
+
+格式：`CREATE [UNIQUE] [CLUSTER] INDEX <索引名> ON <表名>(<列名>[<次序>], ... ); `
 
 一般采用 B+ 树索引和 HASH 索引；
 
