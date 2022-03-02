@@ -241,7 +241,8 @@ for (auto &element : vec) { // 可以写入 element
 由于 `using` 可以避免一些 `typedef` 的问题（不能被模板化），建议全改用 using 
 
 ```C++
-/* 通常我们使用 typedef 定义别名的语法是：typedef 原名称 新名称;，但是对函数指针等别名的定义语法却不相同，这通常给直接阅读造成了一定程度的困难。*/
+/* 通常我们使用 typedef 定义别名的语法是：typedef 原名称 新名称;
+但是对函数指针等别名的定义语法却不相同，这通常给直接阅读造成了一定程度的困难。*/
 
 typedef int (*process)(void *);
 using NewProcess = int(*)(void *);
@@ -271,7 +272,6 @@ auto ret = add(1,3);
 
 ```C++
 template<typename... Ts> class Magic; 	// 任意个参数
-
 template<typename Require, typename... Ts> class Magic;	 // 需要至少有一个参数时
 ```
 
@@ -648,7 +648,7 @@ int main() {
 
 输出结果为：
 
-```
+```c++
 传递右值:
               普通传参: 左值引用
        std::move 传参: 右值引用
