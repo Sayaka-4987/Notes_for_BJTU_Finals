@@ -38,8 +38,49 @@
 
 <img src="media/image-20220304151927822.png" alt="image-20220304151927822" style="zoom:40%;" />
 
-#### CPU性能方程
+- 需要注意的是 Fe 是**时间比时间**的比例；
+
+
+
+#### CPU性能方程 
+
+计算机运行基于固定频率的时钟信号（clock periods, clocks, cycles, clock cycles），主频=1÷时钟周期，因此
+
+$CPU时间 = 完成这一任务的时钟周期数 × 每个时钟周期时间$ 或  $CPU时间 = \frac{完成这一任务的时钟周期数}{主频}$ 
+
+常用方程
+
+CPU 时间 = 指令条数(IC, Instruction Count) × 每条指令时钟周期数(CPI, Cycles Per Instruction) × 每个时钟周期时间(CC, Clock cycle time) 
 
 
 
 #### 访问的局部性原理
+
+程序倾向于重用刚用过的数据和指令，90%的时间运行于10%的程序上
+因此，可根据最近访问预测未来会用到哪些指令和数据。
+
+程序局部性包括：
+
+1. 程序的时间局部性：程序即将用到的信息很可能就是目前正在使用的信息。
+2. 程序的空间局部性：程序即将用到的信息很可能与目前正在使用的信息在空间上相邻或者临近。
+
+
+
+### 按指令集和数据流分类
+
+单指令流单数据流 (SISD, single instruction stream over a single data stream) 
+
+<img src="media/image-20220308115819360.png" alt="image-20220308115819360" style="zoom: 33%;" />
+
+单指令流多数据流 (SIMD, single instruction stream over multiple data stream) 
+
+<img src="media/image-20220308115841394.png" alt="image-20220308115841394" style="zoom:33%;" />
+
+多指令流多数据流 (MIMD, multiple instruction over multiple data streams) 
+
+<img src="media/image-20220308115925196.png" alt="image-20220308115925196" style="zoom:33%;" />
+
+多指令流单数据流 (MISD, multiple instruction streams and a single data stream) 
+
+<img src="media/image-20220308115858617.png" alt="image-20220308115858617" style="zoom: 33%;" />
+
