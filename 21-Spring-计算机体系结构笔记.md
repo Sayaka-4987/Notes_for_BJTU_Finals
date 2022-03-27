@@ -1,7 +1,3 @@
-#对齐的定义
-
-## 
-
 # 计算机体系结构笔记
 
 期末考试开卷，但是是英文试卷，平时50%，期末50%
@@ -287,7 +283,7 @@ An access to an object of size s bytes at byte address A is aligned if **A mod s
 
 **被调用的过程必须保存它要用的寄存器**，保证不会破坏过程调用者的程序执行环境，并在过程调用结束返回时，恢复这些寄存器的内容
 
-<img src="./media/过程调用选项.png">
+<img src="./media/过程调用选项.webp">
 
 #### RISC与CISC技术
 

@@ -260,7 +260,7 @@ public class LazySingleton {
 
 ### 适配器模式
 
-<img src="media/适配器模式.png">
+<img src="media/适配器模式.webp">
 
 #### 模式优点
 
@@ -293,7 +293,7 @@ public class LazySingleton {
 
 ### 桥接模式
 
-<img src="media/桥接模式.png">
+<img src="media/桥接模式.webp">
 
 #### 模式优点
 
@@ -320,7 +320,7 @@ public class LazySingleton {
 
 ### 组合模式
 
-<img src="media/组合模式.png">
+<img src="media/组合模式.webp">
 
 #### 模式优点
 
@@ -341,7 +341,7 @@ public class LazySingleton {
 
 ### 装饰模式
 
-<img src="media/装饰模式.png">
+<img src="media/装饰模式.webp">
 
 #### 模式优点
 
@@ -367,7 +367,7 @@ public class LazySingleton {
 
 ### 外观模式
 
-<img src="media/抽象外观模式.png">
+<img src="media/抽象外观模式.webp">
 
 #### 模式优点
 
@@ -392,11 +392,11 @@ public class LazySingleton {
 
 1. 将具有相同内部状态的对象存储在享元池中，享元池中的对象是可以实现共享的
 2. 需要的时候将对象从享元池中取出，即可实现对象的复用
-3. 通过向取出的对象注入不同的外部状态，可以得到一系列相似的对象，而这些对象在内存中实际上只存储一份<img src="media/image-20220324082521988.png" alt="image-20220324082521988" style="zoom: 80%;" />
+3. 通过向取出的对象注入不同的外部状态，可以得到一系列相似的对象，而这些对象在内存中实际上只存储一份<img src="media/image-20220324082521988.webp" alt="image-20220324082521988" style="zoom: 80%;" />
 
 复合享元模式：
 
-<img src="media/image-20220324091508516.png" alt="image-20220324091508516" style="zoom:80%;" />
+<img src="media/image-20220324091508516.webp" alt="image-20220324091508516" style="zoom:80%;" />
 
 #### 模式优点
 

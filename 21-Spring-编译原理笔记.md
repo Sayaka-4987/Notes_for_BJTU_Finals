@@ -465,9 +465,9 @@ B→bB|ε 或者 B→ Bb|ε 递归规则
 
 右线性文法的规则呈 A→aB 或 A→a 	A,B∈V~n~ , a∈V~t~ 
 
-<img src="media/image-20220325105214178.png" alt="image-20220325105214178" style="zoom: 33%;" />
+<img src="media/image-20220325105214178.webp" alt="image-20220325105214178" style="zoom: 33%;" />
 
-<img src="media/image-20220325105357450.png" alt="image-20220325105357450" style="zoom:33%;" />
+<img src="media/image-20220325105357450.webp" alt="image-20220325105357450" style="zoom:33%;" />
 
 状态图的使用：识别句子(单词符号)
 
@@ -481,9 +481,9 @@ B→bB|ε 或者 B→ Bb|ε 递归规则
 
 左线性文法的规则呈：A→Ba或A→a	A,B∈V~n~ ，a∈V~t~
 
-<img src="media/image-20220325105808462.png" alt="image-20220325105808462" style="zoom:33%;" />
+<img src="media/image-20220325105808462.webp" alt="image-20220325105808462" style="zoom:33%;" />
 
-<img src="media/image-20220325105828894.png" alt="image-20220325105828894" style="zoom:33%;" />
+<img src="media/image-20220325105828894.webp" alt="image-20220325105828894" style="zoom:33%;" />
 
 **右线性文法**是**最右推导过程**，**左线性文法**是**最左归约过程**；
 
@@ -507,7 +507,7 @@ B→bB|ε 或者 B→ Bb|ε 递归规则
 
 - Z： 终止状态集 K包含于Z
 
-<img src="media/image-20220326132234198.png" alt="image-20220326132234198" style="zoom:33%;" />
+<img src="media/image-20220326132234198.webp" alt="image-20220326132234198" style="zoom:33%;" />
 
 #### 非确定的有限自动机（NFA）
 
@@ -525,11 +525,11 @@ B→bB|ε 或者 B→ Bb|ε 递归规则
 
 - Z′：终止状态集K′包含于Z
 
-<img src="media/image-20220326132508899.png" alt="image-20220326132508899" style="zoom:33%;" />
+<img src="media/image-20220326132508899.webp" alt="image-20220326132508899" style="zoom:33%;" />
 
 ##### DFA M 与 NFA M′ 的等价性
 
-<img src="media/image-20220326132641734.png" alt="image-20220326132641734" style="zoom:33%;" />
+<img src="media/image-20220326132641734.webp" alt="image-20220326132641734" style="zoom:33%;" />
 
 ### 正则表达式和正规集
 
