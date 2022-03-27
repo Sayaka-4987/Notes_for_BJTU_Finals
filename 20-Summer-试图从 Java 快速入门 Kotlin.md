@@ -1,12 +1,12 @@
 ---
-layout:     post   				        # 使用的布局（不需要改）
-title:      试图从 Java 快速入门 Kotlin	# 标题 
-subtitle:   然后背起门转身就跑			   	# 副标题
-date:       2021-07-26 				    # 时间
-author:     YXWang 					    # 作者
-header-img: img/post-bg-keybord.jpg 	# 这篇文章的标题背景图片
-catalog: true 						    # 是否归档
-tags:								    # 标签
+layout:     post                           # 使用的布局（不需要改）
+title:      试图从 Java 快速入门 Kotlin    # 标题 
+subtitle:   然后背起门转身就跑                   # 副标题
+date:       2021-07-26                     # 时间
+author:     YXWang                         # 作者
+header-img: img/post-bg-keybord.jpg     # 这篇文章的标题背景图片
+catalog: true                             # 是否归档
+tags:                                    # 标签
     - Kotlin
     - Java
 ---
@@ -14,27 +14,21 @@ tags:								    # 标签
 # 试图从 Java 快速入门 Kotlin
 
 > 以下笔记内容主要来自 [扔物线_给高级Android工程师的进阶手册 (rengwuxian.com)](https://rengwuxian.com/) 
->
+> 
 > ~~tmd 他这个开头介绍语就看得我拳头硬了，这个校外老师也让我拳头硬了~~
->
+> 
 > <img src=".\media\image-20210724094205465.webp" alt="image-20210724094205465" style="zoom: 33%;" />
-
-
 
 ## 阅读以下内容之前您需要注意
 
 1. 该教程使用 [Android Studio](https://developer.android.google.cn/studio/preview) 作为开发的 IDE 
 2. 就算您的 Java 是强子哥教的，也要假定自己是一个自信的 Java 高手，加油！
 
-
-
 ## 一些暂时不知道归类到哪儿的 Kotlin 特点
 
 Kotlin 文件后缀名是 `.kt` ，就像 Java 文件是以 `.java` 结尾；
 
 Kotlin **不用每行结束写分号** `;` 
-
-
 
 ## （重点）Kotlin 的空安全设计
 
@@ -51,7 +45,7 @@ class User {
 }
 ```
 
-​	这个写法同样会对变量做一次非空确认之后再调用方法，而且线程安全；
+​    这个写法同样会对变量做一次非空确认之后再调用方法，而且线程安全；
 
 3. `non-null asserted call`：**非空断言**，可以在类型后加一个 `!!` 
 
@@ -59,11 +53,9 @@ class User {
 view!!.setBackgroundColor(Color.RED)
 ```
 
-​	好消息：现在编译器再也不帮你检查非空限制了（编译器不会给你报错了）
+​    好消息：现在编译器再也不帮你检查非空限制了（编译器不会给你报错了）
 
-​	坏消息：现在编译器再也不帮你检查非空限制了（运行时再出啥异常自己兜着吧）
-
-
+​    坏消息：现在编译器再也不帮你检查非空限制了（运行时再出啥异常自己兜着吧）
 
 ### 延迟初始化
 
@@ -81,8 +73,6 @@ override fun onCreate(...) {
 
 代价和之前一样，编译器不会再帮你检查这个变量用之前有没有初始化了；
 
-
-
 ### 类型推断，但不是动态类型
 
 在 Kotlin 中，如果一个变量声明时就赋值，你可以不写变量类型（是自动推断补上的，类型本身不可变）
@@ -92,8 +82,6 @@ var name: String = "Mike"
 // 等价于
 var name = "Mike"
 ```
-
-
 
 ## 声明函数
 
@@ -119,8 +107,6 @@ fun cook(name: String): Food {
 
 3. 无返回值的函数（指其他语言的 void）可以（在下面例子 Food 的位置）写返回 Unit ，也可以省略不写；
 
-   
-
 ### 函数使用也要服从空安全设计
 
 总结就是 **变量的可空性质** 必须和 **函数参数的可空性质** 相匹配；
@@ -130,7 +116,7 @@ fun cook(name: String): Food {
 var myName : String? = "rengwuxian"
 fun cook(name: String) : Food {}
 cook(myName)
-  
+
 // 可空变量传给可空参数，正常运行
 var myName : String? = "rengwuxian"
 fun cook(name: String?) : Food {}
@@ -141,8 +127,6 @@ var myName : String = "rengwuxian"
 fun cook(name: String) : Food {}
 cook(myName)
 ```
-
-
 
 ## Kotlin 的 getter/setter 钩子函数
 
@@ -155,7 +139,7 @@ class User {
         name = "Mary"
         // 实际上是调用 setName("Mary")
         // IDE 的代码补全功能实测发现，你打了 setName 也会被提示换成 name
-        
+
         println(name)
         // 实际上是调用 print(getName())
         // IDE 的代码补全功能会在你打出 getn 的时候直接提示 name 而不是 getName
@@ -190,15 +174,11 @@ public final class Kotlin {
 }
 ```
 
-
-
 ## Kotlin 的基本类型
 
 Kotlin 在语言层面简化了 Java 中的 `int` 基本数据类型 和 `Integer` 封装类型，把二者都合并成了 `Int`（ `Double` , `Float` , `Long`,  `Short`,  `Byte` 也同理）；
 
 所有东西都变成了对象，但是 Kotlin 会对这些类型是否装箱进行判断，装箱与不装箱涉及到程序运行时的性能开销。这里我看不懂，所以快进到结论： **使用基本类型尽量用不可空变量** 
-
-
 
 ## Kotlin 类和对象
 
@@ -253,12 +233,12 @@ class MainActivity : AppCompatActivity {
 class MainActivity : AppCompatActivity() {
     ...
 }
-   
+
 // 实际等价于：
 class MainActivity constructor() : AppCompatActivity() {
-	...
+    ...
 }
-   
+
 // 也可以写成：注意这里 AppCompatActivity 后面没有 '()'
 class MainActivity : AppCompatActivity {
     constructor() {
@@ -267,10 +247,10 @@ class MainActivity : AppCompatActivity {
 }
 ```
 
-4.  `override` 变成了关键字，且有遗传性，但 Kotlin 抛弃了 `protected` 关键字；
-5.  Kotlin 的类默认是 final 的，需要加一个 `open` 关键字才能使它可被继承； 
-6.  依然有 `abstract` 关键字
-7.  Kotlin 实例化一个类不需要 `new` 关键字，直接这么写即可：
+4. `override` 变成了关键字，且有遗传性，但 Kotlin 抛弃了 `protected` 关键字；
+5. Kotlin 的类默认是 final 的，需要加一个 `open` 关键字才能使它可被继承； 
+6. 依然有 `abstract` 关键字
+7. Kotlin 实例化一个类不需要 `new` 关键字，直接这么写即可：
 
 ```kotlin
 fun main() {
@@ -278,8 +258,7 @@ fun main() {
 }
 ```
 
-8.  Kotlin 可以使用 `is` 关键字代替 Java 的 `instanceof` 关键字进行类型判断，还可以使用 `as` 关键字直接强行类型转换；但更推荐使用 `as?` 安全强转：
-
+8. Kotlin 可以使用 `is` 关键字代替 Java 的 `instanceof` 关键字进行类型判断，还可以使用 `as` 关键字直接强行类型转换；但更推荐使用 `as?` 安全强转：
 
 ```kotlin
 fun main() {
@@ -290,8 +269,6 @@ fun main() {
 ```
 
 强转若成功就执行之后的调用，若不成功就不执行；
-
-
 
 ## Kotlin 主构造函数
 
@@ -336,7 +313,6 @@ class User constructor(name: String) {
 
 4. 当一个类存在多个次构造函数时怎么调用：
 
-
 ```kotlin
 class User constructor(var name: String) {
     constructor(name: String, id: Int) : this(name) {
@@ -360,8 +336,6 @@ class User(name: String) {
   var name: String = name
 }
 ```
-
-
 
 ## Kotlin 类的初始化写法总结
 
@@ -408,8 +382,6 @@ class User(val name: String, val id: String) {
 }
 ```
 
-
-
 ## Kotlin 只读变量
 
 `var` 是 variable 的缩写，`val` 是 value 的缩写；
@@ -420,9 +392,7 @@ class User(val name: String, val id: String) {
 val size = 18
 ```
 
-
-
-## Kotlin 静态：不用 `static` ，而是 `companion object` 
+## Kotlin 静态：不用 `static` ，而是 `companion object`
 
 先看 Java 里怎么写常量字符串：
 
@@ -440,9 +410,7 @@ class Sample {
 }
 ```
 
-
-
-###  静态类：用`object` 关键字声明单例
+### 静态类：用`object` 关键字声明单例
 
 Java 中的 Object （大写首字母！）根类在 Kotlin 中变成了 `Any`，`Any` 和 Object 作用一样，作为**所有类的基类**；
 
@@ -483,20 +451,18 @@ object A {
 #### 参考资料：关于 Java 的单例模式是什么
 
 > 单例模式（Singleton Pattern）是 Java 中最简单的设计模式之一。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。
->
+> 
 > 这种模式涉及到一个单一的类，该类负责创建自己的对象，同时确保只有单个对象被创建。这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。
->
+> 
 > **意图：**保证一个类仅有一个实例，并提供一个访问它的全局访问点。
->
+> 
 > **主要解决：**一个全局使用的类频繁地创建与销毁。
->
+> 
 > **何时使用：**当您想控制实例数目，节省系统资源的时候。
->
+> 
 > **如何解决：**判断系统是否已经有这个单例，如果有则返回，如果没有则创建。
->
+> 
 > **关键代码：**构造函数是私有的。
-
-
 
 ### 静态变量：用 `companion` 关键字
 
@@ -522,8 +488,6 @@ A.B.c
 A.c 
 ```
 
-
-
 ## Kotlin 顶层声明（全局变量）
 
 `top-level declaration` ：把属性和函数的声明写在所有 class 外，就可以获得直接属于 `package` 的**全局变量**；
@@ -532,14 +496,10 @@ A.c
 
 出现两个同名的顶级函数/变量时，IDE 会自动加上包前缀来区分；
 
-
-
-### 小结： object 、companion object 、和 top-level 选用建议 
+### 小结： object 、companion object 、和 top-level 选用建议
 
 1. 如果想写**工具类**的功能，直接创建文件，写 top-level 顶层函数；
 2. 如果需要**继承**别的类或者**实现接口**，就用 `object` 或 `companion object`；
-
-
 
 ## Kotlin 的常量
 
@@ -561,8 +521,6 @@ class Sample {
 const val CONST_SECOND_NUMBER = 2
 ```
 
-
-
 ## 可见性
 
 Kotlin 中有四种可见性修饰符：
@@ -573,8 +531,6 @@ Kotlin 中有四种可见性修饰符：
 4. `internal`：内部，仅对 module 内可见；
 
 这里不多介绍了，和其他语言区别没那么大。
-
-
 
 ## 数组和集合
 
@@ -592,8 +548,6 @@ val intArray = intArrayOf(1, 2, 3)
 // 声明一个集合
 val strList = listOf("a", "b", "c")
 ```
-
-
 
 ### 集合（List, Set, Map）
 
@@ -620,7 +574,7 @@ val strSet = setOf("a", "b", "c")
 val map = mapOf("key1" to 1, "key2" to 2, "key3" to 3, "key4" to 3)
 
 // 从 map 中以 key 取 value：
-val value1 = map.get("key1")	
+val value1 = map.get("key1")    
 // 也可以用方括号运算符：
 val value2 = map["key2"]
 
@@ -630,8 +584,6 @@ map.put("key1", 2)
 // 也可以用方括号运算符：
 map["key1"] = 2
 ```
-
-
 
 ### 可变和只读
 
@@ -643,8 +595,6 @@ Kotlin 的集合按能否修改又可分为**不可变集合（只读集合）**
 4. 不可变的 List 可以通过 `toMutableList()` 系函数，返回新建的一个可变的集合（Map 和 Set 同理）
 5. 可变集合可以直接用 `.add()` 增加元素；
 6. 不可变集合可以用 `.plus()` 方法增加元素（实际上，这个方法的实现不是增加了元素，是背后复制了一个长度+1，带上新元素的**新集合**）；
-
-
 
 ### 数组与集合的操作
 
@@ -681,12 +631,12 @@ intArray.forEach { i ->
 
 // filter：对每个元素进行过滤操作，如果 lambda 表达式中的条件成立则留下该元素，否则剔除，最终生成新的集合
 val newList: List = intArray.filter { i ->
-    i != 1		// 过滤掉数组中等于 1 的元素
+    i != 1        // 过滤掉数组中等于 1 的元素
 }
 
 // map：遍历每个元素并执行给定表达式，最终形成新的集合
 val newList: List = intArray.map { i ->
-    i + 1 		// 每个元素加 1
+    i + 1         // 每个元素加 1
 }
 
 // flatMap：遍历每个元素，并为每个元素创建新的集合，最后合并到一个集合中
@@ -695,8 +645,6 @@ intArray.flatMap { i ->
 }
 ```
 
-
-
 ## Kotlin 的 `Sequence` 容器
 
 功能：`Sequence ` 和 `Iterable` 一样用来遍历一组数据，并可以对每个元素进行特定的处理；
@@ -704,7 +652,7 @@ intArray.flatMap { i ->
 `Sequence ` 又称为“惰性集合操作”，实际运行有**懒加载机制**：
 
 1. 一旦满足遍历退出的条件，就不再进行后续不必要的遍历过程；
-2.  `Sequence` 在整个流程中只有一个 `Iterable` ，不像 `List` 这种实现 `Iterable` 接口的集合类，每次函数调用产生的临时 `Iterable` 会导致额外的内存消耗；
+2. `Sequence` 在整个流程中只有一个 `Iterable` ，不像 `List` 这种实现 `Iterable` 接口的集合类，每次函数调用产生的临时 `Iterable` 会导致额外的内存消耗；
 
 Sequence 的三种创建方式：
 
@@ -728,8 +676,6 @@ list.asSequence()
 // lambda 表达式，第二个及以后的元素都是前一个元素 it 再 +1 的值
 val sequence = generateSequence(0) { it + 1 }
 ```
-
-
 
 ## Kotlin 的 `Range` 区间
 
@@ -780,8 +726,6 @@ for (i in 4 downTo 1) {
 
 Kotlin 的区间开闭，概括是不能碰到开区间不包括的那个点；
 
-
-
 ## Kotlin 更方便的函数简化
 
 ### 把 C 语言的三元运算符 `?:` 换成 if-else 表达式
@@ -802,8 +746,6 @@ val max = if (a > b) {
     b // 返回 b
 }
 ```
-
-
 
 ### Kotlin的 `?:` 是 Elvis 操作符
 
@@ -840,8 +782,6 @@ fun validate(user: User) {
 }
 ```
 
-
-
 ### 使用 `=` 连接返回值
 
 对于只有一行的函数，可以去掉`{}` 和 `return` ，直接使用 `=` 符号连接返回值：
@@ -865,15 +805,11 @@ fun area(width: Int, height: Int) = width * height
 fun sayHi(name: String) = println("Hi " + name)
 ```
 
-
-
 ### 设定参数默认值
 
 这里 `"world"` 就是参数 name 的默认值，若调用 sayHi 函数时没有提供参数，就会使用默认值；
 
 需要注意的是，假如提供参数比函数需求的少，是从左到右依次分配的，C 语言也有类似特性，所以此处不多介绍；
-
-
 
 ### Kotlin 命名参数和位置参数
 
@@ -924,8 +860,6 @@ sayHi(name = "wo", 21)
 sayHi("wo", age = 21) 
 ```
 
-
-
 ### 本地函数（嵌套函数）
 
 这是一个登录验证函数，它本来长这样：
@@ -959,6 +893,7 @@ fun login(user: String, password: String, illegalStr: String) {
 主要的改动是：
 
 1. 检查参数是否为空的步骤显得很多余，又不想把这段逻辑外露，此时我们就可以适用嵌套函数，在 login 函数内部再声明一个 `fun validate(value: String) ` 
+
 2. 在该嵌套函数内直接使用外层函数 `login` 的参数 `illegalStr` 
 
 3. 其实还有另一种更简单的写法：
@@ -972,9 +907,7 @@ fun login(user: String, password: String, illegalStr: String) {
 
 用到了 lambda 表达式以及 Kotlin 内置的 `require` 函数；
 
-
-
-### `when` 代替 `switch` 
+### `when` 代替 `switch`
 
 Kotlin 的 `when`：
 
@@ -1025,8 +958,6 @@ when {
 }
 ```
 
-
-
 ### 改进的 `for` 循环
 
 ~~让我们看看高级程序设计语言里最拉的是谁？~~
@@ -1043,10 +974,6 @@ for (i in 0..10) {
 }
 ```
 
-
-
-
-
 ## Kotlin 字符串
 
 1. 可以像 Java 一样用 `+` 拼接字符串；
@@ -1060,14 +987,12 @@ val name = "world"
 println("Hi $name")
 ```
 
-​	`$` 后还可以跟表达式，但表达式是一个整体，要用 `{}` 包裹：
+​    `$` 后还可以跟表达式，但表达式是一个整体，要用 `{}` 包裹：
 
 ```kotlin
 val name = "world"
 println("Hi ${name.length}") 
 ```
-
-
 
 ### Kotlin 原生字符串：当不想用转义字符的时候
 
@@ -1120,17 +1045,12 @@ My name is kotlin.
 2. 输出时 `|` 符号本身以及它前面的空格都会被删除；
 3. 边界前缀还可以使用其他字符，比如 `trimMargin("/")`；
 
-
-
 ## Kotlin的 `==` 和 `===` 运算符
 
 `==` 可以对基本数据类型以及 `String` 等类型进行内容比较，相当于 Java 中的 `equals` 方法；
 
 而`===` 是对引用的**内存地址进行比较**，相当于 Java 中的 `==`；
 
-
-
 ## 未完待续中 ... 后续又发现什么有用的会更新在前面的
 
 没人给我校对，如果发现有啥问题欢迎评论区或者私聊告诉我！
-
