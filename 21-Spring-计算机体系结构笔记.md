@@ -231,11 +231,11 @@ An access to an object of size s bytes at byte address A is aligned if **A mod s
 
 #### 操作码表示
 
-1. 哈夫曼编码
+1. 哈夫曼编码（想想离散数学）
 
-2. 定长编码
+2. 定长编码（所有操作码长度同样为n位）
 
-3. 拓展码
+3. 拓展码（按使用频率差距最大分成几组）
 
 #### 寻址模式
 
@@ -285,7 +285,7 @@ An access to an object of size s bytes at byte address A is aligned if **A mod s
 
 <img src="./media/过程调用选项.webp">
 
-#### RISC与CISC技术
+### RISC 与 CISC 技术
 
 ##### CISC（Complex Instruction Set Computers）复杂指令集计算机
 
@@ -303,4 +303,67 @@ An access to an object of size s bytes at byte address A is aligned if **A mod s
 
 - 需要更少的晶体管，设计和制造更便宜
 
-#### DLX 架构
+### DLX 架构
+
+一种RISC的实现
+
+- 具有一个简单的Load/Store指令集
+
+- 注重指令流水效率（pipelining efficiency）
+
+- 简化指令的译码
+
+- 指令长度32位，有32个32位通用寄存器R0-R31，32个32位浮点寄存器（FPRs）F0-F31
+
+#### DLX 指令格式
+
+##### I 类型指令
+
+| Opcode (6) | Rs1(5) | Rd (5) | Immediate (16) |
+| ---------- | ------ | ------ | -------------- |
+
+- Load: destination = Regs[Rs1] + Immediate
+- Store: destination = Regs[Rs1] + Immediate
+- All immediates: Regs[Rd] ← Regs[Rs1] op immediate
+- Conditional branch instructions: Rs1 is register , Rd unused
+- Jump register, jump and link register: Rd = 0, Rs1 =destination, immediate = 0
+
+例：`LW R1, 100(R2); Regs[R1]<-Mem[100+Regs[R2]]` 
+
+#####  R 类型指令
+
+| Opcode (6)|Rs1 (5)|Rs2 (5)|Rd (5)|Func (11) |
+| ---------- | ------ | ------ | -------------- |-|
+
+- 两个源寄存器 Rs1, Rs2，一个目的寄存器 Rd
+- 寄存器-寄存器ALU操作
+- 函数对数据的
+  操作进行编码：加，减，...
+- 对特殊寄存器的读/写和移动
+
+例：`Add R1, R2, R3; Regs[R1] ←Regs[R2]+Regs[R3]` 
+
+##### J 类型指令
+
+| Opcode(6) | Offset added to PC(26) |
+| --------- | ---------------------- |
+
+- 跳转，跳转并链接
+- 从异常处自陷和返回
+
+### RISC-V 体系结构
+
+- 32个64位的通用寄存器（GPRs），寄存器x0的内容恒为全0
+- f0, f1, ... , f31 32个浮点寄存器（FPRs），单精度浮点数表示(32个)，双精度浮点数表示(16个)
+- 存储器访问必须用 load 和 store 
+- 32位指令和7位操作码
+
+<img src="media/image-20220329112224494.png" alt="image-20220329112224494" style="zoom: 33%;" />
+
+#### RISC-V 练习题（待补充）
+
+## Chapter 3. 流水线
+
+- 流水线不能缩短单个任务耗时，但可以提高吞吐量
+- 流水线速度受限于最慢的流水站的速度（洗衣店例子）
+- 流水线中多个任务并行处理

@@ -377,8 +377,8 @@ procedure signal(S)
 解决方案：
 
 1. 若干个临界资源的分配采取原子方式。
-
-2. 一次申请多种不同资源，所有资源都有空闲资源，则分配；否则一个资源都不分配。
+2. 一次申请多种不同资源，若所有资源都有空闲资源，则分配；
+2. 否则，一个资源都不分配。
 
 例：假定现有两个进程 A 和 B，他们都要求访问共享数据 D 和 E，可为这两个数据分别设置用于互斥的信号量 Dmutex 和 Emutex，并令它们的初值都是 1，相应地，在两个进程中都要包含两个对 Dmutex 和 Emutex 的操作，即
 
@@ -498,4 +498,75 @@ reader:
       until false;
    end
 ```
+
+### 管程
+
+基于信号量的进程同步机制的弊端
+
+- 访问临界资源的各进程均须自备同步操作
+- 大量同步操作分散不利于系统管理
+- 同步操作使用不当可能导致系统死锁
+
+对策
+
+- 软硬件资源及操作抽象描述为管程
+- 并发进程间的同步操作，分别集中于相应的管程中，由管程专职负责同步方案
+
+```go
+producer:
+Var nextp: item;
+   begin
+      repeat
+         produce an item in nextp;
+         wait(empty);   wait(mutex);
+         buffer[in] := nextp;   in := (in+1) mod n;
+         signal(mutex);   signal(full);
+      until false;
+   end
+
+consumer:
+Var nextc: item;
+   begin
+      repeat
+         wait(full);   wait(mutex);
+         nextc := buffer[out];   out := (out+1) mod n;
+         signal(mutex);   signal(empty); 
+         consume the item in nextc;
+      until false;
+   end
+```
+
+### 进程间通信
+
+- 共享存储器系统
+  - 申请一块物理空间，不同进程虚拟空间映射到这块物理空间
+
+- 管道通信系统
+  - 利用一个文件通信，对文件按队列处理
+  - 生产者-消费者模型
+- 消息传递系统
+  - 利用共享的内核空间中的消息列表通信
+
+### 线程
+
+- 一个进程中有一个或者多个线程
+
+- 每个线程是进程中可独立调度执行代码段的一次执行过程。
+- 同一个程序中的全局变量在各个线程中是共享的，但是线程之间的局部变量是完全独立的
+- 资源是共享的：打开文件；信号量；进程空间
+- 进程是资源分配的基本单位，线程是调度的基本单位
+
+进程：程序级别的并发。一个程序和另一个程序是独立的并发执行体。
+线程：函数级别的并发。在一个程序中有多个线程函数，这些函数可以独立并发执行。提高了并发度。
+
+进程间隔离，线程可以共享所属进程下的资源
+
+#### 同步机制总结
+
+||信号量|线程锁<br>条件变量|管程|
+|--------|----------------------|----------------------------------------|------------------------|
+|互斥命令|wait(sem)<br/>signal(sem)|lock(mutex)<br>unlock(mutex)|monitor(object)|
+|要求|先wait再signal|先lock再unlock|无|
+|同步命令|wait(sem)<br/>signal(sem)|cond_wait(cond,mutex)<br/>cond_signal(cond)|mon_wait()<br/>mon_signal()|
+|要求|无|无|无|
 
