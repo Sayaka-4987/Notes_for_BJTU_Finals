@@ -358,7 +358,7 @@ An access to an object of size s bytes at byte address A is aligned if **A mod s
 - 存储器访问必须用 load 和 store 
 - 32位指令和7位操作码
 
-<img src="media/image-20220329112224494.png" alt="image-20220329112224494" style="zoom: 33%;" />
+<img src="media/image-20220329112224494.webp" alt="image-20220329112224494" style="zoom: 33%;" />
 
 #### RISC-V 练习题（待补充）
 
@@ -367,3 +367,54 @@ An access to an object of size s bytes at byte address A is aligned if **A mod s
 - 流水线不能缩短单个任务耗时，但可以提高吞吐量
 - 流水线速度受限于最慢的流水站的速度（洗衣店例子）
 - 流水线中多个任务并行处理
+
+### 概念
+
+- 流水线的吞吐量（Throughput）：指令退出流水线的频率
+- 机器周期（Machine cycle）：指令在流水线上移动一步的时间
+- 加速比：$S=\frac{T_{unpipeline}}{T_{pipeline}}$ 
+
+### DLX 的一种简单实现
+
+<img src="./media/DLX的一种简单实现.webp" style="zoom: 50%;" />
+
+<img src="media/image-20220401154122866.webp" alt="image-20220401154122866" style="zoom: 50%;" />
+
+
+
+1. #### 取指令（Instruction fetch cycle，IF）
+
+根据PC值从存储器中取出指令，并将指令送入指令寄存器IR
+
+PC值增加4，指向顺序的下一条指令
+
+IR中的指令将被执行
+
+将下一条指令的地址放入临时寄存器NPC中
+
+2. #### 指令译码/读寄存器（Instruction decode/register fetch cycle，ID）
+
+指令译码，读IR寄存器，按照寄存器号读寄存器文件
+
+将读出结果放入两个临时寄存器A和B中
+
+对IR寄存器中内容的低16位进行符号扩展，然后将符号扩展之后的立即值保存在临时寄存器Imm中
+
+3. #### 执行/有效地址计算（Execution/effective address cycle，EX）
+
+没有指令会在计算数据地址、目标地址的同时还对数据进行操作
+
+根据指令类型进行四种操作之一：存储器访问，寄存器-寄存器ALU，寄存器-立即数ALU，分支操作
+
+4. #### 访存/分支操作完成（Memory access/branch completion cycle，MEM）
+
+只有load、store和branch指令在这个周期活跃
+
+寄存器引用
+
+分支操作
+
+5. #### 写回（Write-back cycle，WB） 
+
+### DLX 的流水线
+

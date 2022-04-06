@@ -416,7 +416,7 @@ public class LazySingleton {
 
 ### 代理模式
 
-<img src="media/image-20220329091819182.png" alt="image-20220329091819182" style="zoom:67%;" />
+<img src="media/image-20220329091819182.webp" alt="image-20220329091819182" style="zoom:67%;" />
 
 #### 模式优点——逐个分析
 
@@ -443,7 +443,7 @@ public class LazySingleton {
 
 ### 职责链模式
 
-<img src="media/image-20220329091557367.png" alt="image-20220329091557367" style="zoom:67%;" />
+<img src="media/image-20220329091557367.webp" alt="image-20220329091557367" style="zoom:67%;" />
 
 #### 模式优点
 
@@ -466,7 +466,7 @@ public class LazySingleton {
 
 ### 命令模式
 
-![image-20220331091243334](media/image-20220331091243334.png)
+![image-20220331091243334](media/image-20220331091243334.webp)
 
 #### 模式优点
 
@@ -488,7 +488,7 @@ public class LazySingleton {
 
 ### 解释器模式
 
-<img src="media/image-20220331092032035.png" alt="image-20220331092032035" style="zoom:80%;" />
+<img src="media/image-20220331092032035.webp" alt="image-20220331092032035" style="zoom:80%;" />
 
 #### 模式优点
 
