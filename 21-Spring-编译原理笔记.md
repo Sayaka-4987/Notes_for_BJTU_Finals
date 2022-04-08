@@ -689,3 +689,5 @@ LEX.yy.c 包括两部分：状态转换矩阵、总控程序 `yylex()`
 
 <img src="media/image-20220406151723951.webp" alt="image-20220406151723951" style="zoom:50%;" />
 
+## 4. 语法分析
+
