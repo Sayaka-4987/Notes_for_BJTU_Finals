@@ -424,7 +424,7 @@ An access to an object of size s bytes at byte address A is aligned if **A mod s
 
 
 
-1. #### 取指令（Instruction fetch cycle，IF）
+#### 1. 取指令（Instruction fetch cycle，IF）
 
 根据PC值从存储器中取出指令，并将指令送入指令寄存器IR
 
@@ -434,7 +434,7 @@ IR中的指令将被执行
 
 将下一条指令的地址放入临时寄存器NPC中
 
-2. #### 指令译码/读寄存器（Instruction decode/register fetch cycle，ID）
+#### 2. 指令译码/读寄存器（Instruction decode/register fetch cycle，ID）
 
 指令译码，读IR寄存器，按照寄存器号读寄存器文件
 
@@ -442,13 +442,13 @@ IR中的指令将被执行
 
 对IR寄存器中内容的低16位进行符号扩展，然后将符号扩展之后的立即值保存在临时寄存器Imm中
 
-3. #### 执行/有效地址计算（Execution/effective address cycle，EX）
-
-没有指令会在计算数据地址、目标地址的同时还对数据进行操作
+#### 3. 执行/有效地址计算（Execution/effective address cycle，EX）
 
 根据指令类型进行四种操作之一：存储器访问，寄存器-寄存器ALU，寄存器-立即数ALU，分支操作
 
-4. #### 访存/分支操作完成（Memory access/branch completion cycle，MEM）
+没有指令会在计算数据地址、目标地址的同时还对数据进行操作
+
+#### 4. 访存/分支操作完成（Memory access/branch completion cycle，MEM）
 
 只有load、store和branch指令在这个周期活跃
 
@@ -458,5 +458,47 @@ IR中的指令将被执行
 
 5. #### 写回（Write-back cycle，WB） 
 
-### DLX 的流水线
+### DLX 的流水线（待补充）
+
+<img src="media/image-20220412112349361.png" alt="image-20220412112349361" style="zoom: 33%;" />
+
+流水线改进的是吞吐量：
+
+- 仅仅增加了吞吐量, 但没有降低每条指令的运行时间
+
+- 由于控制开销, 每条指令运行时间稍微增加
+
+- 吞吐量增加，程序运行更快
+
+### 流水线的相关（冒险）
+
+流水线中的相关是指相邻或相近的两条指令因存在某种关联，后一条指令不能在原先指定的时钟周期开始执行。
+
+1. 结构相关：指令在重叠执行过程中，硬件资源无法满足指令重叠执行的要求，发生资源冲突
+2. 数据相关：一条指令需要用到前面指令的结果，因此无法与产生结果的指令重叠执行
+3. 控制相关：流水线遇到分支指令、或其它会改变PC值的指令，发生PC转移
+
+#### 结构相关
+
+用暂停的方法解决；
+
+<img src="media/image-20220415142825759.png" alt="image-20220415142825759" style="zoom: 33%;" />
+
+#### 数据相关
+
+当指令在流水线中重叠执行时，流水线有可能改变指令读/写操作数的顺序，使之不同于它们在非流水实现时的顺序，这将导致数据相关
+
+主要思路：将计算结果从其产生的地方**直接送到真正需要它的地方**，就可以避免暂停。
+
+- 寄存器文件EX/MEM中的ALU运算结果总是回送到ALU的输入寄存器
+
+- 从定向通路得到输入数据的ALU操作不必从源寄存器中读取操作数
+
+<img src="media/image-20220415151717390.png" alt="image-20220415151717390" style="zoom:33%;" />
+
+1. RAW (read after write)先写后读
+2. WAW (write after write)写后再写
+3. WAR (write after read)先读后写
+
+#### 避免相关
 
