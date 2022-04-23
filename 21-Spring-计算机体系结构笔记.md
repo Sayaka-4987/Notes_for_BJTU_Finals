@@ -460,7 +460,7 @@ IR中的指令将被执行
 
 ### DLX 的流水线（待补充）
 
-<img src="media/image-20220412112349361.png" alt="image-20220412112349361" style="zoom: 33%;" />
+<img src="media/image-20220412112349361.webp" alt="image-20220412112349361" style="zoom: 33%;" />
 
 流水线改进的是吞吐量：
 
@@ -482,7 +482,7 @@ IR中的指令将被执行
 
 用暂停的方法解决；
 
-<img src="media/image-20220415142825759.png" alt="image-20220415142825759" style="zoom: 33%;" />
+<img src="media/image-20220415142825759.webp" alt="image-20220415142825759" style="zoom: 33%;" />
 
 #### 数据相关
 
@@ -494,7 +494,7 @@ IR中的指令将被执行
 
 - 从定向通路得到输入数据的ALU操作不必从源寄存器中读取操作数
 
-<img src="media/image-20220415151717390.png" alt="image-20220415151717390" style="zoom:33%;" />
+<img src="media/image-20220415151717390.webp" alt="image-20220415151717390" style="zoom:33%;" />
 
 1. RAW (read after write)先写后读
 2. WAW (write after write)写后再写

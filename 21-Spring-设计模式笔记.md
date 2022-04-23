@@ -556,7 +556,7 @@ public class LazySingleton {
 
 访问一个聚合对象中的元素但又不需要暴露它的内部结构
 
-<img src="media/image-20220407081243627.png" alt="image-20220407081243627" style="zoom:67%;" />
+<img src="media/image-20220407081243627.webp" alt="image-20220407081243627" style="zoom:67%;" />
 
 #### 模式优点
 
@@ -577,7 +577,7 @@ public class LazySingleton {
 
 ### 中介者模式
 
-<img src="media/image-20220407082132129.png" alt="image-20220407082132129" style="zoom:67%;" />
+<img src="media/image-20220407082132129.webp" alt="image-20220407082132129" style="zoom:67%;" />
 
 #### 模式优点
 
@@ -597,7 +597,7 @@ public class LazySingleton {
 
 ### 观察者模式
 
-<img src="media/image-20220407091902513.png" alt="image-20220407091902513" style="zoom:67%;" />
+<img src="media/image-20220407091902513.webp" alt="image-20220407091902513" style="zoom:67%;" />
 
 软件系统：一个对象的状态或行为的变化将导致其他对象的状态或行为也发生改变，它们之间将产生联动
 
@@ -605,7 +605,7 @@ public class LazySingleton {
 发生改变的对象称为观察目标，被通知的对象称为观察者
 一个观察目标可以对应多个观察者
 
-#### MVC(Model-View-Controller)架构
+#### MVC(Model-View-Controller) 架构是观察者模式
 
 - 模型(Model)，视图(View)和控制器(Controller)
 - 模型可对应于观察者模式中的观察目标，而视图对应于观察者，控制器可充当两者之间的中介者
@@ -632,7 +632,7 @@ public class LazySingleton {
 
 ### 状态模式
 
-<img src="media/image-20220412155251836.png" alt="image-20220412155251836" style="zoom:90%;" />
+<img src="media/image-20220412155251836.webp" alt="image-20220412155251836" style="zoom:90%;" />
 
 #### 模式优点
 
@@ -654,7 +654,7 @@ public class LazySingleton {
 
 ### 策略模式
 
-<img src="media/image-20220419144126297.png" alt="image-20220419144126297" style="zoom: 67%;" />
+<img src="media/image-20220419144126297.webp" alt="image-20220419144126297" style="zoom: 67%;" />
 
 #### 模式优点
 
@@ -678,7 +678,7 @@ public class LazySingleton {
 
 ### 模板方法模式
 
-<img src="media/image-20220419144655624.png" alt="image-20220419144655624" style="zoom: 67%;" />
+<img src="media/image-20220419144655624.webp" alt="image-20220419144655624" style="zoom: 67%;" />
 
 #### 模式优点
 

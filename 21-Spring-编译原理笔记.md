@@ -709,17 +709,28 @@ LEX.yy.c 包括两部分：状态转换矩阵、总控程序 `yylex()`
 
 要求：文法不含 `A->A` 和 `A->ε`
 
-原理：`S->Aβ|γ`,  `A->Sα`, 转换成 `S->Sαβ|γ`
+原理：`S->Aβ|γ`,  `A->Sα`，转换成 `S->Sαβ|γ`
 
 间接左递归替换成直接左递归再消除
 
 ##### 直接左递归的消除
 
-<img src="media/image-20220413081753930.png" alt="image-20220413081753930" style="zoom:50%;" />
+例：`U->Ua|b` 
+
+- 用扩充的 BNF 符号表示，得 `U->b{a}` 
+- 引入新的非终结符号（提取公因子 `U' -> {a}` ）得 `U->bU'   U'->aU'|ε`
 
 ##### 间接左递归的消除
 
-<img src="media/image-20220413081850427.png" alt="image-20220413081850427" style="zoom: 67%;" />
+<img src="media/image-20220413081850427.webp" alt="image-20220413081850427" style="zoom: 40%;" />
+
+##### 书上的矩阵表示法消除左递归
+
+<img src="media/image-20220422180857277.webp" alt="image-20220422180857277" style="zoom:33%;" />
+
+<img src="media/image-20220422180924758.webp" alt="image-20220422180924758" style="zoom:33%;" />
+
+
 
 #### 回溯的消除
 
@@ -727,11 +738,11 @@ LEX.yy.c 包括两部分：状态转换矩阵、总控程序 `yylex()`
 
 若 S 为文法的开始符号，则 `# ∈ Follow(S)` 
 
-<img src="media/image-20220413082208889.png" alt="image-20220413082208889" style="zoom:50%;" />
+<img src="media/image-20220413082208889.webp" alt="image-20220413082208889" style="zoom:40%;" />
 
-<img src="media/image-20220413082338252.png" alt="image-20220413082338252" style="zoom:50%;" />
+<img src="media/image-20220413082338252.webp" alt="image-20220413082338252" style="zoom:40%;" />
 
-- ##### 消除左递归和回溯后，可以进行无左递归无回溯的自顶向下分析
+- ##### 消除左递归和回溯后，就可以进行无左递归无回溯的自顶向下分析
 
 - 如果文法为 LL(1) 文法：
   - 递归下降分析：高级语言实现
@@ -743,7 +754,7 @@ LEX.yy.c 包括两部分：状态转换矩阵、总控程序 `yylex()`
 
 基本思想：每个非终结符号完成相应功能，每一次推导都是可预测的，存在递归规则。
 
-<img src="media/image-20220415112511384.png" alt="image-20220415112511384" style="zoom:50%;" />
+<img src="media/image-20220415112511384.webp" alt="image-20220415112511384" style="zoom:50%;" />
 
 #### LL(1)分析法
 
