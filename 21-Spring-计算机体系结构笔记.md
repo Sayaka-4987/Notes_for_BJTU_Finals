@@ -525,7 +525,7 @@ IR中的指令将被执行
 
 ### 扩展 DLX 处理多周期操作
 
-<img src="media/image-20220426111408669.png" alt="image-20220426111408669" style="zoom: 43%;" />
+<img src="media/image-20220426111408669.webp" alt="image-20220426111408669" style="zoom: 43%;" />
 
 #### 长延迟流水线的冒险和前送
 
@@ -564,7 +564,7 @@ IR中的指令将被执行
 
 例：用调度解决名相关
 
-<img src="media/image-20220510102834041.png" alt="image-20220510102834041" style="zoom: 33%;" />
+<img src="media/image-20220510102834041.webp" alt="image-20220510102834041" style="zoom: 33%;" />
 
 Tomasulo 算法借助 **保留站（Reservation station）** 进行重命名，电路图结构如下图所示
 
@@ -574,11 +574,11 @@ Tomasulo 算法借助 **保留站（Reservation station）** 进行重命名，�
 
 3. 由于保留站比寄存器多，所以能消除编译器不能消除的冒险
 
-<img src="media/image-20220510103955680.png" alt="image-20220510103955680" style="zoom: 43%;" />
+<img src="media/image-20220510103955680.webp" alt="image-20220510103955680" style="zoom: 43%;" />
 
 例：
 
-<img src="media/image-20220510113924388.png" alt="image-20220510113924388" style="zoom:50%;" />
+<img src="media/image-20220510113924388.webp" alt="image-20220510113924388" style="zoom:40%;" />
 
 
 

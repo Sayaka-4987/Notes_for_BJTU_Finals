@@ -844,7 +844,7 @@ Var nextc: item;
 - 优先级
 - 内存驻留时间
 
-换出过程
+##### 换出过程
 
 1. 换出非共享或不再共享的程序及数据段
 2. 对换空间申请
@@ -891,7 +891,7 @@ Var nextc: item;
 
 ### 基本分页存储管理方式
 
-<img src="media/image-20220505110359631.png" alt="image-20220505110359631" style="zoom:50%;" />
+<img src="media/image-20220505110359631.webp" alt="image-20220505110359631" style="zoom:50%;" />
 
 #### 离散存储管理方式
 
@@ -974,7 +974,7 @@ $PageOffset = Addr \% PageLength$
 
 段表示意图：
 
-<img src="media/image-20220430141637056.png" alt="image-20220430141637056" style="zoom:50%;" />
+<img src="media/image-20220430141637056.webp" alt="image-20220430141637056" style="zoom:50%;" />
 
 #### 例：分页/分段实现多个用户对文本编辑程序的共享
 
@@ -982,7 +982,7 @@ $PageOffset = Addr \% PageLength$
 
 解：
 
-| <img src="media/image-20220430144214132.png" alt="image-20220430144214132" style="zoom:33%;" /> | <img src="media/image-20220430144234602.png" alt="image-20220430144234602" style="zoom:33%;" /> |
+| <img src="media/image-20220430144214132.webp" alt="image-20220430144214132" style="zoom:33%;" /> | <img src="media/image-20220430144234602.webp" alt="image-20220430144234602" style="zoom:33%;" /> |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 
 #### 代码段共享
@@ -1000,7 +1000,7 @@ $PageOffset = Addr \% PageLength$
 
 先将用户程序按信息性质分为若干段，再把每个段划分为若干页
 
-<img src="media/image-20220503132239335.png" alt="image-20220503132239335" style="zoom:33%;" />
+<img src="media/image-20220503132239335.webp" alt="image-20220503132239335" style="zoom:33%;" />
 
 ### 虚拟存储器概念及关键技术
 
@@ -1051,7 +1051,7 @@ $PageOffset = Addr \% PageLength$
 
 #### 缺页中断处理
 
-<img src="media/image-20220503134849957.png" alt="image-20220503134849957" style="zoom:67%;" />
+<img src="media/image-20220503134849957.webp" alt="image-20220503134849957" style="zoom:67%;" />
 
 #### 内存分配策略
 
@@ -1133,7 +1133,7 @@ Least Recently Used
 
 #### Clock置换（NRU）算法
 
-<img src="media/image-20220503165130199.png" alt="image-20220503165130199" style="zoom:40%;" />
+<img src="media/image-20220503165130199.webp" alt="image-20220503165130199" style="zoom:40%;" />
 
 基本思想：
 1. 从查寻指针当前位置起扫描内存分页循环队列，选择A=0且M=0的第一个页面淘汰；若未找到，转 2.
