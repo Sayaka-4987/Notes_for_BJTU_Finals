@@ -12,7 +12,7 @@
 * 一种计算机组织可以采用不同的计算机实现。
 * 随着计算机技术的迅速发展，计算机系统结构，组织和硬件之间的界限变得越来越模糊。
 
-<img src="media/image-20220304141637043.webp" alt="image-20220304141637043" style="zoom: 40%;" />
+<img src="media/image-20220304141637043.webp" alt="image-20220304141637043" style="zoom: 33%;" />
 
 ### 性能评估
 
@@ -20,21 +20,22 @@
 
 - 用户的角度：程序运行时间短 Computer user consider: a computer is faster when a program runs in less time. 
   
-  - Response time (响应时间)： the time between the start and the completion of an event—also referred to as execution time (执行时间).
+  - **Response time (响应时间)**：the time between the start and the completion of an event—also referred to as execution time (执行时间).
 
 - 计算机中心的角度：在一小时内能做更多工作 Computer center manager consider: a computer is faster when  it completes more jobs in an hour. 
   
-  - Throughput (吞吐量): the total amount of work done in a given time.
+  - **Throughput (吞吐量)**：the total amount of work done in a given time.
 
 #### 测量性能的方法
 
 ##### 响应时间（Response time）
 
-计算机完成某一任务所花费的全部时间（latency），包括磁盘访问（disk accesses）、存储器访问（memory accesses）、输入输出（input/output activities）、操作系统开销（operating system overhead）等。
+- 计算机完成某一任务所花费的全部时间（latency），包括磁盘访问（disk accesses）、存储器访问（memory accesses）、输入输出（input/output activities）、操作系统开销（operating system overhead）等。
 
-在计算机内存中间同时存放几道相互独立的程序（multiprogramming），相互穿插运行，因此一般不必要单单减少某个程序的执行时间（elapsed time）。
+- 在计算机内存中间同时存放几道相互独立的程序（multiprogramming），相互穿插运行，因此一般不必要单单减少某个程序的执行时间（elapsed time）。
 
-CPU时间是CPU执行所给定的程序所花费的时间，不包括含I/O等待时间以及运行其他程序的时间。
+- CPU时间是CPU执行所给定的程序所花费的时间，不包括含I/O等待时间以及运行其他程序的时间。
+
 
 ##### 用户CPU时间（User CPU time）
 
@@ -70,7 +71,7 @@ CPU时间是CPU执行所给定的程序所花费的时间，不包括含I/O等�
 - $Speedup_{enhanced}$（简写 $S_e$）是**部件加速比**，指可改进部分改进后的性能提高； 
 - 阿姆达尔定律表示为 $S_{overall} = \frac{T0}{Te} = \frac{1}{(1-Fe)+ \frac{Fe}{Se}}$ ； 
 
-<img src="media/image-20220304151927822.webp" alt="image-20220304151927822" style="zoom:40%;" />
+<img src="media/image-20220304151927822.webp" alt="image-20220304151927822" style="zoom: 33%;" />
 
 - 需要注意的是 Fe 是**时间比时间**的比例；
 
@@ -98,19 +99,38 @@ $CPU时间 = 完成这一任务的时钟周期数 × 每个时钟周期时间$ �
 
 ##### 单指令流单数据流 (SISD, single instruction stream over a single data stream)
 
-<img src="media/image-20220308115819360.webp" alt="image-20220308115819360" style="zoom: 33%;" />
+<img src="media/image-20220308115819360.webp" alt="image-20220308115819360" style="zoom: 25%;" />
 
 ##### 单指令流多数据流 (SIMD, single instruction stream over multiple data stream)
 
-<img src="media/image-20220308115841394.webp" alt="image-20220308115841394" style="zoom:33%;" />
+<img src="media/image-20220308115841394.webp" alt="image-20220308115841394" style="zoom: 25%;" />
 
 ##### 多指令流多数据流 (MIMD, multiple instruction over multiple data streams)
 
-<img src="media/image-20220308115925196.webp" alt="image-20220308115925196" style="zoom:33%;" />
+<img src="media/image-20220308115925196.webp" alt="image-20220308115925196" style="zoom: 25%;" />
 
 ##### 多指令流单数据流 (MISD, multiple instruction streams and a single data stream) 
 
-<img src="media/image-20220308115858617.webp" alt="image-20220308115858617" style="zoom: 33%;" />
+<img src="media/image-20220308115858617.webp" alt="image-20220308115858617" style="zoom: 25%;" />
+
+> 作业题：
+>
+> 1.4 In the instructions architecture, only Load and Store instructions can access memory (RR). The operations of other instructions are on the registers. The percentages of all the instructions and their CPIs are shown in the following table. 
+>
+> | INSTRUCTION | PERCENTAGE | CPI  |
+> | ----------- | ---------- | ---- |
+> | ALU         | 43%        | 1    |
+> | Load        | 21%        | 2    |
+> | Store       | 12%        | 2    |
+> | Branch      | 24%        | 2    |
+>
+> (1)  What’s the average CPI of the computer?         
+>
+> (2)  25% of the ALU instructions should use a Load instruction to fetch an operand from memory to register. We modify those instructions into a kind of register-memory instruction, one of whose operands is fetched from register and the other one is from memory directly. And the CPI of the modified register-memory instruction is 2. Meanwhile, the CPI of branch instruction changes into 3. What’s the average CPI of the new computer? 
+>
+> 订正：(1)要写中间过程，(2)这道题新指令类型比例加起来不是100%，所以要除以89%
+>
+> <img src="media/image-20220620212318422.webp" alt="image-20220620212318422" style="zoom: 67%;" />
 
 ## Chapter 2. 指令集体系结构
 
@@ -160,46 +180,47 @@ $CPU时间 = 完成这一任务的时钟周期数 × 每个时钟周期时间$ �
 
 **根据两种寄存器类型分**：
 
-1. 寄存器-存储器体系结构：操作数可以来自存储器
+1. **寄存器-存储器体系结构**：操作数可以来自存储器
 
-2. 寄存器-寄存器体系：所有操作数都是来自寄存器、只有load与store能够访问存储器
+2. **寄存器-寄存器体系**：所有操作数都是来自寄存器、只有load与store能够访问存储器
 
-3. 存储器-存储器体系结构：目前现实中没有
+3. **存储器-存储器体系结构**：目前现实中没有
 
-<img title="" src="./media/高级语言的C=A+B.webp" alt="" data-align="center" width="591">
+<img title="" src="./media/高级语言的C=A+B.webp" alt="" data-align="center" width="591" style="zoom: 67%;" >
 
 总结：
 
-| 寄存器类型    | 优点                                                                       | 缺点                                                                                                     |
-| -------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-| 寄存器-寄存器型 | 简单，指令字长固定，是一种简单的代码生成模型，各种指令的执行时钟周期数相近。<br>**SPARC, MIPS, PowerPC属于这个类型** | 和指令中含有对存储器操作数访问的结构相比，指令条数多（要使用load/store），因而其目标代码较大                                                    |
-| 寄存器-存储器型 | 可以直接对存储器操作数进行访问，容易对指令进行编码，且其目标代码较小<br>**8086属于这个类型**                     | 指令中的操作数类型不同。在一条指令中同时对一个寄存器操作数和存储器操作数进行编码，将限制指令所能够表示的寄存器个数。由于指令的操作数可以存储在不同类型的存储器单元，所以每条指令的执行时钟周期数也不尽相同。 |
-| 存储器-存储器型 | 是一种最紧密的编码方式，无需“浪费”寄存器保存变量。                                               | 指令字长多种多样。每条指令的执行时钟周期数也大不一样，对存储器的频繁访问将导致存储器访问瓶颈问题。                                                      |
+| 寄存器类型      | 优点                                                         | 缺点                                                         |
+| --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 寄存器-寄存器型 | 简单，指令字长固定，是一种简单的代码生成模型，各种指令的执行时钟周期数相近。<br>**SPARC, MIPS, PowerPC属于这个类型** | 和指令中含有对存储器操作数访问的结构相比，<br />因为要使用load/store指令条数多，<br />因而其目标代码较大 |
+| 寄存器-存储器型 | 可以直接对存储器操作数进行访问，容易对指令进行编码，且其目标代码较小<br>**8086属于这个类型** | 指令中的操作数类型不同。<br />在一条指令中，同时对一个寄存器操作数和存储器操作数进行编码，将限制指令所能够表示的寄存器个数。<br />由于指令的操作数可以存储在不同类型的存储器单元，所以每条指令的执行时钟周期数也不尽相同。 |
+| 存储器-存储器型 | 是一种最紧密的编码方式，无需“浪费”寄存器保存变量。           | 指令字长多种多样。<br />每条指令的执行时钟周期数也大不一样，对存储器的频繁访问将导致存储器访问瓶颈问题。 |
 
 ### 内存地址的解释
 
 #### 大端序和小端序
 
-例：Suppose you have the 32-bit hexadecimal value 87654321 stored as a 32-bit word in byte-addressable memory at byte location 480, 481, 482, and 483.
-a) What will be arranged in memory 480~483 according to Little Endian and Big Endian?
-b) In which bytes order to Intel 80x86 systems store multibyte values?
-
-答：8086是小端序；
-
- 87654321H的表示：
-
-| 存放顺序 | 480H | 481H | 482H | 483H |
-| -------- | ---- | ---- | ---- | ---- |
-| 大端序   | 87H  | 65H  | 43H  | 21H  |
-| 小端序   | 21H  | 43H  | 65H  | 87H  |
+> 例：Suppose you have the 32-bit hexadecimal value 87654321 stored as a 32-bit word in byte-addressable memory at byte location 480, 481, 482, and 483.
+> a) What will be arranged in memory 480~483 according to Little Endian and Big Endian?
+> b) In which bytes order to Intel 80x86 systems store multibyte values?
+>
+> 答：8086是小端序；
+>
+>  87654321H的表示：
+>
+> | 存放顺序 | 480H | 481H | 482H | 483H |
+> | -------- | ---- | ---- | ---- | ---- |
+> | 大端序   | 87H  | 65H  | 43H  | 21H  |
+> | 小端序   | 21H  | 43H  | 65H  | 87H  |
+>
 
 ##### 记住取数取的是首地址
 
-<img title="" src="./media/地址的整数倍位置.webp" alt="" width="663" data-align="inline">
+<img title="" src="./media/地址的整数倍位置.webp" alt="" width="663" data-align="inline" style="zoom:67%;" >
 
-### 对齐的定义
+### 对齐的定义 $A \% S = 0$
 
-An access to an object of size s bytes at byte address A is aligned if **A mod s = 0**
+An access to an object of size $s$ bytes at byte address $A$ is aligned if $A (mod) s = 0$
 
 ### 寻址模式
 
@@ -267,11 +288,11 @@ An access to an object of size s bytes at byte address A is aligned if **A mod s
 
 大多数比较是简单的等式和不等式检测，以及与零比较
 
-| 分支条件表示                                       | 优点             | 缺点                                           |
-| -------------------------------------------- | -------------- | -------------------------------------------- |
-| 条件码（Condition code，CC）：在程序的控制下，由ALU操作设置特殊的位  | 可以自由设置分支条件     | 必须从一条指令将分支条件信息传送到分支指令，所以CC是额外状态，条件码限制了指令执行顺序 |
-| 条件寄存器（Condition register）：根据比较结果测试条件寄存器      | 简单             | 占用了一个寄存器                                     |
-| 比较分支（Compare and branch）：比较操作是分支指令的一部分，比较受限制 | 一条指令完成了两条指令的功能 | 分支指令的操作增多<br>当采用流水线时，该指令的操作可能太多，在一拍内做不完      |
+| 分支条件表示                                                 | 优点                         | 缺点                                                         |
+| ------------------------------------------------------------ | ---------------------------- | ------------------------------------------------------------ |
+| **条件码**（Condition code，CC）：在程序的控制下，由ALU操作设置特殊的位 | 可以自由设置分支条件         | 必须从一条指令将分支条件信息传送到分支指令，所以CC是额外状态，条件码限制了指令执行顺序 |
+| **条件寄存器**（Condition register）：根据比较结果测试条件寄存器 | 简单                         | 占用了一个寄存器                                             |
+| **比较分支**（Compare and branch）：比较操作是分支指令的一部分，比较受限制 | 一条指令完成了两条指令的功能 | 分支指令的操作增多<br>当采用流水线时，该指令的操作可能太多，在一拍内做不完 |
 
 #### 过程调用选项
 
@@ -285,7 +306,7 @@ An access to an object of size s bytes at byte address A is aligned if **A mod s
 
 **被调用的过程必须保存它要用的寄存器**，保证不会破坏过程调用者的程序执行环境，并在过程调用结束返回时，恢复这些寄存器的内容
 
-<img src="./media/过程调用选项.webp">
+<img src="./media/过程调用选项.webp" style="zoom: 33%;" >
 
 ### RISC 与 CISC 技术
 
@@ -343,7 +364,7 @@ An access to an object of size s bytes at byte address A is aligned if **A mod s
   操作进行编码：加，减，...
 - 对特殊寄存器的读/写和移动
 
-例：`Add R1, R2, R3; Regs[R1] ←Regs[R2]+Regs[R3]` 
+例：`Add R1, R2, R3; Regs[R1]←Regs[R2]+Regs[R3]` 
 
 ##### J 类型指令
 
@@ -440,49 +461,53 @@ An access to an object of size s bytes at byte address A is aligned if **A mod s
 
 ### DLX 的一种简单实现
 
-<img src="./media/DLX的一种简单实现.webp" style="zoom: 50%;" />
+<img src="./media/DLX的一种简单实现.webp" style="zoom: 40%;" />
 
-<img src="media/image-20220401154122866.webp" alt="image-20220401154122866" style="zoom: 50%;" />
+英文版：
+
+<img src="media/image-20220401154122866.webp" alt="image-20220401154122866" style="zoom: 33%;" />
 
 #### 1. 取指令（Instruction fetch cycle，IF）
 
-功能：根据PC值从存储器中取出指令，并将指令送入指令寄存器IR
+- 功能：根据PC值从存储器中取出指令，并将指令送入指令寄存器IR
 
-PC值增加4，指向顺序的下一条指令
+- PC值增加4，指向顺序的下一条指令
 
-IR中的指令将被执行
+- IR中的指令将被执行
 
-将下一条指令的地址放入临时寄存器NPC中
+- 将下一条指令的地址放入临时寄存器NPC中
+
 
 #### 2. 指令译码/读寄存器（Instruction decode/register fetch cycle，ID）
 
-功能：取数同时指令译码，读IR寄存器，按照寄存器号读寄存器文件
+- 功能：取数同时指令译码，读IR寄存器，按照寄存器号读寄存器文件
 
-**改进的 DLX 在这个阶段提前计算跳转地址**
+  - **改进的 DLX 在这个阶段提前计算跳转地址**
+- 将读出结果放入两个临时寄存器A和B中
 
-将读出结果放入两个临时寄存器A和B中
+- 对IR寄存器中内容的低16位进行符号扩展，然后将符号扩展之后的立即值保存在临时寄存器Imm中
 
-对IR寄存器中内容的低16位进行符号扩展，然后将符号扩展之后的立即值保存在临时寄存器Imm中
 
 #### 3. 执行/有效地址计算（Execution/effective address cycle，EX）
 
-功能：根据指令类型进行四种操作之一：存储器访问，寄存器-寄存器ALU，寄存器-立即数ALU，分支操作
+- 功能：根据指令类型进行四种操作之一：存储器访问，寄存器-寄存器ALU，寄存器-立即数ALU，分支操作
 
-没有指令会在计算数据地址、目标地址的同时还对数据进行操作
+- 没有指令会在计算数据地址、目标地址的同时还对数据进行操作
+
 
 #### 4. 访存/分支操作完成（Memory access/branch completion cycle，MEM）
 
-功能：从数据存储器中读
+- 功能：从数据存储器中读
 
-只有load、store和branch指令在这个周期活跃
+- 只有load、store和branch指令在这个周期活跃
 
-寄存器引用
+- 寄存器引用、分支操作
 
-分支操作
 
 #### 5. 写回（Write-back cycle，WB）
 
-功能：将数据写到寄存器中 
+- 功能：将数据写到寄存器中 
+
 
 ### DLX 的流水线（待补充）
 
@@ -524,6 +549,8 @@ IR中的指令将被执行
 
 <img src="media/image-20220415151717390.webp" alt="image-20220415151717390" style="zoom:33%;" />
 
+3种数据相关类型：
+
 1. **RAW (read after write) 先写后读**：x 试图在 y 写入源代码之前读取它，导致 x 错误地获取了旧值
 2. **WAW (write after write) 写后再写**：x 尝试在 y 写入操作数之前写入操作数；写入操作最终以错误的顺序执行，将 y 写入的值而不是 x 写入的值留在目标中。
 3. **WAR (write after read) 先读后写**：x 试图在 y 读取目标之前就写入目标，导致 y 错误地获取了新值
@@ -553,7 +580,7 @@ IR中的指令将被执行
 
 ### 扩展 DLX 处理多周期操作
 
-<img src="media/image-20220426111408669.webp" alt="image-20220426111408669" style="zoom: 43%;" />
+<img src="media/image-20220426111408669.webp" alt="image-20220426111408669" style="zoom: 33%;" />
 
 #### 长延迟流水线的冒险和前送
 
@@ -565,24 +592,24 @@ IR中的指令将被执行
 
 - 操作的长延迟，导致 RAW 冲突更频繁。
 
-- 早解决：在 ID 阶段跟踪写端口的使用，并在发射之前阻塞指令
-
+- **早解决**：在 ID 阶段跟踪写端口的使用，并在发射之前阻塞指令
   - 如果检测到处于 ID 的指令与早先发射的指令在同一周期使用寄存器文件，则该指令阻塞一个周期
   - 跟踪操作用移位寄存器实现，每个周期移一位
   - 优点：在 ID 阶段就完成互锁检测和阻塞插入
   - 成本：要加入移位寄存器和写冲突逻辑
-- 到时候再解决：在冲突指令要进入 MEM 或 WB 时阻塞之
+- **到时候再解决**：在冲突指令要进入 MEM 或 WB 时阻塞之
   - 优先考虑具有最长潜伏期的指令，这些指令最有可能引起其他指令阻塞
   - 优点：到 MEM 或 WB 才检测冲突，因此容易实现
   - 缺点：使流水线控制复杂化，因为可从两个地方插入阻塞
 
 #### DLX 浮点流水线的性能
 
-- 静态调度
-  - 没有冒险/可以前送，则发射
-  - 否则阻塞直至依赖关系解除
-  - 编译器技术
-- 动态调度
+两种提升策略：
+
+- **静态调度**
+  - 没有冒险/可以前送，则发射；否则，阻塞直至依赖关系解除
+  - 属于编译器技术
+- **动态调度**
   - 能处理在编译时不知道的依赖关系，简化了编译器
   - 使在一个流水线上编译的代码，在另一个流水线上也能高效运行
 
@@ -601,7 +628,7 @@ Tomasulo 算法借助 **保留站（Reservation station）**对**寄存器**进�
 3. 由于保留站比寄存器多，所以能消除编译器不能消除的冒险
 3. 浮点操作在发射时从指令单元进入队列，所有来自 FP 单元或 load 单元的结果都经过 CDB 去往 FP 寄存器文件以及保留站和 store 缓冲器
 
-<img src="media/image-20220510103955680.webp" alt="image-20220510103955680" style="zoom: 43%;" />
+<img src="media/image-20220510103955680.webp" alt="image-20220510103955680" style="zoom: 33%;" />
 
 #### 保留站
 
@@ -705,17 +732,14 @@ Loop: SUBI R3, R1, #1
 
 - 只需存储预测为成功的转移，如果预测不成功，就原样执行
 - 取来指令的PC与存储在第一列的一组地址（是已知的转移地址）进行匹配
-
 - 如果匹配一个，则正被取指的指令就被预测为一个成功的转移，第二个域就包含着转移后的下一个PC，取指立即在那里进行
-
 - 第三个域可选，可用于额外的预测状态位
 - 错误预测惩罚为2个周期
 
-<img src="media/image-20220519160857327.webp" alt="image-20220519160857327" style="zoom:50%;" />
+| <img src="media/image-20220519160857327.webp" alt="image-20220519160857327" style="zoom: 33%;" /> | <img src="media/image-20220519143000399.webp" alt="image-20220519143000399" style="zoom: 33%;" /> |
+  | ------------------------------------------------------------ | ------------------------------------------------------------ |
 
-<img src="media/image-20220519143000399.webp" alt="image-20220519143000399" style="zoom: 40%;" />
-
-### 多指令流出处理器
+### 指令流出处理器
 
 #### 超标量处理器（superscalar processors）
 
@@ -736,7 +760,7 @@ Loop: SUBI R3, R1, #1
 
 把速度不同空间大小不同的存储单元按层次结构排序，使其对外表现容量大、速度快、价格低；
 
-<img src="media/image-20220531101930883.webp" alt="image-20220531101930883" style="zoom:33%;" />
+<img src="media/image-20220531101930883.webp" alt="image-20220531101930883" style="zoom: 25%;" />
 
 理论依据：访问的**局部性原理**，若一个数据项被访问，则它很可能很快被再次访问，其临近地址的数据也很可能很快被访问。
 
@@ -747,19 +771,18 @@ Loop: SUBI R3, R1, #1
 
 ### 基本概念
 
-- 命中（Hit）需要的数据出现在高层某块中
+- **命中（Hit）**需要的数据出现在高层某块中
 
-- 缺失（Miss）数据在高层未找到. 需要访问底层来寻找包含所需数据的块
+- **缺失（Miss）**数据在高层未找到. 需要访问底层来寻找包含所需数据的块
 
-- 命中率（Hit rate）数据在高层找到的比率
+- **命中率（Hit rate）**数据在高层找到的比率
 
-- 缺失率（Miss rate）数据在高层找不到的比率
-- 命中时间（Hit time）访问高层的时间，包括确定该访问是命中还是缺失所需时间
-- 缺失惩罚（Miss penalty）用低层块替换高层块，再加上将块送到处理器所需时间
+- **缺失率（Miss rate）**数据在高层找不到的比率
+- **命中时间（Hit time）**访问高层的时间，包括确定该访问是命中还是缺失所需时间
+- **缺失惩罚（Miss penalty）**用低层块替换高层块，再加上将块送到处理器所需时间
 
-例：两层存储体系 $M_1, M_2$。$M_1$ 命中率 $H_1$，$M_1$ 命中时间 $T_{A1}$，$M_2$ 命中时间 $T_M$ ，求平均访问时间 $T_A$
-
-答：$T_A＝T_{A1}＋(1－H_1 )T_M$ 或 $T_A＝T_{A1}＋F×T_M$ 
+> 例：两层存储体系 $M_1, M_2$。$M_1$ 命中率 $H_1$，$M_1$ 命中时间 $T_{A1}$，$M_2$ 命中时间 $T_M$ ，求平均访问时间 $T_A$ 
+> 答：$T_A＝T_{A1}＋(1－H_1 )T_M$ 或 $T_A＝T_{A1}＋F×T_M$ 
 
 ### 缓存的基础
 
@@ -839,7 +862,7 @@ DECStation 3100 如何处理写入步骤：
 
 缓存中 tag 和 vaild 的总数会减少，因为每个 tag 和 vaild 对应四个字。
 
-<img src="media/image-20220610181842707.webp" alt="image-20220610181842707" style="zoom:40%;" />
+<img src="media/image-20220610181842707.webp" alt="image-20220610181842707" style="zoom: 33%;" />
 
 #### 设计存储系统来支持Cache
 
@@ -891,7 +914,7 @@ DECStation 3100 如何处理写入步骤：
 - 在地址被用于访问内存之前，重定位将程序使用的虚拟地址映射到不同的物理地址
 - 这种重定位使我们可以将程序加载到主内存的任何位置
 
-<img src="media/image-20220613232354894.png" alt="image-20220613232354894" style="zoom: 33%;" />
+<img src="media/image-20220613232354894.webp" alt="image-20220613232354894" style="zoom: 33%;" />
 
 由于虚拟存储器的页故障惩罚高，需要采用优化的页布局来降低页故障次数
 
@@ -906,9 +929,9 @@ DECStation 3100 如何处理写入步骤：
 
 虚拟存储器没有tag，只有页内偏移和页号
 
-#### 情况有没有可能发生
+#### 情况有没有可能发生？
 
-<img src="media/image-20220613234609628.png" alt="image-20220613234609628" style="zoom:40%;" />
+<img src="media/image-20220613234609628.webp" alt="image-20220613234609628" style="zoom:40%;" />
 
 ### 内存层次的通用框架
 
@@ -929,27 +952,27 @@ DECStation 3100 如何处理写入步骤：
 
 直接映像和全相连可以被认为是特殊的组相连，对比表格：
 
-| 规则名                   | 组数                                                     | 每组块数                                  |
-| ------------------------ | -------------------------------------------------------- | ----------------------------------------- |
-| 直接映像 Direct mapped   | 缓存块数 Number of blocks in cache                       | 1                                         |
-| 组相连 Set associative   | 缓存中的块关联数 Number of blocks in cache associativity | 关联数 Associativity <br >一般在 2-8 左右 |
-| 全相连 Fully associative | 1                                                        | 缓存中的块数                              |
+| 规则名                   | 组数                                                        | 每组块数                                  |
+| ------------------------ | ----------------------------------------------------------- | ----------------------------------------- |
+| 直接映像 Direct mapped   | 缓存块数（Number of blocks in cache）                       | 1                                         |
+| 组相连 Set associative   | 缓存中的块关联数 （Number of blocks in cache associativity) | 关联数 Associativity <br >一般在 2-8 左右 |
+| 全相连 Fully associative | 1                                                           | 缓存中的块数                              |
 
 #### 如何找到块
 
-| 关联数                 | 定位方法                              | 需要进行的比较          |
-| ---------------------- | ------------------------------------- | ----------------------- |
-| 直接映像 Direct mapped | index                                 | 1                       |
-| 组相连 Set associative | Index the set, search among elements  | Degree of associativity |
-| 全相连 Full            | 搜索所有缓存 Search all cache entries | Size of the cache       |
-| 全相连 Full            | Separate lookup table                 | 0                       |
+| 关联数                 | 定位方法                              | 需要进行的比较       |
+| ---------------------- | ------------------------------------- | -------------------- |
+| 直接映像 Direct mapped | index                                 | 1                    |
+| 组相连 Set associative | Index the set, search among elements  | 关联数 Associativity |
+| 全相连 Full            | 搜索所有缓存 Search all cache entries | 缓存大小             |
+| 全相连 Full            | Separate lookup table                 | 0                    |
 
 #### 缺失时的块替换算法
 
 两种常见替换方式：
 
-1. LRU
-2. 随机替换
+1. **LRU**
+2. **随机替换**
 
 随着Cache的增大，两种策略的缺失率都会下降，差异越来越小
 
@@ -966,7 +989,7 @@ DECStation 3100 如何处理写入步骤：
 
 Cache失效率和块大小的关系：
 
-<img src="media/image-20220614105406386.png" alt="image-20220614105406386" style="zoom:33%;" />
+<img src="media/image-20220614105406386.webp" alt="image-20220614105406386" style="zoom:33%;" />
 
 Cache失效有很多种原因，可以分成3种类型
 
@@ -975,12 +998,3 @@ Cache失效有很多种原因，可以分成3种类型
    - <u>全相连</u> 才有容量失效的说法
 3. **冲突失效**：如果有太多的块映射到同一组，该组又满，由块和块的竞争引起
    - <u>组相连、直接映像</u> 才有冲突失效的说法
-
-
-
-
-
-
-
-
-

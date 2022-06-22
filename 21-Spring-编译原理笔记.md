@@ -392,7 +392,7 @@ $(TokenType, Token)$形式
 
 ### 正则文法和状态转换图
 
-<img src="media/image-20220617101315566.png" alt="image-20220617101315566" style="zoom: 33%;" />
+<img src="media/image-20220617101315566.webp" alt="image-20220617101315566" style="zoom: 33%;" />
 
 需要掌握：
 
@@ -471,7 +471,7 @@ NFA 由以下五个元素组成：$NFAM′=(K′, Σ, f′, S_0′, Z′)$
 
 ##### 读 ε 不动作的NFA和读 ε 动作的NFA的确定化
 
-<img src="media/image-20220616163113922.png" alt="image-20220616163113922" style="zoom: 33%;" />
+<img src="media/image-20220616163113922.webp" alt="image-20220616163113922" style="zoom: 33%;" />
 
 1. 建一个状态为行，非终结符为列的表，第一行填入 $q_0$ （初态 ε\_closure 闭包，要么只有初态要么加ε边终点）
 2. 重复广度优先搜索，通过各列非终结符能到达的原状态集计算 $q_i$ 
@@ -614,9 +614,9 @@ LEX.yy.c 包括两部分：状态转换矩阵、总控程序 `yylex()`
 
 <img src="media/image-20220413082338252.webp" alt="image-20220413082338252" style="zoom:40%;" />
 
-消除回溯的方法是提取公共左因子
+消除回溯的方法是**提取公共左因子**：
 
-<img src="media/930084bbaf4546ab88119163633c7adc.png" alt="img" style="zoom:33%;" />
+<img src="media/930084bbaf4546ab88119163633c7adc.webp" alt="img" style="zoom:33%;" />
 
 #### 构造 FIRST 集合和 FOLLOW 集合
 
@@ -643,6 +643,8 @@ LEX.yy.c 包括两部分：状态转换矩阵、总控程序 `yylex()`
 ### LL(1)文法
 
 化简的、无左递归、无回朔的文法
+
+需要先加上 $\#$ 
 
 ### LL(1)分析法
 
